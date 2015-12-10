@@ -5,6 +5,7 @@ using InfluxData.Net.Models;
 using InfluxData.Net.Contracts;
 using InfluxData.Net.Infrastructure.Validation;
 using InfluxData.Net.Helpers;
+using System.Collections.Generic;
 
 namespace InfluxData.Net.Infrastructure.Formatters
 {
@@ -34,39 +35,54 @@ namespace InfluxData.Net.Infrastructure.Formatters
             Validate.NotNull(point.Tags, "tags");
             Validate.NotNull(point.Fields, "fields");
 
-            var tags = String.Join(",", point.Tags.Select(t => String.Join("=", t.Key, EscapeTagValue(t.Value.ToString()))));
-            var fields = String.Join(",", point.Fields.Select(t => FormatPointField(t.Key, t.Value)));
+            var tags = FormatPointTags(point.Tags);
+            var fields = FormatPointFields(point.Fields);
+            var key = FormatPointKey(point, tags);
+            var timestamp = FormatPointTimestamp(point);
 
-            var key = String.IsNullOrEmpty(tags) ? EscapeNonTagValue(point.Name) : String.Join(",", EscapeNonTagValue(point.Name), tags);
-            var ts = point.Timestamp.HasValue ? point.Timestamp.Value.ToUnixTime().ToString() : string.Empty;
-
-            var result = String.Format(GetLineTemplate(), key, fields, ts);
+            var result = String.Format(GetLineTemplate(), key, fields, timestamp);
 
             return result;
         }
 
         public virtual Serie PointToSerie(Point point)
         {
-            var s = new Serie
+            var serie = new Serie
             {
                 Name = point.Name
             };
 
             foreach (var key in point.Tags.Keys.ToList())
             {
-                s.Tags.Add(key, point.Tags[key].ToString());
+                serie.Tags.Add(key, point.Tags[key].ToString());
             }
 
             var sortedFields = point.Fields.OrderBy(k => k.Key).ToDictionary(x => x.Key, x => x.Value);
 
-            s.Columns = new string[] { "time" }.Concat(sortedFields.Keys).ToArray();
+            serie.Columns = new string[] { "time" }.Concat(sortedFields.Keys).ToArray();
 
-            s.Values = new object[][]
+            serie.Values = new object[][]
             {
                 new object[] { point.Timestamp }.Concat(sortedFields.Values).ToArray()
             };
 
-            return s;
+            return serie;
+        }
+
+        protected virtual string FormatPointTags(IDictionary<string, object> tags)
+        {
+            // NOTE: from InfluxDB documentation - "Tags should be sorted by key before being sent for best performance."
+            return String.Join(",", tags.OrderBy(p => p.Key).Select(p => FormatPointTag(p.Key, p.Value)));
+        }
+
+        protected virtual string FormatPointTag(string key, object value)
+        {
+            return String.Join("=", key, EscapeTagValue(value.ToString()));
+        }
+
+        protected virtual string FormatPointFields(IDictionary<string, object> fields)
+        {
+            return String.Join(",", fields.Select(p => FormatPointField(p.Key, p.Value)));
         }
 
         protected virtual string FormatPointField(string key, object value)
@@ -74,28 +90,27 @@ namespace InfluxData.Net.Infrastructure.Formatters
             Validate.NotNullOrEmpty(key, "key");
             Validate.NotNull(value, "value");
 
-            // Format and escape the values
             var result = value.ToString();
 
-            // surround strings with quotes
             if (value.GetType() == typeof(string))
             {
+                // Surround strings with quotes
                 result = QuoteValue(EscapeNonTagValue(value.ToString()));
             }
-            // api needs lowercase booleans
             else if (value.GetType() == typeof(bool))
             {
+                // API needs lowercase booleans
                 result = value.ToString().ToLower();
             }
-            // InfluxDb does not support a datetime type for fields or tags
-            // convert datetime to unix long
             else if (value.GetType() == typeof(DateTime))
             {
+                // InfluxDb does not support a datetime type for fields or tags
+                // Convert datetime to UNIX long
                 result = ((DateTime)value).ToUnixTime().ToString();
             }
-            // For cultures using other decimal characters than '.'
             else if (value.GetType() == typeof(decimal))
             {
+                // For cultures using other decimal characters than '.'
                 result = ((decimal)value).ToString("0.0###################", CultureInfo.InvariantCulture);
             }
             else if (value.GetType() == typeof(float))
@@ -108,10 +123,21 @@ namespace InfluxData.Net.Infrastructure.Formatters
             }
             else if (value.GetType() == typeof(long) || value.GetType() == typeof(int))
             {
+                // Int requires 'i' at the end of the number - otherwise it will be represented as float
                 result = ToInt(result);
             }
 
             return String.Join("=", EscapeNonTagValue(key), result);
+        }
+
+        protected virtual string FormatPointKey(Point point, string tags)
+        {
+            return String.IsNullOrEmpty(tags) ? EscapeNonTagValue(point.Name) : String.Join(",", EscapeNonTagValue(point.Name), tags);
+        }
+
+        protected virtual string FormatPointTimestamp(Point point)
+        {
+            return point.Timestamp.HasValue ? point.Timestamp.Value.ToUnixTime().ToString() : string.Empty;
         }
 
         protected virtual string ToInt(string result)

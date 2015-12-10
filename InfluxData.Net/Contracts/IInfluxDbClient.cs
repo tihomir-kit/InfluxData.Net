@@ -29,6 +29,15 @@ namespace InfluxData.Net.Contracts
 
         #region Continuous Queries
 
+        Task<InfluxDbApiResponse> CreateContinuousQueriey(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers,
+            string database,
+            string cqName,
+            IList<string> downsamplers,
+            string downsampledSerieName,
+            string timespan,
+            IList<string> tags = null
+        );
+
         Task<InfluxDbApiResponse> GetContinuousQueries(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string database);
 
         Task<InfluxDbApiResponse> DeleteContinuousQuery(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string database, int id);

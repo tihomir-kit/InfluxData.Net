@@ -84,9 +84,9 @@ namespace InfluxData.Net.Client
             var result = await RequestAsync(errorHandlers, HttpMethod.Post, "write", content,
                 new Dictionary<string, string>
                 {
-                    { QueryParams.Db, request.Database},
+                    { QueryParams.Db, request.Database },
                     { QueryParams.Precision, timePrecision }
-                }, true, false);
+                });
 
             return new InfluxDbApiWriteResponse(result.StatusCode, result.Body);
         }
@@ -109,6 +109,18 @@ namespace InfluxData.Net.Client
         #endregion Basic Querying
 
         #region Continuous Queries
+
+        public async Task<InfluxDbApiResponse> CreateContinuousQueriey(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, 
+            string database, 
+            string cqName,
+            IList<string> downsamplers,
+            string downsampledSerieName,
+            string timespan,
+            IList<string> tags = null
+            )
+        {
+            throw new NotImplementedException();
+        }
 
         public Task<InfluxDbApiResponse> GetContinuousQueries(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string database)
         {

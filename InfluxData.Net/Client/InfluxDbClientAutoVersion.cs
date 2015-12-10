@@ -77,6 +77,18 @@ namespace InfluxData.Net.Client
 
         #region Continuous Queries
 
+        public async Task<InfluxDbApiResponse> CreateContinuousQueriey(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers,
+            string database,
+            string cqName,
+            IList<string> downsamplers,
+            string downsampledSerieName,
+            string timespan,
+            IList<string> tags = null
+        )
+        {
+            return await _influxDbClient.CreateContinuousQueriey(errorHandlers, database, cqName, downsamplers, downsampledSerieName, timespan, tags);
+        }
+
         public async Task<InfluxDbApiResponse> GetContinuousQueries(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string database)
         {
             return await _influxDbClient.GetContinuousQueries(errorHandlers, database);

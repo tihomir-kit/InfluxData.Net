@@ -127,6 +127,7 @@ namespace InfluxData.Net
                 RetentionPolicy = retenionPolicy
             };
 
+            // TODO: handle precision (if set by client, it makes not difference because it gets overriden here)
             var result = await _influxDbClient.Write(NoErrorHandlers, request, ToTimePrecision(TimeUnit.Milliseconds));
 
             return result;
