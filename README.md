@@ -10,7 +10,7 @@ A Portable .NET library to access the REST API of a [InfluxData](https://influxd
 This is a fork of [InfluxDb.Net](https://github.com/pootzko/InfluxDB.Net/) (which is a fork of [InfluxDb.Net](https://github.com/ziyasal/InfluxDb.Net/)) NuGet library which only for InfluxDB.
 
 **Installation**  
-I did not create a NuGet for this Lib yet so you will have to download the .sln, build it in release and add it to your project. Unit tests work, and the Influx API calls that were implemented so far seem to work fine. I will try to put out a NuGet package as well asap.
+You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) to install the latest version of InfluxData.Net Lib.
 
 ####List of supported methods (More documentation available soon)
 - [Ping](#ping)
