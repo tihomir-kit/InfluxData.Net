@@ -40,7 +40,6 @@
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
     <None Include="app.config" />
-    <None Include="InfluxData.Net.nupkg" />
     <None Include="InfluxData.Net.nuspec">
       <SubType>Designer</SubType>
     </None>
