@@ -1,16 +1,16 @@
 InfluxData.Net
 ============
-####Update for 0.9.6 API changes
+####Now compatible with InfluxDB 0.9.6 API
 
->[InfluxData platform](https://influxdata.com/) An open-source end-to-end platform for managing time-series data at scale.
+InfluxData.Net is a portable .NET library to access the REST API of an [InfluxDB](https://influxdata.com/time-series-platform/influxdb/) database. 
 
-A Portable .NET library to access the REST API of a [InfluxData](https://influxdata.com/) TICK stack.
+InfluxDB is the data storage layer in [InfluxData](https://influxdata.com/)'s [TICK stack](https://influxdata.com/get-started/#whats-the-tick-stack) which is an open-source end-to-end platform for managing time-series data at scale.
 
 **Original Lib**  
-This is a fork of [InfluxDb.Net](https://github.com/pootzko/InfluxDB.Net/) (which is a fork of [InfluxDb.Net](https://github.com/ziyasal/InfluxDb.Net/)) NuGet library which only for InfluxDB.
+This is a fork of [InfluxDb.Net](https://github.com/pootzko/InfluxDB.Net/), which is in turn a fork of [InfluxDb.Net](https://github.com/ziyasal/InfluxDb.Net/)). Those NuGet libraries are only suitable for InfluxDB 0.8.x rather than InfluxDB 0.9.x.
 
 **Installation**  
-You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) to install the latest version of InfluxData.Net Lib.
+You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) package to install the latest version of InfluxData.Net Lib.
 
 ####List of supported methods (More documentation available soon)
 - [Ping](#ping)
