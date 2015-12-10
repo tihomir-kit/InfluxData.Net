@@ -38,7 +38,7 @@ namespace InfluxData.Net.Tests
 
             _dbName = CreateRandomDbName();
 
-            //PurgeFakeDatabases();
+            PurgeFakeDatabases();
 
             var createResponse = _influx.CreateDatabaseAsync(_dbName).Result;
             createResponse.Success.Should().BeTrue();
@@ -159,7 +159,7 @@ namespace InfluxData.Net.Tests
 
             response.Success.Should().BeTrue();
 
-            var result = await _influx.QueryAsync(_dbName, String.Format("select nonexistentfield from \"{0}\"", points.Single().Measurement));
+            var result = await _influx.QueryAsync(_dbName, String.Format("select nonexistentfield from \"{0}\"", points.Single().Name));
             result.Should().NotBeNull();
             result.Should().BeEmpty();
         }
@@ -175,7 +175,7 @@ namespace InfluxData.Net.Tests
             // query
             await Query(expected);
 
-            var deleteSerieResponse = await _influx.DropSeriesAsync(_dbName, points.First().Measurement);
+            var deleteSerieResponse = await _influx.DropSeriesAsync(_dbName, points.First().Name);
             deleteSerieResponse.Success.Should().BeTrue();
         }
 
@@ -188,7 +188,7 @@ namespace InfluxData.Net.Tests
             writeResponse.Success.Should().BeTrue();
 
             // Act
-            var queryResponse = await _influx.QueryAsync(_dbName, String.Format("select * from \"{0}\" where 0=1", points.Single().Measurement));
+            var queryResponse = await _influx.QueryAsync(_dbName, String.Format("select * from \"{0}\" where 0=1", points.Single().Name));
 
             // Assert
             queryResponse.Count.Should().Be(0);
@@ -207,7 +207,7 @@ namespace InfluxData.Net.Tests
 
             var point = new Point
             {
-                Measurement = seriesName,
+                Name = seriesName,
                 Tags = new Dictionary<string, object>
                 {
                     { tagName, value }
@@ -285,7 +285,7 @@ namespace InfluxData.Net.Tests
             var fixture = new Fixture();
 
             fixture.Customize<Point>(c => c
-                .With(p => p.Measurement, CreateRandomMeasurementName())
+                .With(p => p.Name, CreateRandomMeasurementName())
                 .Do(p => p.Tags = NewTags(rnd))
                 .Do(p => p.Fields = NewFields(rnd))
                 .OmitAutoProperties());

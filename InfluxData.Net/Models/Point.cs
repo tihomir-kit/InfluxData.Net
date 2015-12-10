@@ -18,7 +18,7 @@ namespace InfluxData.Net.Models
         /// Serie name. Measurement is Influxes convention for Serie name.
         /// <see cref="https://influxdb.com/docs/v0.9/write_protocols/write_syntax.html"/>
         /// </summary>
-        public string Measurement { get; set; }
+        public string Name { get; set; }
         public Dictionary<string, object> Tags { get; set; }  // string, string?
         public Dictionary<string, object> Fields { get; set; }
         public TimeUnit Precision { get; set; }

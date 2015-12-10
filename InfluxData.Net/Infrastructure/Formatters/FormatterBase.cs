@@ -30,14 +30,14 @@ namespace InfluxData.Net.Infrastructure.Formatters
         /// </remarks>
         public virtual string PointToString(Point point)
         {
-            Validate.NotNullOrEmpty(point.Measurement, "measurement");
+            Validate.NotNullOrEmpty(point.Name, "measurement");
             Validate.NotNull(point.Tags, "tags");
             Validate.NotNull(point.Fields, "fields");
 
             var tags = String.Join(",", point.Tags.Select(t => String.Join("=", t.Key, EscapeTagValue(t.Value.ToString()))));
             var fields = String.Join(",", point.Fields.Select(t => FormatPointField(t.Key, t.Value)));
 
-            var key = String.IsNullOrEmpty(tags) ? EscapeNonTagValue(point.Measurement) : String.Join(",", EscapeNonTagValue(point.Measurement), tags);
+            var key = String.IsNullOrEmpty(tags) ? EscapeNonTagValue(point.Name) : String.Join(",", EscapeNonTagValue(point.Name), tags);
             var ts = point.Timestamp.HasValue ? point.Timestamp.Value.ToUnixTime().ToString() : string.Empty;
 
             var result = String.Format(GetLineTemplate(), key, fields, ts);
@@ -49,7 +49,7 @@ namespace InfluxData.Net.Infrastructure.Formatters
         {
             var s = new Serie
             {
-                Name = point.Measurement
+                Name = point.Name
             };
 
             foreach (var key in point.Tags.Keys.ToList())
