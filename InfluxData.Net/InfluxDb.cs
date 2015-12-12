@@ -63,7 +63,7 @@ namespace InfluxData.Net
 
         public async Task<List<Database>> ShowDatabasesAsync()
         {
-            var response = await _influxDbClient.ShowDatabases(NoErrorHandlers);
+            var response = await _influxDbClient.ShowDatabases();
             var queryResult = response.ReadAs<QueryResult>();
             var serie = queryResult.Results.Single().Series.Single();
             var databases = new List<Database>();
@@ -185,7 +185,7 @@ namespace InfluxData.Net
 
         public async Task<List<User>> DescribeClusterAdminsAsync()
         {
-            InfluxDbApiResponse response = await _influxDbClient.DescribeClusterAdmins(NoErrorHandlers);
+            InfluxDbApiResponse response = await _influxDbClient.DescribeClusterAdmins();
 
             return response.ReadAs<List<User>>();
         }
@@ -208,7 +208,7 @@ namespace InfluxData.Net
 
         public async Task<List<ShardSpace>> GetShardSpacesAsync()
         {
-            InfluxDbApiResponse response = await _influxDbClient.GetShardSpaces(NoErrorHandlers);
+            InfluxDbApiResponse response = await _influxDbClient.GetShardSpaces();
 
             return response.ReadAs<List<ShardSpace>>();
         }
@@ -268,7 +268,7 @@ namespace InfluxData.Net
         {
             var watch = Stopwatch.StartNew();
 
-            var response = await _influxDbClient.Ping(NoErrorHandlers);
+            var response = await _influxDbClient.Ping();
 
             watch.Stop();
 
@@ -282,26 +282,26 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> ForceRaftCompactionAsync()
         {
-            return await _influxDbClient.ForceRaftCompaction(NoErrorHandlers);
+            return await _influxDbClient.ForceRaftCompaction();
         }
 
         public async Task<List<string>> InterfacesAsync()
         {
-            InfluxDbApiResponse response = await _influxDbClient.Interfaces(NoErrorHandlers);
+            InfluxDbApiResponse response = await _influxDbClient.Interfaces();
 
             return response.ReadAs<List<string>>();
         }
 
         public async Task<bool> SyncAsync()
         {
-            InfluxDbApiResponse response = await _influxDbClient.Sync(NoErrorHandlers);
+            InfluxDbApiResponse response = await _influxDbClient.Sync();
 
             return response.ReadAs<bool>();
         }
 
         public async Task<List<Server>> ListServersAsync()
         {
-            InfluxDbApiResponse response = await _influxDbClient.ListServers(NoErrorHandlers);
+            InfluxDbApiResponse response = await _influxDbClient.ListServers();
 
             return response.ReadAs<List<Server>>();
         }

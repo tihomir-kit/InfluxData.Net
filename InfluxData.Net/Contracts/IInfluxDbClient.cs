@@ -26,7 +26,7 @@ namespace InfluxData.Net.Contracts
         /// <summary>Queries the list of databases.</summary>
         /// <param name="errorHandlers">The error handlers.</param>
         /// <returns></returns>
-        Task<InfluxDbApiResponse> ShowDatabases(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers);
+        Task<InfluxDbApiResponse> ShowDatabases();
 
         #endregion Database Management
 
@@ -71,7 +71,7 @@ namespace InfluxData.Net.Contracts
 
         Task<InfluxDbApiResponse> DeleteClusterAdmin(string name);
 
-        Task<InfluxDbApiResponse> DescribeClusterAdmins(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers);
+        Task<InfluxDbApiResponse> DescribeClusterAdmins();
 
         Task<InfluxDbApiResponse> UpdateClusterAdmin(User user, string name);
 
@@ -79,7 +79,7 @@ namespace InfluxData.Net.Contracts
 
         #region Sharding
 
-        Task<InfluxDbApiResponse> GetShardSpaces(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers);
+        Task<InfluxDbApiResponse> GetShardSpaces();
 
         Task<InfluxDbApiResponse> DropShardSpace(string dbName, string name);
 
@@ -103,15 +103,15 @@ namespace InfluxData.Net.Contracts
 
         #region Other
 
-        Task<InfluxDbApiResponse> Ping(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers);
+        Task<InfluxDbApiResponse> Ping();
 
-        Task<InfluxDbApiResponse> ForceRaftCompaction(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers);
+        Task<InfluxDbApiResponse> ForceRaftCompaction();
 
-        Task<InfluxDbApiResponse> Interfaces(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers);
+        Task<InfluxDbApiResponse> Interfaces();
 
-        Task<InfluxDbApiResponse> Sync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers);
+        Task<InfluxDbApiResponse> Sync();
 
-        Task<InfluxDbApiResponse> ListServers(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers);
+        Task<InfluxDbApiResponse> ListServers();
 
         Task<InfluxDbApiResponse> RemoveServers(int id);
 

@@ -43,7 +43,7 @@ namespace InfluxData.Net.Client
             return await RequestAsync(HttpMethod.Get, "query", null, BuildQueryParams(query));
         }
 
-        public async Task<InfluxDbApiResponse> ShowDatabases(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers)
+        public async Task<InfluxDbApiResponse> ShowDatabases()
         {
             return await RequestAsync(HttpMethod.Get, "query", null, BuildQueryParams(QueryStatements.ShowDatabases));
         }
@@ -133,7 +133,7 @@ namespace InfluxData.Net.Client
             throw new NotImplementedException();
         }
 
-        public Task<InfluxDbApiResponse> DescribeClusterAdmins(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers)
+        public Task<InfluxDbApiResponse> DescribeClusterAdmins()
         {
             throw new NotImplementedException();
         }
@@ -147,7 +147,7 @@ namespace InfluxData.Net.Client
 
         #region Sharding
 
-        public Task<InfluxDbApiResponse> GetShardSpaces(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers)
+        public Task<InfluxDbApiResponse> GetShardSpaces()
         {
             throw new NotImplementedException();
         }
@@ -198,27 +198,27 @@ namespace InfluxData.Net.Client
         /// <summary>Pings the server.</summary>
         /// <param name="errorHandlers">The error handlers.</param>
         /// <returns></returns>
-        public async Task<InfluxDbApiResponse> Ping(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers)
+        public async Task<InfluxDbApiResponse> Ping()
         {
             return await RequestAsync(HttpMethod.Get, "ping", null, null, false, true);
         }
 
-        public Task<InfluxDbApiResponse> ForceRaftCompaction(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers)
+        public Task<InfluxDbApiResponse> ForceRaftCompaction()
         {
             throw new NotImplementedException();
         }
 
-        public Task<InfluxDbApiResponse> Interfaces(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers)
+        public Task<InfluxDbApiResponse> Interfaces()
         {
             throw new NotImplementedException();
         }
 
-        public Task<InfluxDbApiResponse> Sync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers)
+        public Task<InfluxDbApiResponse> Sync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<InfluxDbApiResponse> ListServers(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers)
+        public Task<InfluxDbApiResponse> ListServers()
         {
             throw new NotImplementedException();
         }
