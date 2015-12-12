@@ -3,23 +3,23 @@ using InfluxData.Net.Enums;
 using InfluxData.Net.Infrastructure.Configuration;
 using InfluxData.Net.Infrastructure.Formatters;
 
-namespace InfluxData.Net.Client
+namespace InfluxData.Net.Infrastructure.Clients
 {
-    internal class InfluxDbClientV096 : InfluxDbClientV09x
+    internal class InfluxDbClientV095 : InfluxDbClientV09x
     {
-        public InfluxDbClientV096(InfluxDbClientConfiguration configuration) 
+        public InfluxDbClientV095(InfluxDbClientConfiguration configuration) 
             : base(configuration)
         {
         }
 
         public override IFormatter GetFormatter()
         {
-            return new FormatterV096();
+            return new FormatterV095();
         }
 
         public override InfluxVersion GetVersion()
         {
-            return InfluxVersion.v096;
+            return InfluxVersion.v095;
         }
     }
 }

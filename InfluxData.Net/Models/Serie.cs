@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace InfluxData.Net.Models
 {
+    /// <summary>
+    /// A class representing a time series point for db reads/queries
+    /// </summary>
     public class Serie
     {
         public Serie()
@@ -17,8 +20,11 @@ namespace InfluxData.Net.Models
         }
 
         public string Name { get; set; }
+
         public Dictionary<string, string> Tags { get; set; }
+
         public string[] Columns { get; set; }
+
         public object[][] Values { get; set; }
     }
 }

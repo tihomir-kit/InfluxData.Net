@@ -10,7 +10,7 @@ namespace InfluxData.Net.Models
     /// <summary>
     /// Represents an API continuous query object for CQ creation
     /// </summary>
-    public class CqRequest
+    public class ContinuousQuery
     {
         public string DbName { get; set; }
 

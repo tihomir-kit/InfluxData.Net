@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace InfluxData.Net.Models
+namespace InfluxData.Net.Models.Responses
 {
-    public class Database
+    public class DatabaseResponse
     {
         [JsonProperty("name")]
         public string Name { get; set; }

@@ -19,7 +19,9 @@ namespace InfluxData.Net.Models
         }
 
         public string Database { get; set; }
+
         public string RetentionPolicy { get; set; }
+
         public Point[] Points { get; set; }
 
         /// <summary>Gets the set of points in line protocol format.</summary>
@@ -29,5 +31,4 @@ namespace InfluxData.Net.Models
             return String.Join("\n", Points.Select(p => _formatter.PointToString(p)));
         }
     }
-
 }

@@ -16,7 +16,7 @@ using InfluxData.Net.Infrastructure.Influx;
 using InfluxData.Net.Enums;
 using InfluxData.Net.Infrastructure.Formatters;
 
-namespace InfluxData.Net.Client
+namespace InfluxData.Net.Infrastructure.Clients
 {
     // TODO: extract base class from this
 
@@ -78,7 +78,7 @@ namespace InfluxData.Net.Client
 
         #region Continuous Queries
 
-        public async Task<InfluxDbApiResponse> CreateContinuousQuery(CqRequest cqRequest)
+        public async Task<InfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery cqRequest)
         {
             // TODO: perhaps extract subquery and query building to formatter
             var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery, String.Join(",", cqRequest.Downsamplers), 

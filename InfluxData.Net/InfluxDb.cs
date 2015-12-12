@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using InfluxData.Net.Client;
 using InfluxData.Net.Contracts;
 using InfluxData.Net.Enums;
 using InfluxData.Net.Helpers;
@@ -10,6 +9,8 @@ using InfluxData.Net.Infrastructure.Configuration;
 using InfluxData.Net.Infrastructure.Influx;
 using InfluxData.Net.Infrastructure.Validation;
 using InfluxData.Net.Models;
+using InfluxData.Net.Models.Responses;
+using InfluxData.Net.Infrastructure.Clients;
 
 namespace InfluxData.Net
 {
@@ -75,16 +76,16 @@ namespace InfluxData.Net
             return await _influxDbClient.DropDatabase(dbName);
         }
 
-        public async Task<List<Database>> ShowDatabasesAsync()
+        public async Task<List<DatabaseResponse>> ShowDatabasesAsync()
         {
             var response = await _influxDbClient.ShowDatabases();
-            var queryResult = response.ReadAs<QueryResult>();
-            var serie = queryResult.Results.Single().Series.Single();
-            var databases = new List<Database>();
+            var queryResult = response.ReadAs<QueryResponse>();
+            var serie = queryResult.SeriesResult.Single().Series.Single();
+            var databases = new List<DatabaseResponse>();
 
             foreach (var value in serie.Values)
             {
-                databases.Add(new Database
+                databases.Add(new DatabaseResponse
                 {
                     Name = (string)value[0]
                 });
@@ -116,7 +117,7 @@ namespace InfluxData.Net
                 RetentionPolicy = retenionPolicy
             };
 
-            // TODO: handle precision (if set by client, it makes not difference because it gets overriden here)
+            // TODO: handle precision (if set by client, it makes no difference because it gets overriden here)
             var result = await _influxDbClient.Write(request, TimeUnitUtility.ToTimePrecision(TimeUnit.Milliseconds));
 
             return result;
@@ -125,20 +126,20 @@ namespace InfluxData.Net
         public async Task<List<Serie>> QueryAsync(string dbName, string query)
         {
             InfluxDbApiResponse response = await _influxDbClient.Query(dbName, query);
-            var queryResult = response.ReadAs<QueryResult>();
+            var queryResult = response.ReadAs<QueryResponse>();
 
             Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.Results, "queryResult.Results");
+            Validate.NotNull(queryResult.SeriesResult, "queryResult.Results");
 
             // Apparently a 200 OK can return an error in the results
             // https://github.com/influxdb/influxdb/pull/1813
-            var error = queryResult.Results.Single().Error;
+            var error = queryResult.SeriesResult.Single().Error;
             if (error != null)
             {
                 throw new InfluxDbApiException(System.Net.HttpStatusCode.BadRequest, error);
             }
 
-            var result = queryResult.Results.Single().Series;
+            var result = queryResult.SeriesResult.Single().Series;
 
             return result != null ? result.ToList() : new List<Serie>();
         }
@@ -147,7 +148,7 @@ namespace InfluxData.Net
 
         #region Continuous Queries
 
-        public async Task<InfluxDbApiResponse> CreateContinuousQueryAsync(CqRequest cqRequest)
+        public async Task<InfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery cqRequest)
         {
             return await _influxDbClient.CreateContinuousQuery(cqRequest);
         }
@@ -155,20 +156,20 @@ namespace InfluxData.Net
         public async Task<Serie> GetContinuousQueriesAsync(string dbName)
         {
             InfluxDbApiResponse response = await _influxDbClient.GetContinuousQueries(dbName);
-            var queryResult = response.ReadAs<QueryResult>();//.Results.Single().Series;
+            var queryResult = response.ReadAs<QueryResponse>();//.Results.Single().Series;
 
             Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.Results, "queryResult.Results");
+            Validate.NotNull(queryResult.SeriesResult, "queryResult.Results");
 
             // Apparently a 200 OK can return an error in the results
             // https://github.com/influxdb/influxdb/pull/1813
-            var error = queryResult.Results.Single().Error;
+            var error = queryResult.SeriesResult.Single().Error;
             if (error != null)
             {
                 throw new InfluxDbApiException(System.Net.HttpStatusCode.BadRequest, error);
             }
 
-            var series = queryResult.Results.Single().Series;
+            var series = queryResult.SeriesResult.Single().Series;
 
             return series != null ? series.Where(p => p.Name == dbName).FirstOrDefault() : new Serie();
         }

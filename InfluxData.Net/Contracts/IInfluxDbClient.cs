@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using InfluxData.Net.Client;
 using InfluxData.Net.Infrastructure.Influx;
 using InfluxData.Net.Models;
 using InfluxData.Net.Enums;
@@ -54,8 +53,7 @@ namespace InfluxData.Net.Contracts
 
         #region Continuous Queries
 
-        // TODO: perhaps extract params into CreateCqRequest
-        Task<InfluxDbApiResponse> CreateContinuousQuery(CqRequest cqRequest);
+        Task<InfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery cqRequest);
 
         Task<InfluxDbApiResponse> GetContinuousQueries(string dbName);
 

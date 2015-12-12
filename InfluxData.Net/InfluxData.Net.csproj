@@ -46,8 +46,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client\InfluxDbClientV096.cs" />
-    <Compile Include="Client\InfluxDbClientV095.cs" />
+    <Compile Include="Infrastructure\Clients\InfluxDbClientV096.cs" />
+    <Compile Include="Infrastructure\Clients\InfluxDbClientV095.cs" />
     <Compile Include="Constants\QueryStatements.cs" />
     <Compile Include="Constants\QueryParams.cs" />
     <Compile Include="Constants\RequestPaths.cs" />
@@ -65,18 +65,18 @@
     <Compile Include="Infrastructure\Formatters\FormatterV092.cs" />
     <Compile Include="Infrastructure\Formatters\FormatterBase.cs" />
     <Compile Include="Contracts\IFormatter.cs" />
-    <Compile Include="Client\InfluxDbClientV09x.cs" />
-    <Compile Include="Client\InfluxDbClientV092.cs" />
+    <Compile Include="Infrastructure\Clients\InfluxDbClientV09x.cs" />
+    <Compile Include="Infrastructure\Clients\InfluxDbClientV092.cs" />
     <Compile Include="Enums\InfluxVersion.cs" />
     <Compile Include="Models\Point.cs" />
-    <Compile Include="Models\QueryResult.cs" />
-    <Compile Include="Models\CqRequest.cs" />
+    <Compile Include="Models\Responses\QueryResponse.cs" />
+    <Compile Include="Models\ContinuousQuery.cs" />
     <Compile Include="Models\WriteRequest.cs" />
     <Compile Include="Helpers\ObjectExtensions.cs" />
     <Compile Include="Helpers\HttpUtility.cs" />
     <Compile Include="InfluxDb.cs" />
-    <Compile Include="Models\Database.cs" />
-    <Compile Include="Models\Pong.cs" />
+    <Compile Include="Models\Responses\DatabaseResponse.cs" />
+    <Compile Include="Models\Responses\Pong.cs" />
     <Compile Include="Models\Serie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\Stopwatch.cs" />

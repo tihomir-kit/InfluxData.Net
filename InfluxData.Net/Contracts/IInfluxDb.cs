@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using InfluxData.Net.Infrastructure.Influx;
 using InfluxData.Net.Models;
 using InfluxData.Net.Enums;
+using InfluxData.Net.Models.Responses;
 
 namespace InfluxData.Net.Contracts
 {
@@ -11,7 +12,6 @@ namespace InfluxData.Net.Contracts
 
     public interface IInfluxDb
     {
-        // TODO: check returns from queries and implement proper replies (same ones that come from the influxDb)
         #region Database
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace InfluxData.Net.Contracts
         /// Describe all available databases.
         /// </summary>
         /// <returns>A list of all Databases</returns>
-        Task<List<Database>> ShowDatabasesAsync();
+        Task<List<DatabaseResponse>> ShowDatabasesAsync();
 
         /// <summary>
         /// Delete a serie.
@@ -50,14 +50,14 @@ namespace InfluxData.Net.Contracts
         /// <param name="dbName">The name of the database to write to.</param>
         /// <param name="point">A serie <see cref="{Point}" />.</param>
         /// <param name="retenionPolicy">The retenion policy.</param>
-        /// <returns>TODO: comment</returns>
+        /// <returns></returns>
         Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default");
 
         /// <summary>Write multiple serie points to the given database.</summary>
         /// <param name="dbName">The name of the database to write to.</param>
         /// <param name="points">A serie <see cref="Array{Point}" />.</param>
         /// <param name="retenionPolicy">The retenion policy.</param>
-        /// <returns>TODO: comment</returns>
+        /// <returns></returns>
         Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default");
 
         /// <summary>Execute a query agains a database.</summary>
@@ -72,8 +72,7 @@ namespace InfluxData.Net.Contracts
 
         #region Continuous Queries
 
-        // TODO: perhaps extract params into CreateCqRequest
-        Task<InfluxDbApiResponse> CreateContinuousQueryAsync(CqRequest cqRequest);
+        Task<InfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery cqRequest);
 
         /// <summary>
         /// Describe all contious queries in a database.

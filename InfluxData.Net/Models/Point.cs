@@ -19,9 +19,13 @@ namespace InfluxData.Net.Models
         /// <see cref="https://influxdb.com/docs/v0.9/write_protocols/write_syntax.html"/>
         /// </summary>
         public string Name { get; set; }
+
         public Dictionary<string, object> Tags { get; set; }  // string, string?
+
         public Dictionary<string, object> Fields { get; set; }
+
         public TimeUnit Precision { get; set; }
+
         public DateTime? Timestamp { get; set; }
 
         public Point()

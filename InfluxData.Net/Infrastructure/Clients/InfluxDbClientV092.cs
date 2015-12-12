@@ -3,7 +3,7 @@ using InfluxData.Net.Enums;
 using InfluxData.Net.Infrastructure.Configuration;
 using InfluxData.Net.Infrastructure.Formatters;
 
-namespace InfluxData.Net.Client
+namespace InfluxData.Net.Infrastructure.Clients
 {
     internal class InfluxDbClientV092 : InfluxDbClientV09x
     {

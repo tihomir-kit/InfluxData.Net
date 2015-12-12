@@ -249,7 +249,7 @@ namespace InfluxData.Net.Tests
         [Test]
         public async Task CreateContinuousQuery_OnExistingMeasurement_ShouldReturnSuccess()
         {
-            CqRequest cq = MockCq();
+            ContinuousQuery cq = MockCq();
 
             var result = await _influx.CreateContinuousQueryAsync(cq);
             result.Should().NotBeNull();
@@ -365,9 +365,9 @@ namespace InfluxData.Net.Tests
             };
         }
 
-        private CqRequest MockCq()
+        private ContinuousQuery MockCq()
         {
-            return new CqRequest()
+            return new ContinuousQuery()
             {
                 DbName = _dbName,
                 CqName = "FakeCQ",
