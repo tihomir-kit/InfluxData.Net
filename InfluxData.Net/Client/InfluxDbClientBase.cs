@@ -24,15 +24,6 @@ namespace InfluxData.Net.Client
 
         private readonly InfluxDbClientConfiguration _configuration;
 
-        private readonly ApiResponseErrorHandlingDelegate _defaultErrorHandlingDelegate = (statusCode, body) =>
-        {
-            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
-            {
-                Debug.WriteLine(String.Format("[Error] {0} {1}", statusCode, body));
-                throw new InfluxDbApiException(statusCode, body);
-            }
-        };
-
         public InfluxDbClientBase(InfluxDbClientConfiguration configuration)
         {
             _configuration = configuration;
@@ -298,6 +289,8 @@ namespace InfluxData.Net.Client
                 }
             }
 
+            HandleIfErrorResponse(response.StatusCode, responseContent);
+
             Debug.WriteLine("[Response] {0}", response.ToJson());
             Debug.WriteLine("[ResponseData] {0}", responseContent);
 
@@ -364,19 +357,13 @@ namespace InfluxData.Net.Client
             return request;
         }
 
-        private void HandleIfErrorResponse(HttpStatusCode statusCode, string responseBody, IEnumerable<ApiResponseErrorHandlingDelegate> handlers)
+        private void HandleIfErrorResponse(HttpStatusCode statusCode, string responseBody)
         {
-            if (handlers == null)
+            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
             {
-                throw new ArgumentNullException("handlers");
+                Debug.WriteLine(String.Format("[Error] {0} {1}", statusCode, responseBody));
+                throw new InfluxDbApiException(statusCode, responseBody);
             }
-
-            foreach (ApiResponseErrorHandlingDelegate handler in handlers)
-            {
-                handler(statusCode, responseBody);
-            }
-
-            _defaultErrorHandlingDelegate(statusCode, responseBody);
         }
 
         #endregion Base
