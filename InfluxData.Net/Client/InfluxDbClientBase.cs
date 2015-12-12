@@ -194,8 +194,10 @@ namespace InfluxData.Net.Client
 
             HandleIfErrorResponse(response.StatusCode, responseContent);
 
+#if DEBUG
             Debug.WriteLine("[Response] {0}", response.ToJson());
             Debug.WriteLine("[ResponseData] {0}", responseContent);
+#endif
 
             return new InfluxDbApiResponse(response.StatusCode, responseContent);
         }
@@ -220,11 +222,13 @@ namespace InfluxData.Net.Client
             StringBuilder uri = BuildUri(path, extraParams, includeAuthToQuery);
             HttpRequestMessage request = PrepareRequest(method, content, uri);
 
+#if DEBUG
             Debug.WriteLine("[Request] {0}", request.ToJson());
             if (content != null)
             {
                 Debug.WriteLine("[RequestData] {0}", content.ReadAsStringAsync().Result);
             }
+#endif
 
             return await client.SendAsync(request, completionOption, cancellationToken);
         }
@@ -264,7 +268,9 @@ namespace InfluxData.Net.Client
         {
             if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
             {
+#if DEBUG
                 Debug.WriteLine(String.Format("[Error] {0} {1}", statusCode, responseBody));
+#endif
                 throw new InfluxDbApiException(statusCode, responseBody);
             }
         }
