@@ -80,7 +80,7 @@ namespace InfluxData.Net
         {
             var response = await _influxDbClient.ShowDatabases();
             var queryResult = response.ReadAs<QueryResponse>();
-            var serie = queryResult.SeriesResult.Single().Series.Single();
+            var serie = queryResult.Results.Single().Series.Single();
             var databases = new List<DatabaseResponse>();
 
             foreach (var value in serie.Values)
@@ -129,17 +129,17 @@ namespace InfluxData.Net
             var queryResult = response.ReadAs<QueryResponse>();
 
             Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.SeriesResult, "queryResult.Results");
+            Validate.NotNull(queryResult.Results, "queryResult.Results");
 
             // Apparently a 200 OK can return an error in the results
             // https://github.com/influxdb/influxdb/pull/1813
-            var error = queryResult.SeriesResult.Single().Error;
+            var error = queryResult.Results.Single().Error;
             if (error != null)
             {
                 throw new InfluxDbApiException(System.Net.HttpStatusCode.BadRequest, error);
             }
 
-            var result = queryResult.SeriesResult.Single().Series;
+            var result = queryResult.Results.Single().Series;
 
             return result != null ? result.ToList() : new List<Serie>();
         }
@@ -159,17 +159,17 @@ namespace InfluxData.Net
             var queryResult = response.ReadAs<QueryResponse>();//.Results.Single().Series;
 
             Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.SeriesResult, "queryResult.Results");
+            Validate.NotNull(queryResult.Results, "queryResult.Results");
 
             // Apparently a 200 OK can return an error in the results
             // https://github.com/influxdb/influxdb/pull/1813
-            var error = queryResult.SeriesResult.Single().Error;
+            var error = queryResult.Results.Single().Error;
             if (error != null)
             {
                 throw new InfluxDbApiException(System.Net.HttpStatusCode.BadRequest, error);
             }
 
-            var series = queryResult.SeriesResult.Single().Series;
+            var series = queryResult.Results.Single().Series;
 
             return series != null ? series.Where(p => p.Name == dbName).FirstOrDefault() : new Serie();
         }

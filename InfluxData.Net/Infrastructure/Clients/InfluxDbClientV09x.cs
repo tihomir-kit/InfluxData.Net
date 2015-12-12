@@ -172,7 +172,7 @@ namespace InfluxData.Net.Infrastructure.Clients
 
         private async Task<InfluxDbApiResponse> GetQueryAsync(Dictionary<string, string> requestParams)
         {
-            return await GetQueryAsync(requestParams: requestParams);
+            return await GetQueryAsync(null, requestParams: requestParams);
         }
 
         private async Task<InfluxDbApiResponse> GetQueryAsync(

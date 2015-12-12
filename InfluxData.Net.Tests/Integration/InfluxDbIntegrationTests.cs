@@ -14,7 +14,7 @@ using InfluxData.Net.Enums;
 
 namespace InfluxData.Net.Tests
 {
-    public class InfluxDbIntegrationTests : TestBase
+    public class InfluxDbIntegrationTests : InfluxDbIntegrationTestsBase
     {
         private IInfluxDb _influx;
         private string _dbName = String.Empty;
@@ -49,10 +49,9 @@ namespace InfluxData.Net.Tests
             writeResponse.Result.Success.Should().BeTrue();
         }
 
-        private async void PurgeFakeDatabases()
+        private async Task PurgeFakeDatabases()
         {
-            var databasesResponse = _influx.ShowDatabasesAsync();
-            var dbs = databasesResponse.Result;
+            var dbs = await _influx.ShowDatabasesAsync();
 
             foreach (var db in dbs)
             {

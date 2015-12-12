@@ -79,9 +79,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InfluxDbIntegrationTests.cs" />
+    <Compile Include="Integration\InfluxDbIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestBase.cs" />
+    <Compile Include="Integration\InfluxDbIntegrationTestsBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
