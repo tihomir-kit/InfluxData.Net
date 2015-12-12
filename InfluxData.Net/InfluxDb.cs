@@ -6,7 +6,6 @@ using InfluxData.Net.Client;
 using InfluxData.Net.Contracts;
 using InfluxData.Net.Enums;
 using InfluxData.Net.Helpers;
-using InfluxData.Net.Infrastructure;
 using InfluxData.Net.Infrastructure.Configuration;
 using InfluxData.Net.Infrastructure.Influx;
 using InfluxData.Net.Infrastructure.Validation;
@@ -54,12 +53,12 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> CreateDatabaseAsync(string dbName)
         {
-            return await _influxDbClient.CreateDatabase(NoErrorHandlers, dbName);
+            return await _influxDbClient.CreateDatabase(dbName);
         }
 
         public async Task<InfluxDbApiResponse> DropDatabaseAsync(string dbName)
         {
-            return await _influxDbClient.DropDatabase(NoErrorHandlers, dbName);
+            return await _influxDbClient.DropDatabase(dbName);
         }
 
         public async Task<List<Database>> ShowDatabasesAsync()
@@ -99,14 +98,14 @@ namespace InfluxData.Net
             };
 
             // TODO: handle precision (if set by client, it makes not difference because it gets overriden here)
-            var result = await _influxDbClient.Write(NoErrorHandlers, request, ToTimePrecision(TimeUnit.Milliseconds));
+            var result = await _influxDbClient.Write(request, ToTimePrecision(TimeUnit.Milliseconds));
 
             return result;
         }
 
         public async Task<List<Serie>> QueryAsync(string database, string query)
         {
-            InfluxDbApiResponse response = await _influxDbClient.Query(NoErrorHandlers, database, query);
+            InfluxDbApiResponse response = await _influxDbClient.Query(database, query);
             var queryResult = response.ReadAs<QueryResult>();
 
             Validate.NotNull(queryResult, "queryResult");
@@ -131,12 +130,12 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> CreateContinuousQueryAsync(CqRequest cqRequest)
         {
-            return await _influxDbClient.CreateContinuousQuery(NoErrorHandlers, cqRequest);
+            return await _influxDbClient.CreateContinuousQuery(cqRequest);
         }
 
         public async Task<Serie> GetContinuousQueriesAsync(string dbName)
         {
-            InfluxDbApiResponse response = await _influxDbClient.GetContinuousQueries(NoErrorHandlers, dbName);
+            InfluxDbApiResponse response = await _influxDbClient.GetContinuousQueries(dbName);
             var queryResult = response.ReadAs<QueryResult>();//.Results.Single().Series;
 
             Validate.NotNull(queryResult, "queryResult");
@@ -157,7 +156,7 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
         {
-            return await _influxDbClient.DeleteContinuousQuery(NoErrorHandlers, dbName, cqName);
+            return await _influxDbClient.DeleteContinuousQuery(dbName, cqName);
         }
 
         #endregion Continuous Queries
@@ -166,7 +165,7 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> DropSeriesAsync(string database, string serieName)
         {
-            return await _influxDbClient.DropSeries(NoErrorHandlers, database, serieName);
+            return await _influxDbClient.DropSeries(database, serieName);
         }
 
         #endregion Series
@@ -176,12 +175,12 @@ namespace InfluxData.Net
         public async Task<InfluxDbApiResponse> CreateClusterAdminAsync(string username, string adminPassword)
         {
             var user = new User { Name = username, Password = adminPassword };
-            return await _influxDbClient.CreateClusterAdmin(NoErrorHandlers, user);
+            return await _influxDbClient.CreateClusterAdmin(user);
         }
 
         public async Task<InfluxDbApiResponse> DeleteClusterAdminAsync(string username)
         {
-            return await _influxDbClient.DeleteClusterAdmin(NoErrorHandlers, username);
+            return await _influxDbClient.DeleteClusterAdmin(username);
         }
 
         public async Task<List<User>> DescribeClusterAdminsAsync()
@@ -195,7 +194,7 @@ namespace InfluxData.Net
         {
             var user = new User { Name = username, Password = password };
 
-            return await _influxDbClient.UpdateClusterAdmin(NoErrorHandlers, user, username);
+            return await _influxDbClient.UpdateClusterAdmin(user, username);
         }
 
         #endregion Clustering
@@ -204,7 +203,7 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> CreateShardSpaceAsync(string database, ShardSpace shardSpace)
         {
-            return await _influxDbClient.CreateShardSpace(NoErrorHandlers, database, shardSpace);
+            return await _influxDbClient.CreateShardSpace(database, shardSpace);
         }
 
         public async Task<List<ShardSpace>> GetShardSpacesAsync()
@@ -216,7 +215,7 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> DropShardSpaceAsync(string database, string name)
         {
-            return await _influxDbClient.DropShardSpace(NoErrorHandlers, database, name);
+            return await _influxDbClient.DropShardSpace(database, name);
         }
 
         #endregion Sharding
@@ -227,17 +226,17 @@ namespace InfluxData.Net
         {
             var user = new User { Name = name, Password = password };
             user.SetPermissions(permissions);
-            return await _influxDbClient.CreateDatabaseUser(NoErrorHandlers, database, user);
+            return await _influxDbClient.CreateDatabaseUser(database, user);
         }
 
         public async Task<InfluxDbApiResponse> DeleteDatabaseUserAsync(string database, string name)
         {
-            return await _influxDbClient.DeleteDatabaseUser(NoErrorHandlers, database, name);
+            return await _influxDbClient.DeleteDatabaseUser(database, name);
         }
 
         public async Task<List<User>> DescribeDatabaseUsersAsync(string database)
         {
-            InfluxDbApiResponse response = await _influxDbClient.DescribeDatabaseUsers(NoErrorHandlers, database);
+            InfluxDbApiResponse response = await _influxDbClient.DescribeDatabaseUsers(database);
 
             return response.ReadAs<List<User>>();
         }
@@ -246,19 +245,19 @@ namespace InfluxData.Net
         {
             var user = new User { Name = name, Password = password };
             user.SetPermissions(permissions);
-            return await _influxDbClient.UpdateDatabaseUser(NoErrorHandlers, database, user, name);
+            return await _influxDbClient.UpdateDatabaseUser(database, user, name);
         }
 
         public async Task<InfluxDbApiResponse> AlterDatabasePrivilegeAsync(string database, string name, bool isAdmin, params string[] permissions)
         {
             var user = new User { Name = name, IsAdmin = isAdmin };
             user.SetPermissions(permissions);
-            return await _influxDbClient.UpdateDatabaseUser(NoErrorHandlers, database, user, name);
+            return await _influxDbClient.UpdateDatabaseUser(database, user, name);
         }
 
         public async Task<InfluxDbApiResponse> AuthenticateDatabaseUserAsync(string database, string user, string password)
         {
-            return await _influxDbClient.AuthenticateDatabaseUser(NoErrorHandlers, database, user, password);
+            return await _influxDbClient.AuthenticateDatabaseUser(database, user, password);
         }
 
         #endregion Users
@@ -309,7 +308,7 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> RemoveServersAsync(int id)
         {
-            return await _influxDbClient.RemoveServers(NoErrorHandlers, id);
+            return await _influxDbClient.RemoveServers(id);
         }
 
         public IFormatter GetFormatter()
