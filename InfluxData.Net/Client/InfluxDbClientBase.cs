@@ -44,9 +44,9 @@ namespace InfluxData.Net.Client
         /// <param name="errorHandlers">The error handlers.</param>
         /// <param name="database">The database.</param>
         /// <returns></returns>
-        public async Task<InfluxDbApiResponse> CreateDatabase(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, Database database)
+        public async Task<InfluxDbApiResponse> CreateDatabase(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string dbName)
         {
-            var query = String.Format(QueryStatements.CreateDatabase, database.Name);
+            var query = String.Format(QueryStatements.CreateDatabase, dbName);
             return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null, BuildQueryParams(query));
         }
 
@@ -274,6 +274,10 @@ namespace InfluxData.Net.Client
                 });
         }
 
+        #endregion Other
+
+        #region Base
+
         public virtual IFormatter GetFormatter()
         {
             return new FormatterBase();
@@ -283,10 +287,6 @@ namespace InfluxData.Net.Client
         {
             return InfluxVersion.v09x;
         }
-
-        #endregion Other
-
-        #region Base
 
         private HttpClient GetHttpClient()
         {

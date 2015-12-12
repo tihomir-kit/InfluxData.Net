@@ -9,15 +9,15 @@ namespace InfluxData.Net.Contracts
 {
     internal interface IInfluxDbClient
     {
-        #region Database
+        #region Database Management
 
-        Task<InfluxDbApiResponse> CreateDatabase(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, Database database);
+        Task<InfluxDbApiResponse> CreateDatabase(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string dbName);
 
-        Task<InfluxDbApiResponse> DropDatabase(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string name);
+        Task<InfluxDbApiResponse> DropDatabase(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string dbName);
 
         Task<InfluxDbApiResponse> ShowDatabases(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers);
 
-        #endregion Database
+        #endregion Database Management
 
         #region Basic Querying
 
