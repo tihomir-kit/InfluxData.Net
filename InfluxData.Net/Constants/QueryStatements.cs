@@ -2,32 +2,32 @@
 {
     internal static class QueryStatements
     {
-        internal const string CreateDatabase = "create database \"{0}\"";
-        internal const string ShowDatabases = "show databases";
-        internal const string DropDatabase = "drop database \"{0}\"";
+        internal const string CreateDatabase = "CREATE DATABASE \"{0}\"";
+        internal const string ShowDatabases = "SHOW DATABASES";
+        internal const string DropDatabase = "DROP DATABASE \"{0}\"";
 
-        internal const string CreateContinuousQuery = "create continuous query {0} on {1} begin {2} end;";
-        internal const string CreateContinuousQuerySelect = "select {0} into {1} from {2} group by time({3})";
-        internal const string ShowContinuousQueries = "show continuous queries";
-        internal const string DropContinuousQuery = "drop continuous query {0} on {1}";
+        internal const string CreateContinuousQuery = "CREATE CONTINUOUS QUERY {0} ON {1} BEGIN {2} END;";
+        internal const string CreateContinuousQuerySubQuery = "SELECT {0} INTO \"{1}\" FROM {2} GROUP BY TIME({3})";
+        internal const string ShowContinuousQueries = "SHOW CONTINUOUS QUERIES";
+        internal const string DropContinuousQuery = "DROP CONTINUOUS QUERY {0} ON {1}";
 
-        internal const string AlterRetentionPolicy = "alter retention policy {0} on {1} {2} {3} {4} {5}";
-        internal const string CreateRetentionPolicy = "create retention policy \"{0}\" on {1} {2} {3} {4} {5}";
-        internal const string CreateUser = "create user {0} with password {1} {2}";
-        internal const string DropMeasurement = "drop measurement \"{0}\"";
-        internal const string DropRetentionPolicy = "drop retention policy \"{0}\" on {1}";
-        internal const string DropSeries = "drop series from \"{0}\"";
-        internal const string DropUser = "drop user {0}";
-        internal const string Grant = "grant {0} on {1} to {2}";
-        internal const string GrantAll = "grant all to {0}";
-        internal const string Revoke = "revoke {0} on {1} from {2}";
-        internal const string RevokeAll = "revoke all privleges from {0}";
-        internal const string ShowFieldKeys = "show field keys {0} {1}";
-        internal const string ShowMeasurements = "show measurements";
-        internal const string ShowRetentionPolicies = "show retention policies {0}";
-        internal const string ShowSeries = "show series";
-        internal const string ShowTagKeys = "show tag keys";
-        internal const string ShowTagValues = "show tag values";
-        internal const string ShowUsers = "show users";
+        internal const string AlterRetentionPolicy = "ALTER RETENTION POLICY {0} ON {1} {2} {3} {4} {5}";
+        internal const string CreateRetentionPolicy = "CREATE RETENTION POLICY \"{0}\" ON {1} {2} {3} {4} {5}";
+        internal const string CreateUser = "CREATE USER {0} WITH PASSWORD {1} {2}";
+        internal const string DropMeasurement = "DROP MEASUREMENT \"{0}\"";
+        internal const string DropRetentionPolicy = "DROP RETENTION POLICY \"{0}\" ON {1}";
+        internal const string DropSeries = "DROP SERIES FROM \"{0}\"";
+        internal const string DropUser = "DROP USER {0}";
+        internal const string Grant = "GRANT {0} ON {1} to {2}";
+        internal const string GrantAll = "GRANT ALL TO {0}";
+        internal const string Revoke = "REVOKE {0} ON {1} FROM {2}";
+        internal const string RevokeAll = "REVOKE ALL PRIVILAGES FROM {0}";
+        internal const string ShowFieldKeys = "SHOW FIELD KEYS {0} {1}";
+        internal const string ShowMeasurements = "SHOW MEASUREMENTS";
+        internal const string ShowRetentionPolicies = "SHOW RETENTION POLICIES {0}";
+        internal const string ShowSeries = "SHOW SERIES";
+        internal const string ShowTagKeys = "SHOW TAG KEYS";
+        internal const string ShowTagValues = "SHOW TAG VALUES";
+        internal const string ShowUsers = "SHOW USERS";
     }
 }

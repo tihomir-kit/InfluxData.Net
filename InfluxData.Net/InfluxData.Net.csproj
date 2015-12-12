@@ -50,6 +50,7 @@
     <Compile Include="Client\InfluxDbClientV095.cs" />
     <Compile Include="Constants\QueryStatements.cs" />
     <Compile Include="Constants\QueryParams.cs" />
+    <Compile Include="Enums\FillType.cs" />
     <Compile Include="Infrastructure\Formatters\FormatterV096.cs" />
     <Compile Include="Infrastructure\Formatters\FormatterV095.cs" />
     <Compile Include="Infrastructure\Validation\Validate.cs" />
@@ -65,11 +66,11 @@
     <Compile Include="Infrastructure\Formatters\FormatterBase.cs" />
     <Compile Include="Contracts\IFormatter.cs" />
     <Compile Include="Client\InfluxDbClientBase.cs" />
-    <Compile Include="Client\InfluxDbClientAutoVersion.cs" />
     <Compile Include="Client\InfluxDbClientV092.cs" />
     <Compile Include="Enums\InfluxVersion.cs" />
     <Compile Include="Models\Point.cs" />
     <Compile Include="Models\QueryResult.cs" />
+    <Compile Include="Models\CqRequest.cs" />
     <Compile Include="Models\WriteRequest.cs" />
     <Compile Include="Helpers\ObjectExtensions.cs" />
     <Compile Include="Helpers\HttpUtility.cs" />

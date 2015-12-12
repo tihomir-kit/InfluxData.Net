@@ -14,7 +14,7 @@ using InfluxData.Net.Enums;
 
 namespace InfluxData.Net.Tests
 {
-    public class InfluxDbTests : TestBase
+    public class InfluxDbIntegrationTests : TestBase
     {
         private IInfluxDb _influx;
         private string _dbName = String.Empty;
@@ -26,7 +26,7 @@ namespace InfluxData.Net.Tests
         {
             InfluxVersion influxVersion;
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out influxVersion))
-                influxVersion = InfluxVersion.Auto;
+                influxVersion = InfluxVersion.v096;
 
             _influx = new InfluxDb(
                 ConfigurationManager.AppSettings.Get("url"),
@@ -246,6 +246,42 @@ namespace InfluxData.Net.Tests
             actual.Should().Be(expected);
         }
 
+        [Test]
+        public async Task CreateContinuousQuery_OnExistingMeasurement_ShouldReturnSuccess()
+        {
+            CqRequest cq = MockCq();
+
+            var result = await _influx.CreateContinuousQueryAsync(cq);
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
+        }
+
+        [Test]
+        public void CreateContinuousQuery_OnNonExistingMeasurement_ShouldThrow()
+        {
+        }
+
+        [Test]
+        public async Task DeleteContinuousQuery_OnExistingCq_ShouldReturnSuccess()
+        {
+            var cq = MockCq();
+            await _influx.CreateContinuousQueryAsync(cq);
+
+            var result = await _influx.DeleteContinuousQueryAsync(_dbName, "FakeCQ");
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task GetContinuousQueries_OnExistingCq_ShouldReturnCqs()
+        {
+            var cq = MockCq();
+            await _influx.CreateContinuousQueryAsync(cq);
+
+            var result = await _influx.GetContinuousQueriesAsync(_dbName);
+            result.Should().NotBeNull();
+        }
+
         private async Task<List<Serie>> Query(Serie expected)
         {
             // 0.9.3 need 'group by' to retrieve tags as tags when using select *
@@ -326,6 +362,19 @@ namespace InfluxData.Net.Tests
                 { "field_decimal", (decimal)rnd.NextDouble() },
                 { "field_float", (float)rnd.NextDouble() },
                 { "field_datetime", DateTime.Now }
+            };
+        }
+
+        private CqRequest MockCq()
+        {
+            return new CqRequest()
+            {
+                DbName = _dbName,
+                CqName = "FakeCQ",
+                Downsamplers = new List<string>() { "AVG(field_int)" },
+                DsSerieName = String.Format("{0}.5s", _fakeMeasurementPrefix),
+                SourceSerieName = _fakeMeasurementPrefix,
+                Interval = "5s"
             };
         }
     }

@@ -31,9 +31,6 @@ namespace InfluxData.Net
         {
             switch (influxDbClientConfiguration.InfluxVersion)
             {
-                case InfluxVersion.Auto:
-                    _influxDbClient = new InfluxDbClientAutoVersion(influxDbClientConfiguration);
-                    break;
                 case InfluxVersion.v09x:
                     _influxDbClient = new InfluxDbClientBase(influxDbClientConfiguration);
                     break;
@@ -142,7 +139,6 @@ namespace InfluxData.Net
         public async Task<List<Serie>> QueryAsync(string database, string query)
         {
             InfluxDbApiResponse response = await _influxDbClient.Query(NoErrorHandlers, database, query);
-
             var queryResult = response.ReadAs<QueryResult>();
 
             Validate.NotNull(queryResult, "queryResult");
@@ -165,27 +161,46 @@ namespace InfluxData.Net
 
         #region Continuous Queries
 
+        public async Task<InfluxDbApiResponse> CreateContinuousQueryAsync(CqRequest cqRequest)
+        {
+            return await _influxDbClient.CreateContinuousQuery(NoErrorHandlers, cqRequest);
+        }
+
         /// <summary>
         /// Describe all contious queries in a database.
         /// </summary>
-        /// <param name="database">The name of the database for which all continuous queries should be described.</param>
+        /// <param name="dbName">The name of the database for which all continuous queries should be described.</param>
         /// <returns>A list of all contious queries.</returns>
-        public async Task<List<ContinuousQuery>> DescribeContinuousQueriesAsync(string database)
+        public async Task<Serie> GetContinuousQueriesAsync(string dbName)
         {
-            InfluxDbApiResponse response = await _influxDbClient.GetContinuousQueries(NoErrorHandlers, database);
+            InfluxDbApiResponse response = await _influxDbClient.GetContinuousQueries(NoErrorHandlers, dbName);
+            var queryResult = response.ReadAs<QueryResult>();//.Results.Single().Series;
 
-            return response.ReadAs<List<ContinuousQuery>>();
+            Validate.NotNull(queryResult, "queryResult");
+            Validate.NotNull(queryResult.Results, "queryResult.Results");
+
+            // Apparently a 200 OK can return an error in the results
+            // https://github.com/influxdb/influxdb/pull/1813
+            var error = queryResult.Results.Single().Error;
+            if (error != null)
+            {
+                throw new InfluxDbApiException(System.Net.HttpStatusCode.BadRequest, error);
+            }
+
+            var series = queryResult.Results.Single().Series;
+
+            return series != null ? series.Where(p => p.Name == dbName).FirstOrDefault() : new Serie();
         }
 
         /// <summary>
         /// Delete a continous query.
         /// </summary>
-        /// <param name="database">The name of the database for which this query should be deleted.</param>
-        /// <param name="id">The id of the query.</param>
+        /// <param name="dbName">The name of the database for which this query should be deleted.</param>
+        /// <param name="cqName">The id of the query.</param>
         /// <returns></returns>
-        public async Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string database, int id)
+        public async Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
         {
-            return await _influxDbClient.DeleteContinuousQuery(NoErrorHandlers, database, id);
+            return await _influxDbClient.DeleteContinuousQuery(NoErrorHandlers, dbName, cqName);
         }
 
         #endregion Continuous Queries

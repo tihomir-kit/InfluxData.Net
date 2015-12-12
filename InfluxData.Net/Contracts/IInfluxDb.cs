@@ -9,6 +9,7 @@ namespace InfluxData.Net.Contracts
 {
     public interface IInfluxDb
     {
+        // TODO: check returns from queries and implement proper replies (same ones that come from the influxDb)
         #region Database
 
         Task<InfluxDbApiResponse> CreateDatabaseAsync(string name);
@@ -31,9 +32,12 @@ namespace InfluxData.Net.Contracts
 
         #region Continuous Queries
 
-        Task<List<ContinuousQuery>> DescribeContinuousQueriesAsync(string database);
+        // TODO: perhaps extract params into CreateCqRequest
+        Task<InfluxDbApiResponse> CreateContinuousQueryAsync(CqRequest cqRequest);
 
-        Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string database, int id);
+        Task<Serie> GetContinuousQueriesAsync(string dbName);
+
+        Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName);
 
         #endregion Continuous Queries
 

@@ -46,8 +46,8 @@ namespace InfluxData.Net.Client
         /// <returns></returns>
         public async Task<InfluxDbApiResponse> CreateDatabase(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, Database database)
         {
-            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null,
-                new Dictionary<string, string> { { QueryParams.Query, String.Format(QueryStatements.CreateDatabase, database.Name) } });
+            var query = String.Format(QueryStatements.CreateDatabase, database.Name);
+            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null, BuildQueryParams(query));
         }
 
         /// <summary>Drops the database.</summary>
@@ -56,8 +56,8 @@ namespace InfluxData.Net.Client
         /// <returns></returns>
         public async Task<InfluxDbApiResponse> DropDatabase(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string name)
         {
-            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null,
-                new Dictionary<string, string> { { QueryParams.Query, String.Format(QueryStatements.DropDatabase, name) } });
+            var query = String.Format(QueryStatements.DropDatabase, name);
+            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null, BuildQueryParams(query));
         }
 
         /// <summary>Queries the list of databases.</summary>
@@ -65,8 +65,7 @@ namespace InfluxData.Net.Client
         /// <returns></returns>
         public async Task<InfluxDbApiResponse> ShowDatabases(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers)
         {
-            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null,
-                new Dictionary<string, string> { { QueryParams.Query, QueryStatements.ShowDatabases } });
+            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null, BuildQueryParams(QueryStatements.ShowDatabases));
         }
 
         #endregion Database
@@ -93,43 +92,47 @@ namespace InfluxData.Net.Client
 
         /// <summary>Queries the endpoint.</summary>
         /// <param name="errorHandlers">The error handlers.</param>
-        /// <param name="name">The name.</param>
+        /// <param name="dbName">The name.</param>
         /// <param name="query">The query.</param>
         /// <returns></returns>
-        public async Task<InfluxDbApiResponse> Query(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string name, string query)
+        public async Task<InfluxDbApiResponse> Query(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string dbName, string query)
         {
-            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null,
-                new Dictionary<string, string>
-                {
-                    {QueryParams.Db, name},
-                    {QueryParams.Query, query}
-                });
+            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null, BuildQueryParams(dbName, query));
         }
 
         #endregion Basic Querying
 
         #region Continuous Queries
 
-        public async Task<InfluxDbApiResponse> CreateContinuousQueriey(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, 
-            string database, 
-            string cqName,
-            IList<string> downsamplers,
-            string downsampledSerieName,
-            string timespan,
-            IList<string> tags = null
-            )
+        public async Task<InfluxDbApiResponse> CreateContinuousQuery(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, CqRequest cqRequest)
         {
-            throw new NotImplementedException();
+            var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery, String.Join(",", cqRequest.Downsamplers), 
+                cqRequest.DsSerieName, cqRequest.SourceSerieName, cqRequest.Interval);
+
+            if (cqRequest.Tags != null)
+            {
+                var tagsString = String.Join(",", cqRequest.Tags);
+                if (!String.IsNullOrEmpty(tagsString))
+                    String.Join(", ", subQuery, tagsString);
+            }
+
+            if (cqRequest.FillType != FillType.Null)
+                String.Join(" ", subQuery, cqRequest.FillType.ToString().ToLower());
+
+            var query = String.Format(QueryStatements.CreateContinuousQuery, cqRequest.CqName, cqRequest.DbName, subQuery);
+
+            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null, BuildQueryParams(cqRequest.DbName, query));
         }
 
-        public Task<InfluxDbApiResponse> GetContinuousQueries(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string database)
+        public async Task<InfluxDbApiResponse> GetContinuousQueries(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string dbName)
         {
-            throw new NotImplementedException();
+            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null, BuildQueryParams(dbName, QueryStatements.ShowContinuousQueries));
         }
 
-        public Task<InfluxDbApiResponse> DeleteContinuousQuery(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string database, int id)
+        public async Task<InfluxDbApiResponse> DeleteContinuousQuery(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, string dbName, string cqName)
         {
-            throw new NotImplementedException();
+            var query = String.Format(QueryStatements.DropContinuousQuery, cqName, dbName);
+            return await RequestAsync(errorHandlers, HttpMethod.Get, "query", null, BuildQueryParams(dbName, query));
         }
 
         #endregion Continuous Queries
@@ -403,10 +406,31 @@ namespace InfluxData.Net.Client
             {
                 handler(statusCode, responseBody);
             }
+
             _defaultErrorHandlingDelegate(statusCode, responseBody);
         }
 
         #endregion Base
+
+
+        // TODO: extract somewhere else this helper method
+        private Dictionary<string, string> BuildQueryParams(string query)
+        {
+            return new Dictionary<string, string>
+            {
+                {QueryParams.Query, query}
+            };
+        }
+
+        // TODO: extract somewhere else this helper method
+        private Dictionary<string, string> BuildQueryParams(string dbName, string query)
+        {
+            return new Dictionary<string, string>
+            {
+                {QueryParams.Db, dbName},
+                {QueryParams.Query, query}
+            };
+        }
     }
 
     internal delegate void ApiResponseErrorHandlingDelegate(HttpStatusCode statusCode, string responseBody);
