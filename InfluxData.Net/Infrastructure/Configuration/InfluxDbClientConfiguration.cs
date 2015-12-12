@@ -21,6 +21,7 @@ namespace InfluxData.Net.Infrastructure.Configuration
             Validate.NotNull(endpoint, "Endpoint may not be null or empty.");
             Validate.NotNullOrEmpty(password, "Password may not be null or empty.");
             Validate.NotNullOrEmpty(username, "Username may not be null or empty.");
+
             Username = username;
             Password = password;
             InfluxVersion = influxVersion;

@@ -2,7 +2,7 @@ namespace InfluxData.Net.Enums
 {
     public enum InfluxVersion
     {
-        v09x,
+        Latest,
         v096,
         v095,
         v092,

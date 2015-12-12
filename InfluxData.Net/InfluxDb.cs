@@ -30,8 +30,8 @@ namespace InfluxData.Net
         {
             switch (influxDbClientConfiguration.InfluxVersion)
             {
-                case InfluxVersion.v09x:
-                    _influxDbClient = new InfluxDbClientBase(influxDbClientConfiguration);
+                case InfluxVersion.Latest:
+                    _influxDbClient = new InfluxDbClientV09x(influxDbClientConfiguration);
                     break;
                 case InfluxVersion.v096:
                     _influxDbClient = new InfluxDbClientV096(influxDbClientConfiguration);
@@ -43,11 +43,25 @@ namespace InfluxData.Net
                     _influxDbClient = new InfluxDbClientV092(influxDbClientConfiguration);
                     break;
                 case InfluxVersion.v08x:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("InfluxDB v0.8.x is not supported by InfluxData.Net library.");
                 default:
                     throw new ArgumentOutOfRangeException("influxDbClientConfiguration", String.Format("Unknown version {0}.", influxDbClientConfiguration));
             }
         }
+
+        #region Base
+
+        public IFormatter GetFormatter()
+        {
+            return _influxDbClient.GetFormatter();
+        }
+
+        public InfluxVersion GetClientVersion()
+        {
+            return _influxDbClient.GetVersion();
+        }
+
+        #endregion Base
 
         #region Database
 
@@ -79,33 +93,38 @@ namespace InfluxData.Net
             return databases;
         }
 
+        public async Task<InfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName)
+        {
+            return await _influxDbClient.DropSeries(dbName, serieName);
+        }
+
         #endregion Database
 
         #region Basic Querying
 
-        public async Task<InfluxDbApiWriteResponse> WriteAsync(string database, Point point, string retenionPolicy = "default")
+        public async Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default")
         {
-            return await WriteAsync(database, new[] { point }, retenionPolicy);
+            return await WriteAsync(dbName, new[] { point }, retenionPolicy);
         }
 
-        public async Task<InfluxDbApiWriteResponse> WriteAsync(string database, Point[] points, string retenionPolicy = "default")
+        public async Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default")
         {
             var request = new WriteRequest(_influxDbClient.GetFormatter())
             {
-                Database = database,
+                Database = dbName,
                 Points = points,
                 RetentionPolicy = retenionPolicy
             };
 
             // TODO: handle precision (if set by client, it makes not difference because it gets overriden here)
-            var result = await _influxDbClient.Write(request, ToTimePrecision(TimeUnit.Milliseconds));
+            var result = await _influxDbClient.Write(request, TimeUnitUtility.ToTimePrecision(TimeUnit.Milliseconds));
 
             return result;
         }
 
-        public async Task<List<Serie>> QueryAsync(string database, string query)
+        public async Task<List<Serie>> QueryAsync(string dbName, string query)
         {
-            InfluxDbApiResponse response = await _influxDbClient.Query(database, query);
+            InfluxDbApiResponse response = await _influxDbClient.Query(dbName, query);
             var queryResult = response.ReadAs<QueryResult>();
 
             Validate.NotNull(queryResult, "queryResult");
@@ -123,7 +142,7 @@ namespace InfluxData.Net
 
             return result != null ? result.ToList() : new List<Serie>();
         }
-
+        
         #endregion Basic Querying
 
         #region Continuous Queries
@@ -161,15 +180,6 @@ namespace InfluxData.Net
 
         #endregion Continuous Queries
 
-        #region Series
-
-        public async Task<InfluxDbApiResponse> DropSeriesAsync(string database, string serieName)
-        {
-            return await _influxDbClient.DropSeries(database, serieName);
-        }
-
-        #endregion Serie
-
         #region Other
 
         public async Task<Pong> PingAsync()
@@ -188,35 +198,6 @@ namespace InfluxData.Net
             };
         }
 
-        public IFormatter GetFormatter()
-        {
-            return _influxDbClient.GetFormatter();
-        }
-
-        public InfluxVersion GetClientVersion()
-        {
-            return _influxDbClient.GetVersion();
-        }
-
-        #endregion Other
-
-        #region Helpers
-
-        private string ToTimePrecision(TimeUnit timeUnit)
-        {
-            switch (timeUnit)
-            {
-                case TimeUnit.Seconds:
-                    return "s";
-                case TimeUnit.Milliseconds:
-                    return "ms";
-                case TimeUnit.Microseconds:
-                    return "u";
-                default:
-                    throw new ArgumentException("time precision must be " + TimeUnit.Seconds + ", " + TimeUnit.Milliseconds + " or " + TimeUnit.Microseconds);
-            }
-        }
-
-        #endregion Helpers
+        #endregion Othe
     }
 }

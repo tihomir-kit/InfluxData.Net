@@ -7,6 +7,8 @@ using InfluxData.Net.Enums;
 
 namespace InfluxData.Net.Contracts
 {
+    // NOTE: potential "regions/classes": https://docs.influxdata.com/influxdb/v0.9/query_language/
+
     public interface IInfluxDb
     {
         // TODO: check returns from queries and implement proper replies (same ones that come from the influxDb)
@@ -32,31 +34,39 @@ namespace InfluxData.Net.Contracts
         /// <returns>A list of all Databases</returns>
         Task<List<Database>> ShowDatabasesAsync();
 
+        /// <summary>
+        /// Delete a serie.
+        /// </summary>
+        /// <param name="dbName">The database in which the given serie should be deleted.</param>
+        /// <param name="serieName">The name of the serie.</param>
+        /// <returns></returns>
+        Task<InfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName);
+
         #endregion Database
 
         #region Basic Querying
 
         /// <summary>Write a single serie to the given database.</summary>
-        /// <param name="database">The name of the database to write to.</param>
+        /// <param name="dbName">The name of the database to write to.</param>
         /// <param name="point">A serie <see cref="{Point}" />.</param>
         /// <param name="retenionPolicy">The retenion policy.</param>
         /// <returns>TODO: comment</returns>
-        Task<InfluxDbApiWriteResponse> WriteAsync(string database, Point point, string retenionPolicy = "default");
+        Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default");
 
         /// <summary>Write multiple serie points to the given database.</summary>
-        /// <param name="database">The name of the database to write to.</param>
+        /// <param name="dbName">The name of the database to write to.</param>
         /// <param name="points">A serie <see cref="Array{Point}" />.</param>
         /// <param name="retenionPolicy">The retenion policy.</param>
         /// <returns>TODO: comment</returns>
-        Task<InfluxDbApiWriteResponse> WriteAsync(string database, Point[] points, string retenionPolicy = "default");
+        Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default");
 
         /// <summary>Execute a query agains a database.</summary>
-        /// <param name="database">The name of the database.</param>
+        /// <param name="dbName">The name of the database.</param>
         /// <param name="query">The query to execute. For language specification please see
         /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
         /// <returns>A list of Series which matched the query.</returns>
         /// <exception cref="InfluxDbApiException"></exception>
-        Task<List<Serie>> QueryAsync(string database, string query);
+        Task<List<Serie>> QueryAsync(string dbName, string query);
 
         #endregion Basic Querying
 
@@ -81,18 +91,6 @@ namespace InfluxData.Net.Contracts
         Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName);
 
         #endregion Continuous Queries
-
-        #region Series
-
-        /// <summary>
-        /// Delete a serie.
-        /// </summary>
-        /// <param name="database">The database in which the given serie should be deleted.</param>
-        /// <param name="serieName">The name of the serie.</param>
-        /// <returns></returns>
-        Task<InfluxDbApiResponse> DropSeriesAsync(string database, string serieName);
-
-        #endregion Series
 
         #region Other
 

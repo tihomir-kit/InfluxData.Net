@@ -18,13 +18,15 @@ using InfluxData.Net.Infrastructure.Formatters;
 
 namespace InfluxData.Net.Client
 {
-    internal class InfluxDbClientBase : IInfluxDbClient
+    // TODO: extract base class from this
+
+    internal class InfluxDbClientV09x : IInfluxDbClient
     {
         private const string UserAgent = "InfluxData.Net";
 
         private readonly InfluxDbClientConfiguration _configuration;
 
-        public InfluxDbClientBase(InfluxDbClientConfiguration configuration)
+        public InfluxDbClientV09x(InfluxDbClientConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -34,40 +36,42 @@ namespace InfluxData.Net.Client
         public async Task<InfluxDbApiResponse> CreateDatabase(string dbName)
         {
             var query = String.Format(QueryStatements.CreateDatabase, dbName);
-            return await RequestAsync(HttpMethod.Get, "query", null, BuildQueryParams(query));
+            return await GetQueryAsync(requestParams: BuildQueryRequestParams(query));
         }
 
-        public async Task<InfluxDbApiResponse> DropDatabase(string name)
+        public async Task<InfluxDbApiResponse> DropDatabase(string dbName)
         {
-            var query = String.Format(QueryStatements.DropDatabase, name);
-            return await RequestAsync(HttpMethod.Get, "query", null, BuildQueryParams(query));
+            var query = String.Format(QueryStatements.DropDatabase, dbName);
+            return await GetQueryAsync(requestParams: BuildQueryRequestParams(query));
         }
 
         public async Task<InfluxDbApiResponse> ShowDatabases()
         {
-            return await RequestAsync(HttpMethod.Get, "query", null, BuildQueryParams(QueryStatements.ShowDatabases));
+            return await GetQueryAsync(requestParams: BuildQueryRequestParams(QueryStatements.ShowDatabases));
+        }
+
+        public async Task<InfluxDbApiResponse> DropSeries(string dbName, string serieName)
+        {
+            var query = String.Format(QueryStatements.DropSeries, serieName);
+            return await GetQueryAsync(requestParams: BuildQueryRequestParams(query));
         }
 
         #endregion Database
 
         #region Basic Querying
 
-        public async Task<InfluxDbApiWriteResponse> Write(WriteRequest request, string timePrecision)
+        public async Task<InfluxDbApiWriteResponse> Write(WriteRequest writeRequest, string timePrecision)
         {
-            var content = new StringContent(request.GetLines(), Encoding.UTF8, "text/plain");
-            var result = await RequestAsync(HttpMethod.Post, "write", content,
-                new Dictionary<string, string>
-                {
-                    { QueryParams.Db, request.Database },
-                    { QueryParams.Precision, timePrecision }
-                });
+            var requestContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
+            var requestParams = BuildRequestParams(writeRequest.Database, QueryParams.Precision, timePrecision);
+            var result = await RequestAsync(HttpMethod.Post, RequestPaths.Write, requestContent, requestParams);
 
             return new InfluxDbApiWriteResponse(result.StatusCode, result.Body);
         }
 
         public async Task<InfluxDbApiResponse> Query(string dbName, string query)
         {
-            return await RequestAsync(HttpMethod.Get, "query", null, BuildQueryParams(dbName, query));
+            return await GetQueryAsync(requestParams: BuildQueryRequestParams(dbName, query));
         }
 
         #endregion Basic Querying
@@ -76,6 +80,7 @@ namespace InfluxData.Net.Client
 
         public async Task<InfluxDbApiResponse> CreateContinuousQuery(CqRequest cqRequest)
         {
+            // TODO: perhaps extract subquery and query building to formatter
             var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery, String.Join(",", cqRequest.Downsamplers), 
                 cqRequest.DsSerieName, cqRequest.SourceSerieName, cqRequest.Interval);
 
@@ -91,35 +96,21 @@ namespace InfluxData.Net.Client
 
             var query = String.Format(QueryStatements.CreateContinuousQuery, cqRequest.CqName, cqRequest.DbName, subQuery);
 
-            return await RequestAsync(HttpMethod.Get, "query", null, BuildQueryParams(cqRequest.DbName, query));
+            return await GetQueryAsync(requestParams: BuildQueryRequestParams(cqRequest.DbName, query));
         }
 
         public async Task<InfluxDbApiResponse> GetContinuousQueries(string dbName)
         {
-            return await RequestAsync(HttpMethod.Get, "query", null, BuildQueryParams(dbName, QueryStatements.ShowContinuousQueries));
+            return await GetQueryAsync(requestParams: BuildQueryRequestParams(dbName, QueryStatements.ShowContinuousQueries));
         }
 
         public async Task<InfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName)
         {
             var query = String.Format(QueryStatements.DropContinuousQuery, cqName, dbName);
-            return await RequestAsync(HttpMethod.Get, "query", null, BuildQueryParams(dbName, query));
+            return await GetQueryAsync(requestParams: BuildQueryRequestParams(dbName, query));
         }
 
         #endregion Continuous Queries
-
-        #region Series
-
-        public async Task<InfluxDbApiResponse> DropSeries(string database, string name)
-        {
-            return await RequestAsync(HttpMethod.Get, "query", null,
-                new Dictionary<string, string>
-                {
-                    { QueryParams.Db, database },
-                    { QueryParams.Query, String.Format(QueryStatements.DropSeries, name) }
-                });
-        }
-
-        #endregion Series
 
         #region Other
 
@@ -128,16 +119,14 @@ namespace InfluxData.Net.Client
         /// <returns></returns>
         public async Task<InfluxDbApiResponse> Ping()
         {
-            return await RequestAsync(HttpMethod.Get, "ping", null, null, false, true);
+            return await RequestAsync(HttpMethod.Get, RequestPaths.Ping, includeAuthToQuery: false, headerIsBody: true);
         }
 
         public async Task<InfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication)
         {
-            return await RequestAsync(HttpMethod.Get, "query", null,
-                new Dictionary<string, string>
-                {
-                    {QueryParams.Query, String.Format(QueryStatements.AlterRetentionPolicy, policyName, dbName, duration, replication) }
-                });
+            var requestParams = BuildQueryRequestParams(String.Format(QueryStatements.AlterRetentionPolicy, policyName, dbName, duration, replication));
+
+            return await GetQueryAsync(requestParams: requestParams);
         }
 
         #endregion Other
@@ -151,7 +140,7 @@ namespace InfluxData.Net.Client
 
         public virtual InfluxVersion GetVersion()
         {
-            return InfluxVersion.v09x;
+            return InfluxVersion.Latest;
         }
 
         private HttpClient GetHttpClient()
@@ -159,11 +148,47 @@ namespace InfluxData.Net.Client
             return _configuration.BuildHttpClient();
         }
 
+        private Dictionary<string, string> BuildQueryRequestParams(string query)
+        {
+            return new Dictionary<string, string>
+            {
+                { QueryParams.Query, query }
+            };
+        }
+
+        private Dictionary<string, string> BuildQueryRequestParams(string dbName, string query)
+        {
+            return BuildRequestParams(dbName, QueryParams.Query, query);
+        }
+
+        private Dictionary<string, string> BuildRequestParams(string dbName, string requestType, string query)
+        {
+            return new Dictionary<string, string>
+            {
+                { QueryParams.Db, dbName },
+                { requestType, query }
+            };
+        }
+
+        private async Task<InfluxDbApiResponse> GetQueryAsync(Dictionary<string, string> requestParams)
+        {
+            return await GetQueryAsync(requestParams: requestParams);
+        }
+
+        private async Task<InfluxDbApiResponse> GetQueryAsync(
+            HttpContent content = null,
+            Dictionary<string, string> requestParams = null,
+            bool includeAuthToQuery = true,
+            bool headerIsBody = false)
+        {
+            return await RequestAsync(HttpMethod.Get, RequestPaths.Query, content, requestParams, includeAuthToQuery, headerIsBody);
+        }
+
         private async Task<InfluxDbApiResponse> RequestAsync(
             HttpMethod method, 
             string path,
             HttpContent content = null,
-            Dictionary<string, string> extraParams = null,
+            Dictionary<string, string> requestParams = null,
             bool includeAuthToQuery = true,
             bool headerIsBody = false)
         {
@@ -173,7 +198,7 @@ namespace InfluxData.Net.Client
                 method,
                 path,
                 content,
-                extraParams,
+                requestParams,
                 includeAuthToQuery);
 
             string responseContent = String.Empty;
@@ -220,7 +245,7 @@ namespace InfluxData.Net.Client
             }
 
             StringBuilder uri = BuildUri(path, extraParams, includeAuthToQuery);
-            HttpRequestMessage request = PrepareRequest(method, content, uri);
+            HttpRequestMessage request = BuildRequest(method, content, uri);
 
 #if DEBUG
             Debug.WriteLine("[Request] {0}", request.ToJson());
@@ -233,7 +258,7 @@ namespace InfluxData.Net.Client
             return await client.SendAsync(request, completionOption, cancellationToken);
         }
 
-        private StringBuilder BuildUri(string path, Dictionary<string, string> extraParams, bool includeAuthToQuery)
+        private StringBuilder BuildUri(string path, Dictionary<string, string> requestParams, bool includeAuthToQuery)
         {
             var urlBuilder = new StringBuilder();
             urlBuilder.AppendFormat("{0}{1}", _configuration.EndpointBaseUri, path);
@@ -243,17 +268,17 @@ namespace InfluxData.Net.Client
                 urlBuilder.AppendFormat("?{0}={1}&{2}={3}", QueryParams.Username, HttpUtility.UrlEncode(_configuration.Username), QueryParams.Password, HttpUtility.UrlEncode(_configuration.Password));
             }
 
-            if (extraParams != null && extraParams.Count > 0)
+            if (requestParams != null && requestParams.Count > 0)
             {
-                var keyValues = new List<string>(extraParams.Count);
-                keyValues.AddRange(extraParams.Select(param => String.Format("{0}={1}", param.Key, param.Value)));
+                var keyValues = new List<string>(requestParams.Count);
+                keyValues.AddRange(requestParams.Select(param => String.Format("{0}={1}", param.Key, param.Value)));
                 urlBuilder.AppendFormat("{0}{1}", includeAuthToQuery ? "&" : "?", String.Join("&", keyValues));
             }
 
             return urlBuilder;
         }
 
-        private static HttpRequestMessage PrepareRequest(HttpMethod method, HttpContent content, StringBuilder urlBuilder)
+        private static HttpRequestMessage BuildRequest(HttpMethod method, HttpContent content, StringBuilder urlBuilder)
         {
             var request = new HttpRequestMessage(method, urlBuilder.ToString());
             request.Headers.Add("User-Agent", UserAgent);
@@ -276,26 +301,6 @@ namespace InfluxData.Net.Client
         }
 
         #endregion Base
-
-
-        // TODO: extract somewhere else this helper method
-        private Dictionary<string, string> BuildQueryParams(string query)
-        {
-            return new Dictionary<string, string>
-            {
-                {QueryParams.Query, query}
-            };
-        }
-
-        // TODO: extract somewhere else this helper method
-        private Dictionary<string, string> BuildQueryParams(string dbName, string query)
-        {
-            return new Dictionary<string, string>
-            {
-                {QueryParams.Db, dbName},
-                {QueryParams.Query, query}
-            };
-        }
     }
 
     internal delegate void ApiResponseErrorHandlingDelegate(HttpStatusCode statusCode, string responseBody);

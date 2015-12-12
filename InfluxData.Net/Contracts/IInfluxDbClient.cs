@@ -7,6 +7,8 @@ using InfluxData.Net.Enums;
 
 namespace InfluxData.Net.Contracts
 {
+    // NOTE: potential "regions/classes": https://docs.influxdata.com/influxdb/v0.9/query_language/
+
     internal interface IInfluxDbClient
     {
         #region Database Management
@@ -28,23 +30,25 @@ namespace InfluxData.Net.Contracts
         /// <returns></returns>
         Task<InfluxDbApiResponse> ShowDatabases();
 
+        Task<InfluxDbApiResponse> DropSeries(string dbName, string serieName);
+
         #endregion Database Management
 
         #region Basic Querying
 
         /// <summary>Writes the request to the endpoint.</summary>
         /// <param name="errorHandlers">The error handlers.</param>
-        /// <param name="request">The request.</param>
+        /// <param name="writeRequest">The request.</param>
         /// <param name="timePrecision">The time precision.</param>
         /// <returns></returns>
-        Task<InfluxDbApiWriteResponse> Write(WriteRequest request, string timePrecision);
+        Task<InfluxDbApiWriteResponse> Write(WriteRequest writeRequest, string timePrecision);
 
         /// <summary>Queries the endpoint.</summary>
         /// <param name="errorHandlers">The error handlers.</param>
         /// <param name="dbName">The name.</param>
         /// <param name="query">The query.</param>
         /// <returns></returns>
-        Task<InfluxDbApiResponse> Query(string name, string query);
+        Task<InfluxDbApiResponse> Query(string dbName, string query);
 
         #endregion Basic Querying
 
@@ -59,12 +63,6 @@ namespace InfluxData.Net.Contracts
 
         #endregion Continuous Queries
 
-        #region Series
-
-        Task<InfluxDbApiResponse> DropSeries(string dbName, string name);
-
-        #endregion Series
-
         #region Other
 
         Task<InfluxDbApiResponse> Ping();
@@ -78,10 +76,14 @@ namespace InfluxData.Net.Contracts
         /// <returns><see cref="Task{TResult}"/></returns>
         Task<InfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication);
 
+        #endregion Other
+
+        #region Base
+
         IFormatter GetFormatter();
 
         InfluxVersion GetVersion();
 
-        #endregion Other
+        #endregion Base
     }
 }

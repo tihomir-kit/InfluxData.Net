@@ -5,7 +5,7 @@ using InfluxData.Net.Infrastructure.Formatters;
 
 namespace InfluxData.Net.Client
 {
-    internal class InfluxDbClientV092 : InfluxDbClientBase
+    internal class InfluxDbClientV092 : InfluxDbClientV09x
     {
         public InfluxDbClientV092(InfluxDbClientConfiguration configuration) 
             : base(configuration)
