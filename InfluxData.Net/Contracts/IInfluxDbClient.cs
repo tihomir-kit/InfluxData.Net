@@ -65,55 +65,9 @@ namespace InfluxData.Net.Contracts
 
         #endregion Series
 
-        #region Clustering
-
-        Task<InfluxDbApiResponse> CreateClusterAdmin(User user);
-
-        Task<InfluxDbApiResponse> DeleteClusterAdmin(string name);
-
-        Task<InfluxDbApiResponse> DescribeClusterAdmins();
-
-        Task<InfluxDbApiResponse> UpdateClusterAdmin(User user, string name);
-
-        #endregion Clustering
-
-        #region Sharding
-
-        Task<InfluxDbApiResponse> GetShardSpaces();
-
-        Task<InfluxDbApiResponse> DropShardSpace(string dbName, string name);
-
-        Task<InfluxDbApiResponse> CreateShardSpace(string dbName, ShardSpace shardSpace);
-
-        #endregion Sharding
-
-        #region Users
-
-        Task<InfluxDbApiResponse> CreateDatabaseUser(string dbName, User user);
-
-        Task<InfluxDbApiResponse> DeleteDatabaseUser(string dbName, string name);
-
-        Task<InfluxDbApiResponse> DescribeDatabaseUsers(string dbName);
-
-        Task<InfluxDbApiResponse> UpdateDatabaseUser(string dbName, User user, string name);
-
-        Task<InfluxDbApiResponse> AuthenticateDatabaseUser(string dbName, string user, string password);
-
-        #endregion Users
-
         #region Other
 
         Task<InfluxDbApiResponse> Ping();
-
-        Task<InfluxDbApiResponse> ForceRaftCompaction();
-
-        Task<InfluxDbApiResponse> Interfaces();
-
-        Task<InfluxDbApiResponse> Sync();
-
-        Task<InfluxDbApiResponse> ListServers();
-
-        Task<InfluxDbApiResponse> RemoveServers(int id);
 
         /// <summary>Alters the retention policy.</summary>
         /// <param name="errorHandlers">The error handlers.</param>

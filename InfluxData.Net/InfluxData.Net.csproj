@@ -61,7 +61,6 @@
     <Compile Include="Infrastructure\Influx\InfluxDbException.cs" />
     <Compile Include="Infrastructure\Influx\InfluxDbResponse.cs" />
     <Compile Include="Contracts\IRequestContent.cs" />
-    <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Infrastructure\Formatters\FormatterV092.cs" />
     <Compile Include="Infrastructure\Formatters\FormatterBase.cs" />
     <Compile Include="Contracts\IFormatter.cs" />

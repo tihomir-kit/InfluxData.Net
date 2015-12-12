@@ -121,78 +121,6 @@ namespace InfluxData.Net.Client
 
         #endregion Series
 
-        #region Clustering
-
-        public Task<InfluxDbApiResponse> CreateClusterAdmin(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> DeleteClusterAdmin(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> DescribeClusterAdmins()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> UpdateClusterAdmin(User user, string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion Clustering
-
-        #region Sharding
-
-        public Task<InfluxDbApiResponse> GetShardSpaces()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> DropShardSpace(string database, string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> CreateShardSpace(string database, ShardSpace shardSpace)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion Sharding
-
-        #region Users
-
-        public Task<InfluxDbApiResponse> CreateDatabaseUser(string database, User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> DeleteDatabaseUser(string database, string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> DescribeDatabaseUsers(string database)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> UpdateDatabaseUser(string database, User user, string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> AuthenticateDatabaseUser(string database, string user, string password)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion Users
-
         #region Other
 
         /// <summary>Pings the server.</summary>
@@ -201,31 +129,6 @@ namespace InfluxData.Net.Client
         public async Task<InfluxDbApiResponse> Ping()
         {
             return await RequestAsync(HttpMethod.Get, "ping", null, null, false, true);
-        }
-
-        public Task<InfluxDbApiResponse> ForceRaftCompaction()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> Interfaces()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> Sync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> ListServers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<InfluxDbApiResponse> RemoveServers(int id)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<InfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication)
