@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InfluxData.Net.Client;
-using InfluxData.Net.Contracts;
 using InfluxData.Net.Enums;
 using InfluxData.Net.Helpers;
 using InfluxData.Net.Infrastructure.Configuration;
 using InfluxData.Net.Infrastructure.Influx;
 using InfluxData.Net.Infrastructure.Validation;
 using InfluxData.Net.Models;
+using InfluxData.Net.Infrastructure.Formatters;
+using InfluxData.Net.Client.Modules;
 
 namespace InfluxData.Net
 {
     public class InfluxDb : IInfluxDb
     {
-        internal readonly IEnumerable<ApiResponseErrorHandlingDelegate> NoErrorHandlers = Enumerable.Empty<ApiResponseErrorHandlingDelegate>();
-
         private readonly IInfluxDbClient _influxDbClient;
+        private readonly Lazy<IInfluxDbDatabaseModule> _influxDbDatabaseModule;
+        private readonly Lazy<IInfluxDbBasicModule> _influxDbBasicModule;
+        private readonly Lazy<IInfluxDbContinuousModule> _influxDbContinuousModule;
 
         public InfluxDb(string url, string username, string password, InfluxVersion influxVersion)
              : this(new InfluxDbClientConfiguration(new Uri(url), username, password, influxVersion))
@@ -28,56 +30,29 @@ namespace InfluxData.Net
 
         internal InfluxDb(InfluxDbClientConfiguration influxDbClientConfiguration)
         {
-            switch (influxDbClientConfiguration.InfluxVersion)
-            {
-                case InfluxVersion.Latest:
-                    _influxDbClient = new InfluxDbClientV09x(influxDbClientConfiguration);
-                    break;
-                case InfluxVersion.v096:
-                    _influxDbClient = new InfluxDbClientV096(influxDbClientConfiguration);
-                    break;
-                case InfluxVersion.v095:
-                    _influxDbClient = new InfluxDbClientV095(influxDbClientConfiguration);
-                    break;
-                case InfluxVersion.v092:
-                    _influxDbClient = new InfluxDbClientV092(influxDbClientConfiguration);
-                    break;
-                case InfluxVersion.v08x:
-                    throw new NotImplementedException("InfluxDB v0.8.x is not supported by InfluxData.Net library.");
-                default:
-                    throw new ArgumentOutOfRangeException("influxDbClientConfiguration", String.Format("Unknown version {0}.", influxDbClientConfiguration));
-            }
+            var clientFactory = new InfluxDbClientFactory(influxDbClientConfiguration);
+            _influxDbClient = clientFactory.GetClient();
+
+            _influxDbDatabaseModule = new Lazy<IInfluxDbDatabaseModule>(() => new InfluxDbDatabaseModule(_influxDbClient), true);
+            _influxDbBasicModule = new Lazy<IInfluxDbBasicModule>(() => new InfluxDbBasicModule(_influxDbClient), true);
+            _influxDbContinuousModule = new Lazy<IInfluxDbContinuousModule>(() => new InfluxDbContinuousModule(_influxDbClient), true);
         }
-
-        #region Base
-
-        public IFormatter GetFormatter()
-        {
-            return _influxDbClient.GetFormatter();
-        }
-
-        public InfluxVersion GetClientVersion()
-        {
-            return _influxDbClient.GetVersion();
-        }
-
-        #endregion Base
 
         #region Database
 
         public async Task<InfluxDbApiResponse> CreateDatabaseAsync(string dbName)
         {
-            return await _influxDbClient.CreateDatabase(dbName);
+            return await _influxDbDatabaseModule.Value.CreateDatabase(dbName);
         }
 
         public async Task<InfluxDbApiResponse> DropDatabaseAsync(string dbName)
         {
-            return await _influxDbClient.DropDatabase(dbName);
+            return await _influxDbDatabaseModule.Value.DropDatabase(dbName);
         }
 
         public async Task<List<Database>> ShowDatabasesAsync()
         {
-            var response = await _influxDbClient.ShowDatabases();
+            var response = await _influxDbDatabaseModule.Value.ShowDatabases();
             var queryResult = response.ReadAs<QueryResult>();
             var serie = queryResult.Results.Single().Series.Single();
             var databases = new List<Database>();
@@ -95,7 +70,12 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName)
         {
-            return await _influxDbClient.DropSeries(dbName, serieName);
+            return await _influxDbDatabaseModule.Value.DropSeries(dbName, serieName);
+        }
+
+        public async Task<InfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication)
+        {
+            return await _influxDbDatabaseModule.Value.AlterRetentionPolicy(policyName, dbName, duration, replication);
         }
 
         #endregion Database
@@ -117,14 +97,14 @@ namespace InfluxData.Net
             };
 
             // TODO: handle precision (if set by client, it makes not difference because it gets overriden here)
-            var result = await _influxDbClient.Write(request, TimeUnitUtility.ToTimePrecision(TimeUnit.Milliseconds));
+            var result = await _influxDbBasicModule.Value.Write(request, TimeUnitUtility.ToTimePrecision(TimeUnit.Milliseconds));
 
             return result;
         }
 
         public async Task<List<Serie>> QueryAsync(string dbName, string query)
         {
-            InfluxDbApiResponse response = await _influxDbClient.Query(dbName, query);
+            InfluxDbApiResponse response = await _influxDbBasicModule.Value.Query(dbName, query);
             var queryResult = response.ReadAs<QueryResult>();
 
             Validate.NotNull(queryResult, "queryResult");
@@ -149,12 +129,12 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> CreateContinuousQueryAsync(CqRequest cqRequest)
         {
-            return await _influxDbClient.CreateContinuousQuery(cqRequest);
+            return await _influxDbContinuousModule.Value.CreateContinuousQuery(cqRequest);
         }
 
         public async Task<Serie> GetContinuousQueriesAsync(string dbName)
         {
-            InfluxDbApiResponse response = await _influxDbClient.GetContinuousQueries(dbName);
+            InfluxDbApiResponse response = await _influxDbContinuousModule.Value.GetContinuousQueries(dbName);
             var queryResult = response.ReadAs<QueryResult>();//.Results.Single().Series;
 
             Validate.NotNull(queryResult, "queryResult");
@@ -175,7 +155,7 @@ namespace InfluxData.Net
 
         public async Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
         {
-            return await _influxDbClient.DeleteContinuousQuery(dbName, cqName);
+            return await _influxDbContinuousModule.Value.DeleteContinuousQuery(dbName, cqName);
         }
 
         #endregion Continuous Queries
@@ -186,7 +166,7 @@ namespace InfluxData.Net
         {
             var watch = Stopwatch.StartNew();
 
-            var response = await _influxDbClient.Ping();
+            var response = await _influxDbClient.PingAsync();
 
             watch.Stop();
 
@@ -198,6 +178,11 @@ namespace InfluxData.Net
             };
         }
 
-        #endregion Othe
+        public IFormatter GetFormatter()
+        {
+            return _influxDbClient.GetFormatter();
+        }
+
+        #endregion Other
     }
 }

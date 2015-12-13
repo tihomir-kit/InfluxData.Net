@@ -1,6 +1,6 @@
 using InfluxData.Net.Models;
 
-namespace InfluxData.Net.Contracts
+namespace InfluxData.Net.Infrastructure.Formatters
 {
     public interface IFormatter
     {

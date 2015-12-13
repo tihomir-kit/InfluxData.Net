@@ -46,6 +46,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\InfluxDbClientFactory.cs" />
+    <Compile Include="Client\InfluxDbClientUtility.cs" />
     <Compile Include="Client\InfluxDbClientV096.cs" />
     <Compile Include="Client\InfluxDbClientV095.cs" />
     <Compile Include="Constants\QueryStatements.cs" />
@@ -56,15 +58,14 @@
     <Compile Include="Infrastructure\Formatters\FormatterV096.cs" />
     <Compile Include="Infrastructure\Formatters\FormatterV095.cs" />
     <Compile Include="Infrastructure\Validation\Validate.cs" />
-    <Compile Include="Contracts\IInfluxDb.cs" />
-    <Compile Include="Contracts\IInfluxDbClient.cs" />
+    <Compile Include="IInfluxDb.cs" />
+    <Compile Include="Client\IInfluxDbClient.cs" />
     <Compile Include="Infrastructure\Configuration\InfluxDbClientConfiguration.cs" />
     <Compile Include="Infrastructure\Influx\InfluxDbException.cs" />
     <Compile Include="Infrastructure\Influx\InfluxDbResponse.cs" />
-    <Compile Include="Contracts\IRequestContent.cs" />
     <Compile Include="Infrastructure\Formatters\FormatterV092.cs" />
-    <Compile Include="Infrastructure\Formatters\FormatterBase.cs" />
-    <Compile Include="Contracts\IFormatter.cs" />
+    <Compile Include="Infrastructure\Formatters\FormatterV09x.cs" />
+    <Compile Include="Infrastructure\Formatters\IFormatter.cs" />
     <Compile Include="Client\InfluxDbClientV09x.cs" />
     <Compile Include="Client\InfluxDbClientV092.cs" />
     <Compile Include="Enums\InfluxVersion.cs" />
@@ -78,6 +79,13 @@
     <Compile Include="Models\Database.cs" />
     <Compile Include="Models\Pong.cs" />
     <Compile Include="Models\Serie.cs" />
+    <Compile Include="Client\Modules\IInfluxDbBasicModule.cs" />
+    <Compile Include="Client\Modules\IInfluxDbContinuousModule.cs" />
+    <Compile Include="Client\Modules\IInfluxDbDatabaseModule.cs" />
+    <Compile Include="Client\Modules\InfluxDbBasicModule.cs" />
+    <Compile Include="Client\Modules\InfluxDbContinuousModule.cs" />
+    <Compile Include="Client\Modules\InfluxDbDatabaseModule.cs" />
+    <Compile Include="Client\Modules\InfluxDbModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\Stopwatch.cs" />
     <Compile Include="Enums\TimeUnit.cs" />

@@ -2,14 +2,13 @@ using System;
 using System.Globalization;
 using System.Linq;
 using InfluxData.Net.Models;
-using InfluxData.Net.Contracts;
 using InfluxData.Net.Infrastructure.Validation;
 using InfluxData.Net.Helpers;
 using System.Collections.Generic;
 
 namespace InfluxData.Net.Infrastructure.Formatters
 {
-    internal class FormatterBase : IFormatter
+    internal class FormatterV09x : IFormatter
     {
         private static readonly string _queryTemplate = "{0} {1} {2}"; // [key] [fields] [time]
 
