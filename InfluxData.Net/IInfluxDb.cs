@@ -5,8 +5,9 @@ using InfluxData.Net.Infrastructure.Influx;
 using InfluxData.Net.Models;
 using InfluxData.Net.Enums;
 using InfluxData.Net.Models.Responses;
+using InfluxData.Net.Infrastructure.Formatters;
 
-namespace InfluxData.Net.Contracts
+namespace InfluxData.Net
 {
     // NOTE: potential "regions/classes": https://docs.influxdata.com/influxdb/v0.9/query_language/
 
@@ -42,6 +43,8 @@ namespace InfluxData.Net.Contracts
         /// <returns></returns>
         Task<InfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName);
 
+        Task<InfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication);
+
         #endregion Database
 
         #region Basic Querying
@@ -72,7 +75,7 @@ namespace InfluxData.Net.Contracts
 
         #region Continuous Queries
 
-        Task<InfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery cqRequest);
+        Task<InfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery);
 
         /// <summary>
         /// Describe all contious queries in a database.
@@ -100,8 +103,6 @@ namespace InfluxData.Net.Contracts
         Task<Pong> PingAsync();
 
         IFormatter GetFormatter();
-
-        InfluxVersion GetClientVersion();
 
         #endregion Other
     }

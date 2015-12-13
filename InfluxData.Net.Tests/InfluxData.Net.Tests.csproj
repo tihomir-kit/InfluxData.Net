@@ -92,13 +92,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InfluxData.Net\InfluxData.Net.csproj">
-      <Project>{9092CDD0-1585-48DE-B619-98F6FF01F8CC}</Project>
-      <Name>InfluxData.Net</Name>
-    </ProjectReference>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\InfluxData.Net\InfluxData.Net.csproj">
+      <Project>{9092cdd0-1585-48de-b619-98f6ff01f8cc}</Project>
+      <Name>InfluxData.Net</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

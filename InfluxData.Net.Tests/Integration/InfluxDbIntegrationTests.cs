@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using InfluxData.Net.Models;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using System.Configuration;
 using System.Threading.Tasks;
-using InfluxData.Net.Contracts;
-using InfluxData.Net.Helpers;
 using InfluxData.Net.Infrastructure.Influx;
+using InfluxData.Net.Models;
+using InfluxData.Net.Helpers;
 using InfluxData.Net.Enums;
 
 namespace InfluxData.Net.Tests

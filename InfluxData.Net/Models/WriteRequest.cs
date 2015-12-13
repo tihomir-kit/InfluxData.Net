@@ -1,4 +1,4 @@
-﻿using InfluxData.Net.Contracts;
+﻿using InfluxData.Net.Infrastructure.Formatters;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

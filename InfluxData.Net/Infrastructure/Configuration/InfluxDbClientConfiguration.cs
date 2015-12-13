@@ -44,10 +44,5 @@ namespace InfluxData.Net.Infrastructure.Configuration
 
             return builder.Uri;
         }
-
-        public HttpClient BuildHttpClient()
-        {
-            return new HttpClient();
-        }
     }
 }

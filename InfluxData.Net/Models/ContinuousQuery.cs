@@ -1,5 +1,4 @@
-﻿using InfluxData.Net.Contracts;
-using InfluxData.Net.Enums;
+﻿using InfluxData.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
