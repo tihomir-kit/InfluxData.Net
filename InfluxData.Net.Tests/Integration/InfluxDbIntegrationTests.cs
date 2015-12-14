@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NUnit.Framework;
 using Ploeh.AutoFixture;
 using System.Configuration;
 using System.Threading.Tasks;
@@ -10,63 +9,15 @@ using InfluxData.Net.Infrastructure.Influx;
 using InfluxData.Net.Models;
 using InfluxData.Net.Helpers;
 using InfluxData.Net.Enums;
+using Xunit;
 
 namespace InfluxData.Net.Tests
 {
+    [Collection("Integration")]
+    //[Trait("Integration")]
     public class InfluxDbIntegrationTests : InfluxDbIntegrationTestsBase
-    {
-        private IInfluxDb _influx;
-        private string _dbName = String.Empty;
-        private static readonly string _fakeDbPrefix = "FakeDb";
-        private static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
-
-        // TODO: make async
-        protected override void FinalizeTestFixtureSetUp()
-        {
-            InfluxVersion influxVersion;
-            if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out influxVersion))
-                influxVersion = InfluxVersion.v096;
-
-            _influx = new InfluxDb(
-                ConfigurationManager.AppSettings.Get("url"),
-                ConfigurationManager.AppSettings.Get("username"),
-                ConfigurationManager.AppSettings.Get("password"),
-                influxVersion);
-
-            _influx.Should().NotBeNull();
-
-            _dbName = CreateRandomDbName();
-
-            PurgeFakeDatabases();
-
-            var createResponse = _influx.CreateDatabaseAsync(_dbName).Result;
-            createResponse.Success.Should().BeTrue();
-
-            // workaround for issue https://github.com/influxdb/influxdb/issues/3363
-            // by first creating a single point in the empty db
-            var writeResponse = _influx.WriteAsync(_dbName, CreateMockPoints(1));
-            writeResponse.Result.Success.Should().BeTrue();
-        }
-
-        private async Task PurgeFakeDatabases()
-        {
-            var dbs = await _influx.ShowDatabasesAsync();
-
-            foreach (var db in dbs)
-            {
-                if (db.Name.StartsWith(_fakeDbPrefix))
-                    await _influx.DropDatabaseAsync(db.Name);
-            }
-        }
-
-        protected override void FinalizeTearDown()
-        {
-            var deleteResponse = _influx.DropDatabaseAsync(_dbName).Result;
-
-            deleteResponse.Success.Should().BeTrue();
-        }
-
-        [Test]
+    { 
+        [Fact]
         public async Task Influx_OnPing_ShouldReturnVersion()
         {
             var pong = await _influx.PingAsync();
@@ -76,7 +27,7 @@ namespace InfluxData.Net.Tests
             pong.Version.Should().NotBeEmpty();
         }
 
-        [Test]
+        [Fact]
         public async Task Influx_OnFakeDbName_ShouldCreateAndDropDb()
         {
             // Arrange
@@ -91,7 +42,7 @@ namespace InfluxData.Net.Tests
             deleteResponse.Success.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public async Task DbShowDatabases_OnDatabaseExists_ShouldReturnDatabaseList()
         {
             // Arrange
@@ -114,7 +65,7 @@ namespace InfluxData.Net.Tests
                 .NotBeNull();
         }
 
-        [Test]
+        [Fact]
         public async Task DbWrite_OnMultiplePoints_ShouldWritePoints()
         {
             var points = CreateMockPoints(5);
@@ -123,7 +74,7 @@ namespace InfluxData.Net.Tests
             writeResponse.Success.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void DbWrite_OnPointsWithoutFields_ShouldThrowException()
         {
             var points = CreateMockPoints(1);
@@ -134,14 +85,14 @@ namespace InfluxData.Net.Tests
             act.ShouldThrow<InfluxDbApiException>();
         }
 
-        [Test]
+        [Fact]
         public void DbQuery_OnInvalidQuery_ShouldThrowException()
         {
             Func<Task> act = async () => { await _influx.QueryAsync(_dbName, "blah"); };
             act.ShouldThrow<InfluxDbApiException>();
         }
 
-        [Test]
+        [Fact]
         public async Task DbQuery_OnNonExistantSeries_ShouldReturnEmptyList()
         {
             var result = await _influx.QueryAsync(_dbName, "select * from nonexistentseries");
@@ -149,7 +100,7 @@ namespace InfluxData.Net.Tests
             result.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public async Task DbQuery_OnNonExistantFields_ShouldReturnEmptyList()
         {
             var points = CreateMockPoints(1);
@@ -162,7 +113,7 @@ namespace InfluxData.Net.Tests
             result.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public async Task DbDropSeries_OnExistingSeries_ShouldDropSeries()
         {
             var points = CreateMockPoints(1);
@@ -177,7 +128,7 @@ namespace InfluxData.Net.Tests
             deleteSerieResponse.Success.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public async Task DbQuery_OnWhereClauseNotMet_ShouldReturnNoSeries()
         {
             // Arrange
@@ -192,7 +143,7 @@ namespace InfluxData.Net.Tests
             queryResponse.Count.Should().Be(0);
         }
 
-        [Test]
+        [Fact]
         public void Formats_Point()
         {
             const string value = @"\=&,""*"" -";
@@ -228,7 +179,7 @@ namespace InfluxData.Net.Tests
             actual.Should().Be(expected);
         }
 
-        [Test]
+        [Fact]
         public void WriteRequestGetLines_OnCall_ShouldReturnNewLineSeparatedPoints()
         {
             var points = CreateMockPoints(2);
@@ -244,25 +195,25 @@ namespace InfluxData.Net.Tests
             actual.Should().Be(expected);
         }
 
-        [Test]
+        [Fact]
         public async Task CreateContinuousQuery_OnExistingMeasurement_ShouldReturnSuccess()
         {
-            ContinuousQuery cq = MockCq();
+            ContinuousQuery cq = MockContinuousQuery();
 
             var result = await _influx.CreateContinuousQueryAsync(cq);
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void CreateContinuousQuery_OnNonExistingMeasurement_ShouldThrow()
         {
         }
 
-        [Test]
+        [Fact]
         public async Task DeleteContinuousQuery_OnExistingCq_ShouldReturnSuccess()
         {
-            var cq = MockCq();
+            var cq = MockContinuousQuery();
             await _influx.CreateContinuousQueryAsync(cq);
 
             var result = await _influx.DeleteContinuousQueryAsync(_dbName, "FakeCQ");
@@ -270,10 +221,10 @@ namespace InfluxData.Net.Tests
             result.Success.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public async Task GetContinuousQueries_OnExistingCq_ShouldReturnCqs()
         {
-            var cq = MockCq();
+            var cq = MockContinuousQuery();
             await _influx.CreateContinuousQueryAsync(cq);
 
             var result = await _influx.GetContinuousQueriesAsync(_dbName);
@@ -299,81 +250,6 @@ namespace InfluxData.Net.Tests
             ((DateTime)actual.Values[0][0]).ToUnixTime().Should().Be(((DateTime)expected.Values[0][0]).ToUnixTime());
 
             return result;
-        }
-
-        private static string CreateRandomDbName()
-        {
-            var timestamp = DateTime.UtcNow.ToUnixTime();
-            return String.Format("{0}{1}", _fakeDbPrefix, timestamp);
-        }
-
-        private static string CreateRandomMeasurementName()
-        {
-            var timestamp = DateTime.UtcNow.ToUnixTime();
-            return String.Format("{0}{1}", _fakeMeasurementPrefix, timestamp);
-        }
-
-        private Point[] CreateMockPoints(int amount)
-        {
-            var rnd = new Random();
-            var fixture = new Fixture();
-
-            fixture.Customize<Point>(c => c
-                .With(p => p.Name, CreateRandomMeasurementName())
-                .Do(p => p.Tags = NewTags(rnd))
-                .Do(p => p.Fields = NewFields(rnd))
-                .OmitAutoProperties());
-
-            var points = fixture.CreateMany<Point>(amount).ToArray();
-            var timestamp = DateTime.UtcNow.AddDays(-5);
-            foreach (var point in points)
-            {
-                timestamp = timestamp.AddMinutes(1);
-                point.Timestamp = timestamp;
-            }
-
-            return points;
-        }
-
-        private Dictionary<string, object> NewTags(Random rnd)
-        {
-            return new Dictionary<string, object>
-            {
-                // quotes in the tag value are creating problems
-                // https://github.com/influxdb/influxdb/issues/3928
-                //{"tag_string", rnd.NextPrintableString(50).Replace("\"", string.Empty)},
-                {"tag_bool", (rnd.Next(2) == 0).ToString()},
-                {"tag_datetime", DateTime.Now.ToString()},
-                {"tag_decimal", ((decimal) rnd.NextDouble()).ToString()},
-                {"tag_float", ((float) rnd.NextDouble()).ToString()},
-                {"tag_int", rnd.Next().ToString()}
-            };
-        }
-
-        private Dictionary<string, object> NewFields(Random rnd)
-        {
-            return new Dictionary<string, object>
-            {
-                //{ "field_string", rnd.NextPrintableString(50) },
-                { "field_bool", rnd.Next(2) == 0 },
-                { "field_int", rnd.Next() },
-                { "field_decimal", (decimal)rnd.NextDouble() },
-                { "field_float", (float)rnd.NextDouble() },
-                { "field_datetime", DateTime.Now }
-            };
-        }
-
-        private ContinuousQuery MockCq()
-        {
-            return new ContinuousQuery()
-            {
-                DbName = _dbName,
-                CqName = "FakeCQ",
-                Downsamplers = new List<string>() { "AVG(field_int)" },
-                DsSerieName = String.Format("{0}.5s", _fakeMeasurementPrefix),
-                SourceSerieName = _fakeMeasurementPrefix,
-                Interval = "5s"
-            };
         }
     }
 }
