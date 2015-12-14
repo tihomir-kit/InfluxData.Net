@@ -42,7 +42,7 @@ namespace InfluxData.Net.Integration
 
             this.DbName = CreateRandomDbName();
 
-            //Task.Run(() => this.PurgeFakeDatabases()).Wait();
+            Task.Run(() => this.PurgeFakeDatabases()).Wait();
             Task.Run(() => this.CreateEmptyDatabase()).Wait();
         }
 
@@ -180,10 +180,33 @@ namespace InfluxData.Net.Integration
             {
                 DbName = this.DbName,
                 CqName = "FakeCQ",
-                Downsamplers = new List<string>() { "AVG(field_int)" },
+                Downsamplers = new List<string>()
+                {
+                    "MAX(field_int) AS max_field_int",
+                    "MIN(field_int) AS min_field_int"
+                },
                 DsSerieName = String.Format("{0}.5s", _fakeMeasurementPrefix),
                 SourceSerieName = _fakeMeasurementPrefix,
-                Interval = "5s"
+                Interval = "5s",
+                FillType = FillType.Previous
+            };
+        }
+
+        public Backfill MockBackfill()
+        {
+            return new Backfill()
+            {
+                Downsamplers = new List<string>()
+                {
+                    "MAX(field_int) AS max_field_int",
+                    "MIN(field_int) AS min_field_int"
+                },
+                DsSerieName = String.Format("{0}.5m", _fakeMeasurementPrefix),
+                SourceSerieName = _fakeMeasurementPrefix,
+                TimeFrom = DateTime.UtcNow.AddMonths(-1),
+                TimeTo = DateTime.UtcNow,
+                Interval = "5m",
+                FillType = FillType.None
             };
         }
     }

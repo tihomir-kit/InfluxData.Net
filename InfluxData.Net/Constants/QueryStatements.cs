@@ -2,15 +2,19 @@
 {
     internal static class QueryStatements
     {
+        // NOTE: formatted time for WHERE clause needs to go in single quotes whereas downsampled serie name needs to go into double quotes
+
         internal const string CreateDatabase = "CREATE DATABASE \"{0}\"";
         internal const string ShowDatabases = "SHOW DATABASES";
         internal const string DropDatabase = "DROP DATABASE \"{0}\"";
         internal const string DropSeries = "DROP SERIES FROM \"{0}\"";
 
         internal const string CreateContinuousQuery = "CREATE CONTINUOUS QUERY {0} ON {1} BEGIN {2} END;";
-        internal const string CreateContinuousQuerySubQuery = "SELECT {0} INTO \"{1}\" FROM {2} GROUP BY TIME({3})";
+        internal const string CreateContinuousQuerySubQuery = "SELECT {0} INTO \"{1}\" FROM {2} GROUP BY time({3}) {4} {5}";
         internal const string ShowContinuousQueries = "SHOW CONTINUOUS QUERIES";
         internal const string DropContinuousQuery = "DROP CONTINUOUS QUERY {0} ON {1}";
+        internal const string Backfill = "SELECT {0} INTO \"{1}\" FROM {2} WHERE {3} time >= '{4}' AND time < '{5}' GROUP BY time({6}) {7} {8}";
+        internal const string Fill = "fill({0})";
 
         internal const string AlterRetentionPolicy = "ALTER RETENTION POLICY {0} ON {1} {2} {3} {4} {5}";
 

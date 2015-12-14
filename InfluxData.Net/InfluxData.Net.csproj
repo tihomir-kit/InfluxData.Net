@@ -81,6 +81,7 @@
     <Compile Include="Infrastructure\Influx\InfluxDbException.cs" />
     <Compile Include="Infrastructure\Influx\InfluxDbResponse.cs" />
     <Compile Include="Infrastructure\Validation\Validate.cs" />
+    <Compile Include="Models\Backfill.cs" />
     <Compile Include="Models\ContinuousQuery.cs" />
     <Compile Include="Models\Point.cs" />
     <Compile Include="Models\Responses\DatabaseResponse.cs" />

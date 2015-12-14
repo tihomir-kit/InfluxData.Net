@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InfluxData.Net.Enums;
 
 namespace InfluxData.Net.Infrastructure.Clients
 {

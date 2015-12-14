@@ -7,19 +7,21 @@ using System.Linq;
 namespace InfluxData.Net.Models
 {
     /// <summary>
-    /// Represents an API continuous query object for CQ creation
+    /// Represents an API backfill object for manually backfilling old downsample series
     /// </summary>
-    public class ContinuousQuery
+    public class Backfill
     {
-        public string DbName { get; set; }
-
-        public string CqName { get; set; }
-
         public IList<string> Downsamplers { get; set; }
 
         public string DsSerieName { get; set; }
 
         public string SourceSerieName { get; set; }
+
+        public DateTime TimeFrom { get; set; }
+
+        public DateTime TimeTo { get; set; }
+
+        public IList<string> Filters { get; set; }
 
         public string Interval { get; set; }
 

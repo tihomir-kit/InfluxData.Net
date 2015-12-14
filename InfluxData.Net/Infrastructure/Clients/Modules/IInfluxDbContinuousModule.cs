@@ -11,5 +11,7 @@ namespace InfluxData.Net.Infrastructure.Clients.Modules
         Task<InfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName);
 
         Task<InfluxDbApiResponse> GetContinuousQueries(string dbName);
+
+        Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill);
     }
 }

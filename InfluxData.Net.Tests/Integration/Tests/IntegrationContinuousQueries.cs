@@ -31,6 +31,8 @@ namespace InfluxData.Net.Integration.Tests
             var result = await _fixture.Sut.CreateContinuousQueryAsync(cq);
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
+
+            // TODO: expand test to check if the item is really in the database
         }
 
         [Fact]
@@ -57,6 +59,16 @@ namespace InfluxData.Net.Integration.Tests
 
             var result = await _fixture.Sut.GetContinuousQueriesAsync(_fixture.DbName);
             result.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task Backfill_OnValidBackfillObject_ShouldReturnSuccess()
+        {
+            var backfill = _fixture.MockBackfill();
+
+            var result = await _fixture.Sut.Backfill("Novaerus01", backfill);
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
         }
     }
 }

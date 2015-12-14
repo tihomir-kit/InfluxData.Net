@@ -8,6 +8,7 @@ using InfluxData.Net.Models;
 using System.Threading.Tasks;
 using InfluxData.Net.Infrastructure.Influx;
 using InfluxData.Net.Enums;
+using InfluxData.Net.Helpers;
 
 namespace InfluxData.Net.Infrastructure.Clients.Modules
 {
@@ -20,34 +21,63 @@ namespace InfluxData.Net.Infrastructure.Clients.Modules
 
         public async Task<InfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery continuousQuery)
         {
+            var downsamplers = BuildDownsamplers(continuousQuery.Downsamplers);
+            var tags = BuildTags(continuousQuery.Tags);
+            var fillType = BuildFillType(continuousQuery.FillType);
+
             // TODO: perhaps extract subquery and query building to formatter
-            var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery, String.Join(",", continuousQuery.Downsamplers),
-                continuousQuery.DsSerieName, continuousQuery.SourceSerieName, continuousQuery.Interval);
-
-            if (continuousQuery.Tags != null)
-            {
-                var tagsString = String.Join(",", continuousQuery.Tags);
-                if (!String.IsNullOrEmpty(tagsString))
-                    String.Join(", ", subQuery, tagsString);
-            }
-
-            if (continuousQuery.FillType != FillType.Null)
-                String.Join(" ", subQuery, continuousQuery.FillType.ToString().ToLower());
+            var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery, 
+                downsamplers, continuousQuery.DsSerieName, continuousQuery.SourceSerieName, continuousQuery.Interval, tags, fillType);
 
             var query = String.Format(QueryStatements.CreateContinuousQuery, continuousQuery.CqName, continuousQuery.DbName, subQuery);
 
-            return await this.Client.GetQueryAsync(requestParams: InfluxDbClientUtility.BuildQueryRequestParams(continuousQuery.DbName, query));
+            return await this.Client.GetQueryAsync(InfluxDbClientUtility.BuildQueryRequestParams(continuousQuery.DbName, query));
         }
 
         public async Task<InfluxDbApiResponse> GetContinuousQueries(string dbName)
         {
-            return await this.Client.GetQueryAsync(requestParams: InfluxDbClientUtility.BuildQueryRequestParams(dbName, QueryStatements.ShowContinuousQueries));
+            return await this.Client.GetQueryAsync(InfluxDbClientUtility.BuildQueryRequestParams(dbName, QueryStatements.ShowContinuousQueries));
         }
 
         public async Task<InfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName)
         {
             var query = String.Format(QueryStatements.DropContinuousQuery, cqName, dbName);
-            return await this.Client.GetQueryAsync(requestParams: InfluxDbClientUtility.BuildQueryRequestParams(dbName, query));
+            return await this.Client.GetQueryAsync(InfluxDbClientUtility.BuildQueryRequestParams(dbName, query));
+        }
+
+        public async Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
+        {
+            var downsamplers = BuildDownsamplers(backfill.Downsamplers);
+            var filters = BuildFilters(backfill.Filters);
+            var timeFrom = backfill.TimeFrom.ToString("yyyy-MM-dd HH:mm:ss");
+            var timeTo = backfill.TimeTo.ToString("yyyy-MM-dd HH:mm:ss");
+            var tags = BuildTags(backfill.Tags);
+            var fillType = BuildFillType(backfill.FillType);
+
+            var query = String.Format(QueryStatements.Backfill, 
+                downsamplers, backfill.DsSerieName, backfill.SourceSerieName, filters, timeFrom, timeTo, backfill.Interval, tags, fillType);
+
+            return await this.Client.GetQueryAsync(InfluxDbClientUtility.BuildQueryRequestParams(dbName, query));
+        }
+
+        private static string BuildDownsamplers(IList<string> downsamplers)
+        {
+            return String.Join(", ", downsamplers);
+        }
+
+        private static string BuildFilters(IList<string> filters)
+        {
+            return filters == null ? String.Empty : String.Join(" ", String.Join("AND ", filters), "AND");
+        }
+
+        private static string BuildTags(IList<string> tags)
+        {
+            return tags == null ? String.Empty : String.Join(" ", ",", String.Join(", ", tags));
+        }
+
+        private static string BuildFillType(FillType fillType)
+        {
+            return fillType == FillType.Null ? String.Empty : String.Format(QueryStatements.Fill, fillType.ToString().ToLower());
         }
     }
 }

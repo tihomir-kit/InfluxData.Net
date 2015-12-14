@@ -92,6 +92,15 @@ namespace InfluxData.Net
         /// <returns></returns>
         Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="backfill"></param>
+        /// <returns></returns>
+        /// <remarks>PLEASE EXCERSISE CAUTION WITH THIS CALL. Not specifying additional filters might cause your CPU to go to 100% for a long time.</remarks>
+        Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill);
+
         #endregion Continuous Queries
 
         #region Other

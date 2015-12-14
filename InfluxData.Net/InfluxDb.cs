@@ -159,6 +159,11 @@ namespace InfluxData.Net
             return await _influxDbContinuousModule.Value.DeleteContinuousQuery(dbName, cqName);
         }
 
+        public async Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
+        {
+            return await _influxDbContinuousModule.Value.Backfill(dbName, backfill);
+        }
+
         #endregion Continuous Queries
 
         #region Other
