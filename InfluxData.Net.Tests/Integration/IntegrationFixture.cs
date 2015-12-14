@@ -10,115 +10,121 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InfluxData.Net.Tests
+namespace InfluxData.Net.Integration
 {
     // NOTE: http://stackoverflow.com/questions/106907/making-code-internal-but-available-for-unit-testing-from-other-projects
 
-    //[TestFixture]
-    public class InfluxDbIntegrationTestsBase
+    public class IntegrationFixture : IDisposable
     {
-        protected IInfluxDb _influx;
-        protected string _dbName = String.Empty;
-        protected static readonly string _fakeDbPrefix = "FakeDb";
-        protected static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
-
+        public static readonly string _fakeDbPrefix = "FakeDb";
+        public static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
         private MockRepository _mockRepository;
-        protected bool VerifyAll { get; set; }
 
+        public IInfluxDb Sut { get; set; }
 
-        //[SetUp]
-        public void Setup()
-        {
-            _mockRepository = new MockRepository(MockBehavior.Strict);
-            VerifyAll = true;
+        public string DbName { get; set; }
 
-            FinalizeSetUp();
-        }
+        public bool VerifyAll { get; set; }
 
-        //[TearDown]
-        public void TearDown()
-        {
-            if (VerifyAll)
-            { 
-                _mockRepository.VerifyAll();
-            }
-            else
-            { 
-                _mockRepository.Verify();
-            }
-
-            FinalizeTearDown();
-        }
-
-        //[TestFixtureSetUp]
-        public void TestFixtureSetUp()
+        public IntegrationFixture()
         {
             InfluxVersion influxVersion;
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out influxVersion))
                 influxVersion = InfluxVersion.v096;
 
-            _influx = new InfluxDb(
+            this.Sut = new InfluxDb(
                 ConfigurationManager.AppSettings.Get("url"),
                 ConfigurationManager.AppSettings.Get("username"),
                 ConfigurationManager.AppSettings.Get("password"),
                 influxVersion);
 
-            _influx.Should().NotBeNull();
+            this.Sut.Should().NotBeNull();
 
-            _dbName = CreateRandomDbName();
+            this.DbName = CreateRandomDbName();
 
-            PurgeFakeDatabases();
-
-            var createResponse = _influx.CreateDatabaseAsync(_dbName).Result;
-            createResponse.Success.Should().BeTrue();
-
-            // workaround for issue https://github.com/influxdb/influxdb/issues/3363
-            // by first creating a single point in the empty db
-            var writeResponse = _influx.WriteAsync(_dbName, CreateMockPoints(1));
-            writeResponse.Result.Success.Should().BeTrue();
+            //Task.Run(() => this.PurgeFakeDatabases()).Wait();
+            Task.Run(() => this.CreateEmptyDatabase()).Wait();
         }
 
-        //[TestFixtureTearDown]
-        public void TestFixtureTearDown()
+        public void Dispose()
         {
-            var deleteResponse = _influx.DropDatabaseAsync(_dbName).Result;
+            var deleteResponse = this.Sut.DropDatabaseAsync(this.DbName).Result;
 
             deleteResponse.Success.Should().BeTrue();
         }
-        
 
-        protected virtual void FinalizeTearDown()
+        // Per-test
+        public void TestSetup()
         {
+            _mockRepository = new MockRepository(MockBehavior.Strict);
+            VerifyAll = true;
         }
 
-        protected virtual void FinalizeSetUp()
+        // Per-test
+        public void TestTearDown()
         {
+            if (VerifyAll)
+            {
+                _mockRepository.VerifyAll();
+            }
+            else
+            {
+                _mockRepository.Verify();
+            }
+        }
+
+
+        private async Task CreateEmptyDatabase()
+        {
+            var createResponse = await this.Sut.CreateDatabaseAsync(this.DbName);
+            createResponse.Success.Should().BeTrue();
         }
 
         private async Task PurgeFakeDatabases()
         {
-            var dbs = await _influx.ShowDatabasesAsync();
+            var dbs = await this.Sut.ShowDatabasesAsync();
 
             foreach (var db in dbs)
             {
                 if (db.Name.StartsWith(_fakeDbPrefix))
-                    await _influx.DropDatabaseAsync(db.Name);
+                    await this.Sut.DropDatabaseAsync(db.Name);
             }
         }
 
-        protected static string CreateRandomDbName()
+        public string CreateRandomDbName()
         {
             var timestamp = DateTime.UtcNow.ToUnixTime();
             return String.Format("{0}{1}", _fakeDbPrefix, timestamp);
         }
 
-        protected static string CreateRandomMeasurementName()
+        public string CreateRandomMeasurementName()
         {
             var timestamp = DateTime.UtcNow.ToUnixTime();
             return String.Format("{0}{1}", _fakeMeasurementPrefix, timestamp);
         }
 
-        protected Point[] CreateMockPoints(int amount)
+        public async Task<List<Serie>> Query(Serie expected)
+        {
+            // 0.9.3 need 'group by' to retrieve tags as tags when using select *
+            var result = await this.Sut.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by *", expected.Name));
+
+            result.Should().NotBeNull();
+            result.Count().Should().Be(1);
+
+            var actual = result.Single();
+
+            actual.Name.Should().Be(expected.Name);
+            actual.Tags.Count.Should().Be(expected.Tags.Count);
+            actual.Tags.ShouldAllBeEquivalentTo(expected.Tags);
+            actual.Columns.ShouldAllBeEquivalentTo(expected.Columns);
+            actual.Columns.Count().Should().Be(expected.Columns.Count());
+            actual.Values[0].Count().Should().Be(expected.Values[0].Count());
+            ((DateTime)actual.Values[0][0]).ToUnixTime().Should().Be(((DateTime)expected.Values[0][0]).ToUnixTime());
+
+            return result;
+        }
+
+        public Point[] CreateMockPoints(int amount)
         {
             var rnd = new Random();
             var fixture = new Fixture();
@@ -140,7 +146,7 @@ namespace InfluxData.Net.Tests
             return points;
         }
 
-        protected Dictionary<string, object> CreateNewTags(Random rnd)
+        public Dictionary<string, object> CreateNewTags(Random rnd)
         {
             return new Dictionary<string, object>
             {
@@ -155,7 +161,7 @@ namespace InfluxData.Net.Tests
             };
         }
 
-        protected Dictionary<string, object> CreateNewFields(Random rnd)
+        public Dictionary<string, object> CreateNewFields(Random rnd)
         {
             return new Dictionary<string, object>
             {
@@ -168,11 +174,11 @@ namespace InfluxData.Net.Tests
             };
         }
 
-        protected ContinuousQuery MockContinuousQuery()
+        public ContinuousQuery MockContinuousQuery()
         {
             return new ContinuousQuery()
             {
-                DbName = _dbName,
+                DbName = this.DbName,
                 CqName = "FakeCQ",
                 Downsamplers = new List<string>() { "AVG(field_int)" },
                 DsSerieName = String.Format("{0}.5s", _fakeMeasurementPrefix),
