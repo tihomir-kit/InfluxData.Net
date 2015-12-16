@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentAssertions;
 using System.Threading.Tasks;
-using InfluxData.Net.Models;
 using Xunit;
+using InfluxData.Net.InfluxDb.Models;
 
 namespace InfluxData.Net.Integration.Tests
 {

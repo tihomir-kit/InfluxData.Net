@@ -111,6 +111,18 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\InfluxData.Net.Common\InfluxData.Net.Common.csproj">
+      <Project>{1a7a40b7-0801-4e75-9ee8-891fbd646c1e}</Project>
+      <Name>InfluxData.Net.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InfluxData.Net.InfluxDb\InfluxData.Net.InfluxDb.csproj">
+      <Project>{0b098cd4-78fa-422e-b028-283ea7886504}</Project>
+      <Name>InfluxData.Net.InfluxDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InfluxData.Net.Kapacitor\InfluxData.Net.Kapacitor.csproj">
+      <Project>{75a5da2b-3818-49db-a318-00c3e51b7bcd}</Project>
+      <Name>InfluxData.Net.Kapacitor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InfluxData.Net\InfluxData.Net.csproj">
       <Project>{9092cdd0-1585-48de-b619-98f6ff01f8cc}</Project>
       <Name>InfluxData.Net</Name>

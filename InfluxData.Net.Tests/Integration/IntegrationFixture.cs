@@ -1,7 +1,10 @@
 ﻿using FluentAssertions;
-using InfluxData.Net.Enums;
-using InfluxData.Net.Helpers;
-using InfluxData.Net.Models;
+using InfluxData.Net.Common.Enums;
+using InfluxData.Net.Common.Helpers;
+using InfluxData.Net.InfluxDb;
+using InfluxData.Net.InfluxDb.Enums;
+using InfluxData.Net.InfluxDb.Models;
+using InfluxData.Net.InfluxDb.Models.Responses;
 using Moq;
 using Ploeh.AutoFixture;
 using System;
@@ -28,11 +31,11 @@ namespace InfluxData.Net.Integration
 
         public IntegrationFixture()
         {
-            InfluxVersion influxVersion;
+            InfluxDbVersion influxVersion;
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out influxVersion))
-                influxVersion = InfluxVersion.v096;
+                influxVersion = InfluxDbVersion.v096;
 
-            this.Sut = new InfluxDb(
+            this.Sut = new InfluxDb.InfluxDb(
                 ConfigurationManager.AppSettings.Get("url"),
                 ConfigurationManager.AppSettings.Get("username"),
                 ConfigurationManager.AppSettings.Get("password"),
