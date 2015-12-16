@@ -6,7 +6,7 @@ using InfluxData.Net.InfluxDb.Constants;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
-    internal static class RequestUtility
+    internal static class RequestClientUtility
     {
         public static Dictionary<string, string> BuildQueryRequestParams(string query)
         {

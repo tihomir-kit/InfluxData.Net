@@ -7,11 +7,11 @@ using System.Text;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
-    public class RequestFactory
+    public class RequestClientFactory
     {
         private readonly InfluxDbClientConfiguration _configuration;
 
-        public RequestFactory(InfluxDbClientConfiguration configuration)
+        public RequestClientFactory(InfluxDbClientConfiguration configuration)
         {
             _configuration = configuration;
         }

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
-    internal interface IBasicRequestModule
+    public interface IBasicRequestModule
     {
         Task<InfluxDbApiResponse> Query(string dbName, string query);
 

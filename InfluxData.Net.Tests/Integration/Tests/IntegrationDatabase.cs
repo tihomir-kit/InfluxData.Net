@@ -31,8 +31,8 @@ namespace InfluxData.Net.Integration.Tests
             var dbName = _fixture.CreateRandomDbName();
 
             // Act
-            var createResponse = await _fixture.Sut.CreateDatabaseAsync(dbName);
-            var deleteResponse = await _fixture.Sut.DropDatabaseAsync(dbName);
+            var createResponse = await _fixture.Sut.Database.CreateDatabaseAsync(dbName);
+            var deleteResponse = await _fixture.Sut.Database.DropDatabaseAsync(dbName);
 
             // Assert
             createResponse.Success.Should().BeTrue();
@@ -44,11 +44,11 @@ namespace InfluxData.Net.Integration.Tests
         {
             // Arrange
             var dbName = _fixture.CreateRandomDbName();
-            var createResponse = await _fixture.Sut.CreateDatabaseAsync(dbName);
+            var createResponse = await _fixture.Sut.Database.CreateDatabaseAsync(dbName);
             createResponse.Success.Should().BeTrue();
 
             // Act
-            var databases = await _fixture.Sut.ShowDatabasesAsync();
+            var databases = await _fixture.Sut.Database.ShowDatabasesAsync();
 
             // Assert
             databases
@@ -66,14 +66,14 @@ namespace InfluxData.Net.Integration.Tests
         public async Task DbDropSeries_OnExistingSeries_ShouldDropSeries()
         {
             var points = _fixture.CreateMockPoints(1);
-            var writeResponse = await _fixture.Sut.WriteAsync(_fixture.DbName, points);
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
             writeResponse.Success.Should().BeTrue();
 
             var expected = _fixture.Sut.GetFormatter().PointToSerie(points.First());
             // query
             await _fixture.Query(expected);
 
-            var deleteSerieResponse = await _fixture.Sut.DropSeriesAsync(_fixture.DbName, points.First().Name);
+            var deleteSerieResponse = await _fixture.Sut.Database.DropSeriesAsync(_fixture.DbName, points.First().Name);
             deleteSerieResponse.Success.Should().BeTrue();
         }
     }

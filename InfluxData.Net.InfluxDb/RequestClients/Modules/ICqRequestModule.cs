@@ -4,7 +4,7 @@ using InfluxData.Net.InfluxDb.Models;
 
 namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
-    internal interface ICqRequestModule
+    public interface ICqRequestModule
     {
         Task<InfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery continuousQuery);
 

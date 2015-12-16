@@ -66,7 +66,7 @@ namespace InfluxData.Net.Integration.Tests
         [Fact]
         public async Task Influx_OnPing_ShouldReturnVersion()
         {
-            var pong = await _fixture.Sut.PingAsync();
+            var pong = await _fixture.Sut.Client.PingAsync();
 
             pong.Should().NotBeNull();
             pong.Success.Should().BeTrue();
@@ -79,7 +79,7 @@ namespace InfluxData.Net.Integration.Tests
         {
             var points = _fixture.CreateMockPoints(5);
 
-            var writeResponse = await _fixture.Sut.WriteAsync(_fixture.DbName, points);
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
             writeResponse.Success.Should().BeTrue();
         }
 
@@ -90,21 +90,21 @@ namespace InfluxData.Net.Integration.Tests
             points.Single().Timestamp = null;
             points.Single().Fields.Clear();
 
-            Func<Task> act = async () => { await _fixture.Sut.WriteAsync(_fixture.DbName, points); };
+            Func<Task> act = async () => { await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points); };
             act.ShouldThrow<InfluxDbApiException>();
         }
 
         [Fact]
         public void DbQuery_OnInvalidQuery_ShouldThrowException()
         {
-            Func<Task> act = async () => { await _fixture.Sut.QueryAsync(_fixture.DbName, "blah"); };
+            Func<Task> act = async () => { await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "blah"); };
             act.ShouldThrow<InfluxDbApiException>();
         }
 
         [Fact]
         public async Task DbQuery_OnNonExistantSeries_ShouldReturnEmptyList()
         {
-            var result = await _fixture.Sut.QueryAsync(_fixture.DbName, "select * from nonexistentseries");
+            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "select * from nonexistentseries");
             result.Should().NotBeNull();
             result.Should().BeEmpty();
         }
@@ -113,11 +113,11 @@ namespace InfluxData.Net.Integration.Tests
         public async Task DbQuery_OnNonExistantFields_ShouldReturnEmptyList()
         {
             var points = _fixture.CreateMockPoints(1);
-            var response = await _fixture.Sut.WriteAsync(_fixture.DbName, points);
+            var response = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
 
             response.Success.Should().BeTrue();
 
-            var result = await _fixture.Sut.QueryAsync(_fixture.DbName, String.Format("select nonexistentfield from \"{0}\"", points.Single().Name));
+            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, String.Format("select nonexistentfield from \"{0}\"", points.Single().Name));
             result.Should().NotBeNull();
             result.Should().BeEmpty();
         }
@@ -127,11 +127,11 @@ namespace InfluxData.Net.Integration.Tests
         {
             // Arrange
             var points = _fixture.CreateMockPoints(1);
-            var writeResponse = await _fixture.Sut.WriteAsync(_fixture.DbName, points);
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
             writeResponse.Success.Should().BeTrue();
 
             // Act
-            var queryResponse = await _fixture.Sut.QueryAsync(_fixture.DbName, String.Format("select * from \"{0}\" where 0=1", points.Single().Name));
+            var queryResponse = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, String.Format("select * from \"{0}\" where 0=1", points.Single().Name));
 
             // Assert
             queryResponse.Count.Should().Be(0);

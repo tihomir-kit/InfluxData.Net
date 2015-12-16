@@ -28,7 +28,7 @@ namespace InfluxData.Net.Integration.Tests
         {
             ContinuousQuery cq = _fixture.MockContinuousQuery();
 
-            var result = await _fixture.Sut.CreateContinuousQueryAsync(cq);
+            var result = await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
 
@@ -44,9 +44,9 @@ namespace InfluxData.Net.Integration.Tests
         public async Task DeleteContinuousQuery_OnExistingCq_ShouldReturnSuccess()
         {
             var cq = _fixture.MockContinuousQuery();
-            await _fixture.Sut.CreateContinuousQueryAsync(cq);
+            await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
 
-            var result = await _fixture.Sut.DeleteContinuousQueryAsync(_fixture.DbName, "FakeCQ");
+            var result = await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "FakeCQ");
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
         }
@@ -55,9 +55,9 @@ namespace InfluxData.Net.Integration.Tests
         public async Task GetContinuousQueries_OnExistingCq_ShouldReturnCqs()
         {
             var cq = _fixture.MockContinuousQuery();
-            await _fixture.Sut.CreateContinuousQueryAsync(cq);
+            await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
 
-            var result = await _fixture.Sut.GetContinuousQueriesAsync(_fixture.DbName);
+            var result = await _fixture.Sut.ContinuousQuery.GetContinuousQueriesAsync(_fixture.DbName);
             result.Should().NotBeNull();
         }
 
@@ -66,7 +66,7 @@ namespace InfluxData.Net.Integration.Tests
         {
             var backfill = _fixture.MockBackfill();
 
-            var result = await _fixture.Sut.Backfill("Novaerus01", backfill);
+            var result = await _fixture.Sut.ContinuousQuery.Backfill("Novaerus01", backfill);
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
         }

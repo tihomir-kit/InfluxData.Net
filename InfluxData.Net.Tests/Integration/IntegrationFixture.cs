@@ -51,7 +51,7 @@ namespace InfluxData.Net.Integration
 
         public void Dispose()
         {
-            var deleteResponse = this.Sut.DropDatabaseAsync(this.DbName).Result;
+            var deleteResponse = this.Sut.Database.DropDatabaseAsync(this.DbName).Result;
 
             deleteResponse.Success.Should().BeTrue();
         }
@@ -79,18 +79,18 @@ namespace InfluxData.Net.Integration
 
         private async Task CreateEmptyDatabase()
         {
-            var createResponse = await this.Sut.CreateDatabaseAsync(this.DbName);
+            var createResponse = await this.Sut.Database.CreateDatabaseAsync(this.DbName);
             createResponse.Success.Should().BeTrue();
         }
 
         private async Task PurgeFakeDatabases()
         {
-            var dbs = await this.Sut.ShowDatabasesAsync();
+            var dbs = await this.Sut.Database.ShowDatabasesAsync();
 
             foreach (var db in dbs)
             {
                 if (db.Name.StartsWith(_fakeDbPrefix))
-                    await this.Sut.DropDatabaseAsync(db.Name);
+                    await this.Sut.Database.DropDatabaseAsync(db.Name);
             }
         }
 
@@ -109,7 +109,7 @@ namespace InfluxData.Net.Integration
         public async Task<List<Serie>> Query(Serie expected)
         {
             // 0.9.3 need 'group by' to retrieve tags as tags when using select *
-            var result = await this.Sut.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by *", expected.Name));
+            var result = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by *", expected.Name));
 
             result.Should().NotBeNull();
             result.Count().Should().Be(1);

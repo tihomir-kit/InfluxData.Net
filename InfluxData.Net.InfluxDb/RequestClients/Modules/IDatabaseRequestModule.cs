@@ -3,7 +3,7 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 
 namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
-    internal interface IDatabaseRequestModule
+    public interface IDatabaseRequestModule
     {
         Task<InfluxDbApiResponse> CreateDatabase(string dbName);
 

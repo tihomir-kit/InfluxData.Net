@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
-    internal class CqRequestModule : InfluxDbModule, ICqRequestModule
+    internal class CqRequestModule : RequestModuleBase, ICqRequestModule
     {
-        public CqRequestModule(IInfluxDbRequestClient client) 
-            : base(client)
+        public CqRequestModule(IInfluxDbRequestClient requestClient) 
+            : base(requestClient)
         {
         }
 
@@ -29,18 +29,18 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 
             var query = String.Format(QueryStatements.CreateContinuousQuery, continuousQuery.CqName, continuousQuery.DbName, subQuery);
 
-            return await this.Client.GetQueryAsync(RequestUtility.BuildQueryRequestParams(continuousQuery.DbName, query));
+            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(continuousQuery.DbName, query));
         }
 
         public async Task<InfluxDbApiResponse> GetContinuousQueries(string dbName)
         {
-            return await this.Client.GetQueryAsync(RequestUtility.BuildQueryRequestParams(dbName, QueryStatements.ShowContinuousQueries));
+            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, QueryStatements.ShowContinuousQueries));
         }
 
         public async Task<InfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName)
         {
             var query = String.Format(QueryStatements.DropContinuousQuery, cqName, dbName);
-            return await this.Client.GetQueryAsync(RequestUtility.BuildQueryRequestParams(dbName, query));
+            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, query));
         }
 
         public async Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
@@ -55,7 +55,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
             var query = String.Format(QueryStatements.Backfill, 
                 downsamplers, backfill.DsSerieName, backfill.SourceSerieName, filters, timeFrom, timeTo, backfill.Interval, tags, fillType);
 
-            return await this.Client.GetQueryAsync(RequestUtility.BuildQueryRequestParams(dbName, query));
+            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, query));
         }
 
         private static string BuildDownsamplers(IList<string> downsamplers)

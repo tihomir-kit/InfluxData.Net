@@ -34,6 +34,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ClientModules\DatabaseClientModule.cs" />
+    <Compile Include="ClientModules\CqClientModule.cs" />
+    <Compile Include="ClientModules\BasicClientModule.cs" />
+    <Compile Include="ClientModules\ClientModuleBase.cs" />
+    <Compile Include="ClientModules\IDatabaseClientModule.cs" />
+    <Compile Include="ClientModules\IBasicClientModule.cs" />
+    <Compile Include="ClientModules\ICqClientModule.cs" />
     <Compile Include="Constants\QueryParams.cs" />
     <Compile Include="Constants\QueryStatements.cs" />
     <Compile Include="Constants\RequestPaths.cs" />
@@ -41,8 +48,8 @@
     <Compile Include="IInfluxDbClient.cs" />
     <Compile Include="InfluxDbClient.cs" />
     <Compile Include="RequestClients\IInfluxDbRequestClient.cs" />
-    <Compile Include="RequestClients\RequestFactory.cs" />
-    <Compile Include="RequestClients\RequestUtility.cs" />
+    <Compile Include="RequestClients\RequestClientFactory.cs" />
+    <Compile Include="RequestClients\RequestClientUtility.cs" />
     <Compile Include="RequestClients\RequestClient_v_0_9_2.cs" />
     <Compile Include="RequestClients\RequestClient.cs" />
     <Compile Include="RequestClients\Modules\IBasicRequestModule.cs" />
@@ -50,8 +57,8 @@
     <Compile Include="RequestClients\Modules\IDatabaseRequestModule.cs" />
     <Compile Include="RequestClients\Modules\BasicRequestModule.cs" />
     <Compile Include="RequestClients\Modules\CqRequestModule.cs" />
-    <Compile Include="RequestClients\Modules\ClientDatabaseModule.cs" />
-    <Compile Include="RequestClients\Modules\InfluxDbModule.cs" />
+    <Compile Include="RequestClients\Modules\DatabaseRequestModule.cs" />
+    <Compile Include="RequestClients\Modules\RequestModuleBase.cs" />
     <Compile Include="Infrastructure\InfluxDbClientConfiguration.cs" />
     <Compile Include="Formatters\IInfluxDbFormatter.cs" />
     <Compile Include="Formatters\Formatter_v_0_9_2.cs" />
@@ -119,6 +126,7 @@
       <Name>InfluxData.Net.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

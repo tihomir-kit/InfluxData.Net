@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
-    internal interface IInfluxDbRequestClient
+    public interface IInfluxDbRequestClient
     {
         // TODO: perhaps move to a separate module
         Task<InfluxDbApiResponse> PingAsync();

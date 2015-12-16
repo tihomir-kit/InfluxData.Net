@@ -10,25 +10,25 @@ using InfluxData.Net.InfluxDb.Constants;
 
 namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
-    internal class BasicRequestModule : InfluxDbModule, IBasicRequestModule
+    internal class BasicRequestModule : RequestModuleBase, IBasicRequestModule
     {
-        public BasicRequestModule(IInfluxDbRequestClient client) 
-            : base(client)
+        public BasicRequestModule(IInfluxDbRequestClient requestClient) 
+            : base(requestClient)
         {
         }
 
         public async Task<InfluxDbApiWriteResponse> Write(WriteRequest writeRequest, string timePrecision)
         {
             var requestContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
-            var requestParams = RequestUtility.BuildRequestParams(writeRequest.Database, QueryParams.Precision, timePrecision);
-            var result = await this.Client.PostDataAsync(requestParams: requestParams, content: requestContent);
+            var requestParams = RequestClientUtility.BuildRequestParams(writeRequest.Database, QueryParams.Precision, timePrecision);
+            var result = await this.RequestClient.PostDataAsync(requestParams: requestParams, content: requestContent);
 
             return new InfluxDbApiWriteResponse(result.StatusCode, result.Body);
         }
 
         public async Task<InfluxDbApiResponse> Query(string dbName, string query)
         {
-            return await this.Client.GetQueryAsync(requestParams: RequestUtility.BuildQueryRequestParams(dbName, query));
+            return await this.RequestClient.GetQueryAsync(requestParams: RequestClientUtility.BuildQueryRequestParams(dbName, query));
         }
     }
 }
