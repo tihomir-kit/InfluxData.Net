@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using InfluxData.Net.InfluxDb.Infrastructure;
 
-namespace InfluxData.Net.InfluxDb.Clients.Modules
+namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
-    internal interface IInfluxDbDatabaseModule
+    internal interface IDatabaseRequestModule
     {
         Task<InfluxDbApiResponse> CreateDatabase(string dbName);
 

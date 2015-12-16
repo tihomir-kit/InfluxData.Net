@@ -10,7 +10,7 @@ namespace InfluxData.Net.InfluxDb
 {
     // NOTE: potential "regions/classes": https://docs.influxdata.com/influxdb/v0.9/query_language/
 
-    public interface IInfluxDb
+    public interface IInfluxDbClient
     {
         #region Database
 

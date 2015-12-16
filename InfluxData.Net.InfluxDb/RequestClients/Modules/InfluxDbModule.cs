@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace InfluxData.Net.InfluxDb.Clients.Modules
+namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
     internal class InfluxDbModule
     {
-        protected IInfluxDbClient Client { get; private set; }
+        protected IInfluxDbRequestClient Client { get; private set; }
 
-        public InfluxDbModule(IInfluxDbClient client)
+        public InfluxDbModule(IInfluxDbRequestClient client)
         {
             this.Client = client;
         }

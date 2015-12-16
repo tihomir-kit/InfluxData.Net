@@ -12,15 +12,15 @@ using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.Common.Helpers;
 
-namespace InfluxData.Net.InfluxDb.Clients
+namespace InfluxData.Net.InfluxDb.RequestClients
 {
-    internal class InfluxDbClientV09x : IInfluxDbClient
+    internal class RequestClient : IInfluxDbRequestClient
     {
         private const string UserAgent = "InfluxData.Net";
 
         private readonly InfluxDbClientConfiguration _configuration;
 
-        public InfluxDbClientV09x(InfluxDbClientConfiguration configuration)
+        public RequestClient(InfluxDbClientConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -47,12 +47,12 @@ namespace InfluxData.Net.InfluxDb.Clients
             return await RequestAsync(HttpMethod.Get, RequestPaths.Query, content, requestParams, includeAuthToQuery, headerIsBody);
         }
 
-        public async Task<InfluxDbApiResponse> PostWriteAsync(Dictionary<string, string> requestParams)
+        public async Task<InfluxDbApiResponse> PostDataAsync(Dictionary<string, string> requestParams)
         {
-            return await PostWriteAsync(null, requestParams);
+            return await PostDataAsync(null, requestParams);
         }
 
-        public async Task<InfluxDbApiResponse> PostWriteAsync(
+        public async Task<InfluxDbApiResponse> PostDataAsync(
             HttpContent content = null,
             Dictionary<string, string> requestParams = null,
             bool includeAuthToQuery = true,
@@ -63,7 +63,7 @@ namespace InfluxData.Net.InfluxDb.Clients
 
         public virtual IInfluxDbFormatter GetFormatter()
         {
-            return new InfluxDbFormatterV09x();
+            return new Formatter();
         }
 
         private HttpClient GetHttpClient()

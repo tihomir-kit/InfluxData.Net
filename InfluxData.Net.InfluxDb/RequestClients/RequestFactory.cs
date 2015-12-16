@@ -5,29 +5,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace InfluxData.Net.InfluxDb.Clients
+namespace InfluxData.Net.InfluxDb.RequestClients
 {
-    public class InfluxDbClientFactory
+    public class RequestFactory
     {
         private readonly InfluxDbClientConfiguration _configuration;
 
-        public InfluxDbClientFactory(InfluxDbClientConfiguration influxDbClientConfiguration)
+        public RequestFactory(InfluxDbClientConfiguration configuration)
         {
-            _configuration = influxDbClientConfiguration;
+            _configuration = configuration;
         }
 
-        internal IInfluxDbClient GetClient()
+        internal IInfluxDbRequestClient GetRequestClient()
         {
             switch (_configuration.InfluxVersion)
             {
                 case InfluxDbVersion.Latest:
-                    return new InfluxDbClientV09x(_configuration);
                 case InfluxDbVersion.v096:
-                    return new InfluxDbClientV096(_configuration);
                 case InfluxDbVersion.v095:
-                    return new InfluxDbClientV095(_configuration);
+                    return new RequestClient(_configuration);
                 case InfluxDbVersion.v092:
-                    return new InfluxDbClientV092(_configuration);
+                    return new RequestClient_v_0_9_2(_configuration);
                 case InfluxDbVersion.v08x:
                     throw new NotImplementedException("InfluxDB v0.8.x is not supported by InfluxData.Net library.");
                 default:

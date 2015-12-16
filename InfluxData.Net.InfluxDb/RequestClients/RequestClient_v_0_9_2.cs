@@ -1,18 +1,18 @@
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Infrastructure;
 
-namespace InfluxData.Net.InfluxDb.Clients
+namespace InfluxData.Net.InfluxDb.RequestClients
 {
-    internal class InfluxDbClientV095 : InfluxDbClientV09x
+    internal class RequestClient_v_0_9_2 : RequestClient
     {
-        public InfluxDbClientV095(InfluxDbClientConfiguration configuration) 
+        public RequestClient_v_0_9_2(InfluxDbClientConfiguration configuration) 
             : base(configuration)
         {
         }
 
         public override IInfluxDbFormatter GetFormatter()
         {
-            return new InfluxDbFormatterV095();
+            return new Formatter_v_0_9_2();
         }
     }
 }

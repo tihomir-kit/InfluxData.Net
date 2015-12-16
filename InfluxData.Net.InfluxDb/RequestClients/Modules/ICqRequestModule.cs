@@ -2,9 +2,9 @@
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 
-namespace InfluxData.Net.InfluxDb.Clients.Modules
+namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
-    internal interface IInfluxDbContinuousModule
+    internal interface ICqRequestModule
     {
         Task<InfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery continuousQuery);
 

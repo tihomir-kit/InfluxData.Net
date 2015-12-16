@@ -8,11 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InfluxData.Net.InfluxDb.Clients.Modules
+namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
-    internal class InfluxDbContinuousModule : InfluxDbModule, IInfluxDbContinuousModule
+    internal class CqRequestModule : InfluxDbModule, ICqRequestModule
     {
-        public InfluxDbContinuousModule(IInfluxDbClient client) 
+        public CqRequestModule(IInfluxDbRequestClient client) 
             : base(client)
         {
         }
@@ -29,18 +29,18 @@ namespace InfluxData.Net.InfluxDb.Clients.Modules
 
             var query = String.Format(QueryStatements.CreateContinuousQuery, continuousQuery.CqName, continuousQuery.DbName, subQuery);
 
-            return await this.Client.GetQueryAsync(InfluxDbClientUtility.BuildQueryRequestParams(continuousQuery.DbName, query));
+            return await this.Client.GetQueryAsync(RequestUtility.BuildQueryRequestParams(continuousQuery.DbName, query));
         }
 
         public async Task<InfluxDbApiResponse> GetContinuousQueries(string dbName)
         {
-            return await this.Client.GetQueryAsync(InfluxDbClientUtility.BuildQueryRequestParams(dbName, QueryStatements.ShowContinuousQueries));
+            return await this.Client.GetQueryAsync(RequestUtility.BuildQueryRequestParams(dbName, QueryStatements.ShowContinuousQueries));
         }
 
         public async Task<InfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName)
         {
             var query = String.Format(QueryStatements.DropContinuousQuery, cqName, dbName);
-            return await this.Client.GetQueryAsync(InfluxDbClientUtility.BuildQueryRequestParams(dbName, query));
+            return await this.Client.GetQueryAsync(RequestUtility.BuildQueryRequestParams(dbName, query));
         }
 
         public async Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
@@ -55,7 +55,7 @@ namespace InfluxData.Net.InfluxDb.Clients.Modules
             var query = String.Format(QueryStatements.Backfill, 
                 downsamplers, backfill.DsSerieName, backfill.SourceSerieName, filters, timeFrom, timeTo, backfill.Interval, tags, fillType);
 
-            return await this.Client.GetQueryAsync(InfluxDbClientUtility.BuildQueryRequestParams(dbName, query));
+            return await this.Client.GetQueryAsync(RequestUtility.BuildQueryRequestParams(dbName, query));
         }
 
         private static string BuildDownsamplers(IList<string> downsamplers)

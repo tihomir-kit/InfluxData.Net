@@ -23,7 +23,7 @@ namespace InfluxData.Net.Integration
         public static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
         private MockRepository _mockRepository;
 
-        public IInfluxDb Sut { get; set; }
+        public IInfluxDbClient Sut { get; set; }
 
         public string DbName { get; set; }
 
@@ -35,7 +35,7 @@ namespace InfluxData.Net.Integration
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out influxVersion))
                 influxVersion = InfluxDbVersion.v096;
 
-            this.Sut = new InfluxDb.InfluxDb(
+            this.Sut = new InfluxDb.InfluxDbClient(
                 ConfigurationManager.AppSettings.Get("url"),
                 ConfigurationManager.AppSettings.Get("username"),
                 ConfigurationManager.AppSettings.Get("password"),

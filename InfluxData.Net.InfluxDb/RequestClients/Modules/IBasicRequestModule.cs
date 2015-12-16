@@ -2,9 +2,9 @@
 using InfluxData.Net.InfluxDb.Models;
 using System.Threading.Tasks;
 
-namespace InfluxData.Net.InfluxDb.Clients.Modules
+namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
-    internal interface IInfluxDbBasicModule
+    internal interface IBasicRequestModule
     {
         Task<InfluxDbApiResponse> Query(string dbName, string query);
 

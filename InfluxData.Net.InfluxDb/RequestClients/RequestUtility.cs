@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using InfluxData.Net.InfluxDb.Constants;
 
-namespace InfluxData.Net.InfluxDb.Clients
+namespace InfluxData.Net.InfluxDb.RequestClients
 {
-    internal static class InfluxDbClientUtility
+    internal static class RequestUtility
     {
         public static Dictionary<string, string> BuildQueryRequestParams(string query)
         {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace InfluxData.Net.InfluxDb.Constants
 {
-    public class RequestPaths
+    internal static class RequestPaths
     {
         internal const string Write = "write";
         internal const string Query = "query";
