@@ -5,14 +5,14 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
     public interface IDatabaseRequestModule
     {
-        Task<InfluxDbApiResponse> CreateDatabase(string dbName);
+        Task<IInfluxDbApiResponse> CreateDatabase(string dbName);
 
-        Task<InfluxDbApiResponse> DropDatabase(string dbName);
+        Task<IInfluxDbApiResponse> DropDatabase(string dbName);
 
-        Task<InfluxDbApiResponse> DropSeries(string dbName, string serieName);
+        Task<IInfluxDbApiResponse> DropSeries(string dbName, string serieName);
 
-        Task<InfluxDbApiResponse> ShowDatabases();
+        Task<IInfluxDbApiResponse> ShowDatabases();
 
-        Task<InfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication);
+        Task<IInfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication);
     }
 }

@@ -23,12 +23,12 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _basicRequestModule = basicRequestModule;
         }
 
-        public async Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default")
+        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default")
         {
             return await WriteAsync(dbName, new[] { point }, retenionPolicy);
         }
 
-        public async Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default")
+        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default")
         {
             var request = new WriteRequest(_requestClient.GetFormatter())
             {

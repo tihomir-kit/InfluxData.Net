@@ -17,7 +17,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
         {
         }
 
-        public async Task<InfluxDbApiWriteResponse> Write(WriteRequest writeRequest, string timePrecision)
+        public async Task<IInfluxDbApiResponse> Write(WriteRequest writeRequest, string timePrecision)
         {
             var requestContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
             var requestParams = RequestClientUtility.BuildRequestParams(writeRequest.Database, QueryParams.Precision, timePrecision);
@@ -26,7 +26,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
             return new InfluxDbApiWriteResponse(result.StatusCode, result.Body);
         }
 
-        public async Task<InfluxDbApiResponse> Query(string dbName, string query)
+        public async Task<IInfluxDbApiResponse> Query(string dbName, string query)
         {
             return await this.RequestClient.GetQueryAsync(requestParams: RequestClientUtility.BuildQueryRequestParams(dbName, query));
         }

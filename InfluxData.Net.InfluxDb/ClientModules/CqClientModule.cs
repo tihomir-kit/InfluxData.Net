@@ -22,7 +22,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _cqRequestModule = cqRequestModule;
         }
 
-        public async Task<InfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery)
+        public async Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery)
         {
             return await _cqRequestModule.CreateContinuousQuery(continuousQuery);
         }
@@ -48,12 +48,12 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series != null ? series.Where(p => p.Name == dbName).FirstOrDefault() : new Serie();
         }
 
-        public async Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
+        public async Task<IInfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
         {
             return await _cqRequestModule.DeleteContinuousQuery(dbName, cqName);
         }
 
-        public async Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
+        public async Task<IInfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
         {
             return await _cqRequestModule.Backfill(dbName, backfill);
         }

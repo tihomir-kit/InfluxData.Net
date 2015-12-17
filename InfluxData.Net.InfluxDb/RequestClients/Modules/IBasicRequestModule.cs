@@ -6,8 +6,8 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
     public interface IBasicRequestModule
     {
-        Task<InfluxDbApiResponse> Query(string dbName, string query);
+        Task<IInfluxDbApiResponse> Query(string dbName, string query);
 
-        Task<InfluxDbApiWriteResponse> Write(WriteRequest writeRequest, string timePrecision);
+        Task<IInfluxDbApiResponse> Write(WriteRequest writeRequest, string timePrecision);
     }
 }

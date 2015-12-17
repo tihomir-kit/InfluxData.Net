@@ -47,6 +47,8 @@
     <Compile Include="Enums\FillType.cs" />
     <Compile Include="IInfluxDbClient.cs" />
     <Compile Include="InfluxDbClient.cs" />
+    <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
+    <Compile Include="Infrastructure\IInfluxDbApiResponse.cs" />
     <Compile Include="RequestClients\IInfluxDbRequestClient.cs" />
     <Compile Include="RequestClients\RequestClientFactory.cs" />
     <Compile Include="RequestClients\RequestClientUtility.cs" />
@@ -64,7 +66,7 @@
     <Compile Include="Formatters\Formatter_v_0_9_2.cs" />
     <Compile Include="Formatters\Formatter.cs" />
     <Compile Include="Infrastructure\InfluxDbException.cs" />
-    <Compile Include="Infrastructure\InfluxDbResponse.cs" />
+    <Compile Include="Infrastructure\InfluxDbApiResponse.cs" />
     <Compile Include="Infrastructure\InfluxDbResponseExtensions.cs" />
     <Compile Include="Models\Backfill.cs" />
     <Compile Include="Models\ContinuousQuery.cs" />

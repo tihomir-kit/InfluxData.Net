@@ -17,7 +17,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
         {
         }
 
-        public async Task<InfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery continuousQuery)
+        public async Task<IInfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery continuousQuery)
         {
             var downsamplers = BuildDownsamplers(continuousQuery.Downsamplers);
             var tags = BuildTags(continuousQuery.Tags);
@@ -32,18 +32,18 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
             return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(continuousQuery.DbName, query));
         }
 
-        public async Task<InfluxDbApiResponse> GetContinuousQueries(string dbName)
+        public async Task<IInfluxDbApiResponse> GetContinuousQueries(string dbName)
         {
             return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, QueryStatements.ShowContinuousQueries));
         }
 
-        public async Task<InfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName)
+        public async Task<IInfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName)
         {
             var query = String.Format(QueryStatements.DropContinuousQuery, cqName, dbName);
             return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, query));
         }
 
-        public async Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
+        public async Task<IInfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
         {
             var downsamplers = BuildDownsamplers(backfill.Downsamplers);
             var filters = BuildFilters(backfill.Filters);

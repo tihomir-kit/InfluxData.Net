@@ -18,9 +18,9 @@ namespace InfluxData.Net.InfluxDb.RequestClients
     {
         private const string UserAgent = "InfluxData.Net";
 
-        private readonly InfluxDbClientConfiguration _configuration;
+        private readonly IInfluxDbClientConfiguration _configuration;
 
-        public RequestClient(InfluxDbClientConfiguration configuration)
+        public RequestClient(IInfluxDbClientConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -28,17 +28,17 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         /// <summary>Pings the server.</summary>
         /// <param name="errorHandlers">The error handlers.</param>
         /// <returns></returns>
-        public async Task<InfluxDbApiResponse> PingAsync()
+        public async Task<IInfluxDbApiResponse> PingAsync()
         {
             return await RequestAsync(HttpMethod.Get, RequestPaths.Ping, includeAuthToQuery: false, headerIsBody: true);
         }
 
-        public async Task<InfluxDbApiResponse> GetQueryAsync(Dictionary<string, string> requestParams)
+        public async Task<IInfluxDbApiResponse> GetQueryAsync(Dictionary<string, string> requestParams)
         {
             return await GetQueryAsync(null, requestParams);
         }
 
-        public async Task<InfluxDbApiResponse> GetQueryAsync(
+        public async Task<IInfluxDbApiResponse> GetQueryAsync(
             HttpContent content = null,
             Dictionary<string, string> requestParams = null,
             bool includeAuthToQuery = true,
@@ -47,12 +47,12 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await RequestAsync(HttpMethod.Get, RequestPaths.Query, content, requestParams, includeAuthToQuery, headerIsBody);
         }
 
-        public async Task<InfluxDbApiResponse> PostDataAsync(Dictionary<string, string> requestParams)
+        public async Task<IInfluxDbApiResponse> PostDataAsync(Dictionary<string, string> requestParams)
         {
             return await PostDataAsync(null, requestParams);
         }
 
-        public async Task<InfluxDbApiResponse> PostDataAsync(
+        public async Task<IInfluxDbApiResponse> PostDataAsync(
             HttpContent content = null,
             Dictionary<string, string> requestParams = null,
             bool includeAuthToQuery = true,
@@ -71,7 +71,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return new HttpClient();
         }
 
-        private async Task<InfluxDbApiResponse> RequestAsync(
+        private async Task<IInfluxDbApiResponse> RequestAsync(
             HttpMethod method,
             string path,
             HttpContent content = null,

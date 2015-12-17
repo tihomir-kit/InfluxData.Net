@@ -16,30 +16,30 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
         {
         }
 
-        public async Task<InfluxDbApiResponse> CreateDatabase(string dbName)
+        public async Task<IInfluxDbApiResponse> CreateDatabase(string dbName)
         {
             var query = String.Format(QueryStatements.CreateDatabase, dbName);
             return await this.RequestClient.GetQueryAsync(requestParams: RequestClientUtility.BuildQueryRequestParams(query));
         }
 
-        public async Task<InfluxDbApiResponse> DropDatabase(string dbName)
+        public async Task<IInfluxDbApiResponse> DropDatabase(string dbName)
         {
             var query = String.Format(QueryStatements.DropDatabase, dbName);
             return await this.RequestClient.GetQueryAsync(requestParams: RequestClientUtility.BuildQueryRequestParams(query));
         }
 
-        public async Task<InfluxDbApiResponse> ShowDatabases()
+        public async Task<IInfluxDbApiResponse> ShowDatabases()
         {
             return await this.RequestClient.GetQueryAsync(requestParams: RequestClientUtility.BuildQueryRequestParams(QueryStatements.ShowDatabases));
         }
 
-        public async Task<InfluxDbApiResponse> DropSeries(string dbName, string serieName)
+        public async Task<IInfluxDbApiResponse> DropSeries(string dbName, string serieName)
         {
             var query = String.Format(QueryStatements.DropSeries, serieName);
             return await this.RequestClient.GetQueryAsync(requestParams: RequestClientUtility.BuildQueryRequestParams(query));
         }
 
-        public async Task<InfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication)
+        public async Task<IInfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication)
         {
             var requestParams = RequestClientUtility.BuildQueryRequestParams(String.Format(QueryStatements.AlterRetentionPolicy, policyName, dbName, duration, replication));
 

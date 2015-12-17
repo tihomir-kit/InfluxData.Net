@@ -7,7 +7,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public interface ICqClientModule
     {
-        Task<InfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery);
+        Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery);
 
         /// <summary>
         /// Describe all contious queries in a database.
@@ -22,7 +22,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">The name of the database for which this query should be deleted.</param>
         /// <param name="cqName">The id of the query.</param>
         /// <returns></returns>
-        Task<InfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName);
+        Task<IInfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName);
 
         /// <summary>
         /// 
@@ -31,6 +31,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="backfill"></param>
         /// <returns></returns>
         /// <remarks>PLEASE EXCERSISE CAUTION WITH THIS CALL. Not specifying additional filters might cause your CPU to go to 100% for a long time.</remarks>
-        Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill);
+        Task<IInfluxDbApiResponse> Backfill(string dbName, Backfill backfill);
     }
 }

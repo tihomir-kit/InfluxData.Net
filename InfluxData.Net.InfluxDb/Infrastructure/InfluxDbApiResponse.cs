@@ -2,7 +2,7 @@
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
 {
-    public class InfluxDbApiResponse
+    public class InfluxDbApiResponse : IInfluxDbApiResponse
     {
         public InfluxDbApiResponse(HttpStatusCode statusCode, string body)
         {

@@ -4,7 +4,7 @@ using InfluxData.Net.Common.Helpers;
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
 {
-    public class InfluxDbClientConfiguration
+    public class InfluxDbClientConfiguration : IInfluxDbClientConfiguration
     {
         public Uri EndpointBaseUri { get; internal set; }
 

@@ -42,11 +42,9 @@ namespace InfluxData.Net.InfluxDb
         public InfluxDbClient(string url, string username, string password, InfluxDbVersion influxVersion)
              : this(new InfluxDbClientConfiguration(new Uri(url), username, password, influxVersion))
         {
-            Validate.NotNullOrEmpty(url, "The URL may not be null or empty.");
-            Validate.NotNullOrEmpty(username, "The username may not be null or empty.");
         }
 
-        public InfluxDbClient(InfluxDbClientConfiguration configuration)
+        public InfluxDbClient(IInfluxDbClientConfiguration configuration)
         {
             var requestClientFactory = new RequestClientFactory(configuration);
             _requestClient = requestClientFactory.GetRequestClient();

@@ -13,14 +13,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// </summary>
         /// <param name="dbName">The name of the new database</param>
         /// <returns></returns>
-        Task<InfluxDbApiResponse> CreateDatabaseAsync(string dbName);
+        Task<IInfluxDbApiResponse> CreateDatabaseAsync(string dbName);
 
         /// <summary>
         /// Drop a database.
         /// </summary>
         /// <param name="dbName">The name of the database to delete.</param>
         /// <returns></returns>
-        Task<InfluxDbApiResponse> DropDatabaseAsync(string dbName);
+        Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName);
 
         /// <summary>
         /// Describe all available databases.
@@ -34,8 +34,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">The database in which the given serie should be deleted.</param>
         /// <param name="serieName">The name of the serie.</param>
         /// <returns></returns>
-        Task<InfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName);
+        Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName);
 
-        Task<InfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication);
+        Task<IInfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication);
     }
 }

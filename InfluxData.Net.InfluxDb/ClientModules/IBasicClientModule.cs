@@ -13,14 +13,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="point">A serie <see cref="{Point}" />.</param>
         /// <param name="retenionPolicy">The retenion policy.</param>
         /// <returns></returns>
-        Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default");
+        Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default");
 
         /// <summary>Write multiple serie points to the given database.</summary>
         /// <param name="dbName">The name of the database to write to.</param>
         /// <param name="points">A serie <see cref="Array{Point}" />.</param>
         /// <param name="retenionPolicy">The retenion policy.</param>
         /// <returns></returns>
-        Task<InfluxDbApiWriteResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default");
+        Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default");
 
         /// <summary>Execute a query agains a database.</summary>
         /// <param name="dbName">The name of the database.</param>

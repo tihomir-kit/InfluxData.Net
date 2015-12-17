@@ -6,12 +6,12 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {
     public interface ICqRequestModule
     {
-        Task<InfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery continuousQuery);
+        Task<IInfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery continuousQuery);
 
-        Task<InfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName);
+        Task<IInfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName);
 
-        Task<InfluxDbApiResponse> GetContinuousQueries(string dbName);
+        Task<IInfluxDbApiResponse> GetContinuousQueries(string dbName);
 
-        Task<InfluxDbApiResponse> Backfill(string dbName, Backfill backfill);
+        Task<IInfluxDbApiResponse> Backfill(string dbName, Backfill backfill);
     }
 }

@@ -9,9 +9,9 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 {
     public class RequestClientFactory
     {
-        private readonly InfluxDbClientConfiguration _configuration;
+        private readonly IInfluxDbClientConfiguration _configuration;
 
-        public RequestClientFactory(InfluxDbClientConfiguration configuration)
+        public RequestClientFactory(IInfluxDbClientConfiguration configuration)
         {
             _configuration = configuration;
         }

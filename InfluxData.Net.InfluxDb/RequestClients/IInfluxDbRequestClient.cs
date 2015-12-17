@@ -9,16 +9,16 @@ namespace InfluxData.Net.InfluxDb.RequestClients
     public interface IInfluxDbRequestClient
     {
         // TODO: perhaps move to a separate module
-        Task<InfluxDbApiResponse> PingAsync();
+        Task<IInfluxDbApiResponse> PingAsync();
 
         IInfluxDbFormatter GetFormatter();
 
-        Task<InfluxDbApiResponse> GetQueryAsync(Dictionary<string, string> requestParams);
+        Task<IInfluxDbApiResponse> GetQueryAsync(Dictionary<string, string> requestParams);
 
-        Task<InfluxDbApiResponse> GetQueryAsync(HttpContent content = null, Dictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
+        Task<IInfluxDbApiResponse> GetQueryAsync(HttpContent content = null, Dictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
 
-        Task<InfluxDbApiResponse> PostDataAsync(Dictionary<string, string> requestParams);
+        Task<IInfluxDbApiResponse> PostDataAsync(Dictionary<string, string> requestParams);
 
-        Task<InfluxDbApiResponse> PostDataAsync(HttpContent content = null, Dictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
+        Task<IInfluxDbApiResponse> PostDataAsync(HttpContent content = null, Dictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
     }
 }
