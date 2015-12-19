@@ -85,7 +85,7 @@ namespace InfluxData.Net.Integration
 
         private async Task PurgeFakeDatabases()
         {
-            var dbs = await this.Sut.Database.ShowDatabasesAsync();
+            var dbs = await this.Sut.Database.GetDatabasesAsync();
 
             foreach (var db in dbs)
             {

@@ -17,10 +17,10 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
         {
         }
 
-        public async Task<IInfluxDbApiResponse> Write(WriteRequest writeRequest, string timePrecision)
+        public async Task<IInfluxDbApiResponse> Write(WriteRequest writeRequest)
         {
             var requestContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
-            var requestParams = RequestClientUtility.BuildRequestParams(writeRequest.Database, QueryParams.Precision, timePrecision);
+            var requestParams = RequestClientUtility.BuildRequestParams(writeRequest.DbName, QueryParams.Precision, writeRequest.Precision);
             var result = await this.RequestClient.PostDataAsync(requestParams: requestParams, content: requestContent);
 
             return new InfluxDbApiWriteResponse(result.StatusCode, result.Body);

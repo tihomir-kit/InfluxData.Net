@@ -9,33 +9,31 @@ namespace InfluxData.Net.InfluxDb.ClientModules
     public interface IDatabaseClientModule
     {
         /// <summary>
-        /// Create a new Database.
+        /// Creates a new Database.
         /// </summary>
         /// <param name="dbName">The name of the new database</param>
         /// <returns></returns>
         Task<IInfluxDbApiResponse> CreateDatabaseAsync(string dbName);
 
         /// <summary>
-        /// Drop a database.
+        /// Gets all available databases.
+        /// </summary>
+        /// <returns>A list of all databases.</returns>
+        Task<List<DatabaseResponse>> GetDatabasesAsync();
+
+        /// <summary>
+        /// Drops a database.
         /// </summary>
         /// <param name="dbName">The name of the database to delete.</param>
         /// <returns></returns>
         Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName);
 
         /// <summary>
-        /// Describe all available databases.
+        /// Deletes all data points from a serie.
         /// </summary>
-        /// <returns>A list of all Databases</returns>
-        Task<List<DatabaseResponse>> ShowDatabasesAsync();
-
-        /// <summary>
-        /// Delete a serie.
-        /// </summary>
-        /// <param name="dbName">The database in which the given serie should be deleted.</param>
-        /// <param name="serieName">The name of the serie.</param>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="serieName">Serie name.</param>
         /// <returns></returns>
         Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName);
-
-        Task<IInfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication);
     }
 }

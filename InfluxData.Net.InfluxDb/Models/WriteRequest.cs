@@ -7,7 +7,7 @@ using System.Linq;
 namespace InfluxData.Net.InfluxDb.Models
 {
     /// <summary>
-    /// Represents an API write request
+    /// Represents an InfluxDb write request.
     /// </summary>
     public class WriteRequest
     {
@@ -18,13 +18,29 @@ namespace InfluxData.Net.InfluxDb.Models
             _formatter = formatter;
         }
 
-        public string Database { get; set; }
+        /// <summary>
+        /// Database name.
+        /// </summary>
+        public string DbName { get; set; }
 
-        public string RetentionPolicy { get; set; }
-
+        /// <summary>
+        /// Points to write.
+        /// </summary>
         public Point[] Points { get; set; }
 
-        /// <summary>Gets the set of points in line protocol format.</summary>
+        /// <summary>
+        /// Pont data time precision.
+        /// </summary>
+        public string Precision { get; set; }
+
+        /// <summary>
+        /// Data retention policy.
+        /// </summary>
+        public string RetentionPolicy { get; set; }
+
+        /// <summary>
+        /// Gets the set of points in line protocol format.
+        /// </summary>
         /// <returns></returns>
         public string GetLines()
         {

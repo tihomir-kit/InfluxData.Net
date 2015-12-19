@@ -17,6 +17,8 @@ namespace InfluxData.Net.InfluxDb
 
         IDatabaseClientModule Database { get; }
 
+        IRetentionClientModule Retention { get; }
+
         ICqClientModule ContinuousQuery { get; }
 
         IInfluxDbFormatter GetFormatter();

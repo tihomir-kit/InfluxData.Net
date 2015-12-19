@@ -34,10 +34,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ClientModules\RetentionClientModule.cs" />
     <Compile Include="ClientModules\DatabaseClientModule.cs" />
     <Compile Include="ClientModules\CqClientModule.cs" />
     <Compile Include="ClientModules\BasicClientModule.cs" />
     <Compile Include="ClientModules\ClientModuleBase.cs" />
+    <Compile Include="ClientModules\IRetentionClientModule.cs" />
     <Compile Include="ClientModules\IDatabaseClientModule.cs" />
     <Compile Include="ClientModules\IBasicClientModule.cs" />
     <Compile Include="ClientModules\ICqClientModule.cs" />
@@ -50,6 +52,8 @@
     <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
     <Compile Include="Infrastructure\IInfluxDbApiResponse.cs" />
     <Compile Include="RequestClients\IInfluxDbRequestClient.cs" />
+    <Compile Include="RequestClients\Modules\RetentionRequestModule.cs" />
+    <Compile Include="RequestClients\Modules\IRetentionRequestModule.cs" />
     <Compile Include="RequestClients\RequestClientFactory.cs" />
     <Compile Include="RequestClients\RequestClientUtility.cs" />
     <Compile Include="RequestClients\RequestClient_v_0_9_2.cs" />

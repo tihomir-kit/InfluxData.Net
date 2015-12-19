@@ -32,12 +32,13 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         {
             var request = new WriteRequest(_requestClient.GetFormatter())
             {
-                Database = dbName,
+                DbName = dbName,
                 Points = points,
-                RetentionPolicy = retenionPolicy
+                RetentionPolicy = retenionPolicy,
+                Precision = precision.GetParamValue()
             };
 
-            return await _basicRequestModule.Write(request, precision.GetParamValue());
+            return await _basicRequestModule.Write(request);
         }
 
         public async Task<List<Serie>> QueryAsync(string dbName, string query)

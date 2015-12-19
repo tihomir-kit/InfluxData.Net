@@ -5,7 +5,8 @@ using System.Linq;
 namespace InfluxData.Net.InfluxDb.Models.Responses
 {
     /// <summary>
-    /// A class representing a time series point for db reads/queries
+    /// Represents a time series point for db reads (fetch queries).
+    /// InfluxDb by convention returns all data represented as Serie objects.
     /// </summary>
     public class Serie
     {
@@ -14,17 +15,24 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
             Tags = new Dictionary<string, string>();
         }
 
-        private Serie(string name)
-        {
-            Name = name;
-        }
-
+        /// <summary>
+        /// Serie name.
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Serie tags.
+        /// </summary>
         public Dictionary<string, string> Tags { get; set; }
 
+        /// <summary>
+        /// List of serie fields.
+        /// </summary>
         public string[] Columns { get; set; }
 
+        /// <summary>
+        /// Serie values.
+        /// </summary>
         public object[][] Values { get; set; }
     }
 }

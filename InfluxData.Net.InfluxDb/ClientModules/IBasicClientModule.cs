@@ -10,7 +10,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
     public interface IBasicClientModule
     {
         /// <summary>
-        /// Writes a single serie point into a database.
+        /// Writes a single serie point to the database.
         /// </summary>
         /// <param name="dbName">Database name.</param>
         /// <param name="point">A serie <see cref="{Point}" />.</param>
@@ -19,7 +19,9 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <returns></returns>
         Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds);
 
-        /// <summary>Writes multiple serie points to a database.</summary>
+        /// <summary>
+        /// Writes multiple serie points to the database.
+        /// </summary>
         /// <param name="dbName">Database name.</param>
         /// <param name="points">A serie <see cref="Array{Point}" />.</param>
         /// <param name="retenionPolicy">The retenion policy.</param>
@@ -27,16 +29,16 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <returns></returns>
         Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds);
 
-        /// <summary>Execute a query agains the database.</summary>
+        /// <summary>
+        /// Execute a query agains the database.
+        /// </summary>
         /// <param name="dbName">Database name.</param>
-        /// <param name="query">The query to execute. For language specification please see
-        /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
-        /// <returns>A list of Series that match the query.</returns>
-        /// <exception cref="InfluxDbApiException"></exception>
+        /// <param name="query">Query to execute.</param>
+        /// <returns></returns>
         Task<List<Serie>> QueryAsync(string dbName, string query);
 
         /// <summary>
-        /// Ping this InfluxDB.
+        /// Pings the InfluxDb server.
         /// </summary>
         /// <returns>Response of the ping execution (success, dbVersion, response time).</returns>
         Task<Pong> PingAsync();

@@ -25,14 +25,9 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return await _databaseRequestModule.CreateDatabase(dbName);
         }
 
-        public async Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName)
+        public async Task<List<DatabaseResponse>> GetDatabasesAsync()
         {
-            return await _databaseRequestModule.DropDatabase(dbName);
-        }
-
-        public async Task<List<DatabaseResponse>> ShowDatabasesAsync()
-        {
-            var response = await _databaseRequestModule.ShowDatabases();
+            var response = await _databaseRequestModule.GetDatabases();
             var queryResult = response.ReadAs<QueryResponse>();
             var serie = queryResult.Results.Single().Series.Single();
             var databases = new List<DatabaseResponse>();
@@ -48,14 +43,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return databases;
         }
 
+        public async Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName)
+        {
+            return await _databaseRequestModule.DropDatabase(dbName);
+        }
+
         public async Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName)
         {
             return await _databaseRequestModule.DropSeries(dbName, serieName);
-        }
-
-        public async Task<IInfluxDbApiResponse> AlterRetentionPolicy(string policyName, string dbName, string duration, int replication)
-        {
-            return await _databaseRequestModule.AlterRetentionPolicy(policyName, dbName, duration, replication);
         }
     }
 }

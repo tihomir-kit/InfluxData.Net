@@ -21,12 +21,12 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return BuildRequestParams(dbName, QueryParams.Query, query);
         }
 
-        internal static Dictionary<string, string> BuildRequestParams(string dbName, string requestType, string query)
+        internal static Dictionary<string, string> BuildRequestParams(string dbName, string paramKey, string paramValue)
         {
             return new Dictionary<string, string>
             {
                 { QueryParams.Db, dbName },
-                { requestType, query }
+                { paramKey, paramValue }
             };
         }
     }

@@ -47,7 +47,7 @@ namespace InfluxData.Net.Integration.Tests
             createResponse.Success.Should().BeTrue();
 
             // Act
-            var databases = await _fixture.Sut.Database.ShowDatabasesAsync();
+            var databases = await _fixture.Sut.Database.GetDatabasesAsync();
 
             // Assert
             databases

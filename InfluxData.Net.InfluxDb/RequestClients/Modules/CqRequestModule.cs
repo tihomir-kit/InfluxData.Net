@@ -33,7 +33,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 
         public async Task<IInfluxDbApiResponse> GetContinuousQueries(string dbName)
         {
-            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, QueryStatements.ShowContinuousQueries));
+            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, QueryStatements.GetContinuousQueries));
         }
 
         public async Task<IInfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName)
