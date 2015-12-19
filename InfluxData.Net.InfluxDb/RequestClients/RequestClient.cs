@@ -14,7 +14,7 @@ using InfluxData.Net.Common.Helpers;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
-    internal class RequestClient : IInfluxDbRequestClient
+    public class RequestClient : IInfluxDbRequestClient
     {
         private const string UserAgent = "InfluxData.Net";
 

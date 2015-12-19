@@ -23,9 +23,8 @@ namespace InfluxData.Net.Integration.Tests
             _fixture.TestTearDown();
         }
 
-
         [Fact]
-        public async Task Influx_OnFakeDbName_ShouldCreateAndDropDb()
+        public async Task Database_OnCreateAndDrop_ShouldReturnSuccess()
         {
             // Arrange
             var dbName = _fixture.CreateRandomDbName();
@@ -40,7 +39,7 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public async Task DbShowDatabases_OnDatabaseExists_ShouldReturnDatabaseList()
+        public async Task DatabaseShow_OnDatabaseExists_ShouldReturnDatabaseList()
         {
             // Arrange
             var dbName = _fixture.CreateRandomDbName();
@@ -63,7 +62,7 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public async Task DbDropSeries_OnExistingSeries_ShouldDropSeries()
+        public async Task DatabaseDropSeries_OnExistingSeries_ShouldDropSeries()
         {
             var points = _fixture.CreateMockPoints(1);
             var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);

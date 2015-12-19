@@ -8,10 +8,9 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 {
     public interface IInfluxDbRequestClient
     {
-        // TODO: perhaps move to a separate module
-        Task<IInfluxDbApiResponse> PingAsync();
-
         IInfluxDbFormatter GetFormatter();
+
+        Task<IInfluxDbApiResponse> PingAsync();
 
         Task<IInfluxDbApiResponse> GetQueryAsync(Dictionary<string, string> requestParams);
 

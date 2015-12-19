@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace InfluxData.Net.Common.Helpers
 {
+    /// <summary>
+    /// Validation class which throws Argument exceptions if checks fail.
+    /// </summary>
     public static class Validate
     {
         public static void NotNull<T>(T value, string paramName) where T : class

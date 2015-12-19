@@ -21,15 +21,12 @@ namespace InfluxData.Net.InfluxDb.Models
 
         public Dictionary<string, object> Fields { get; set; }
 
-        public TimeUnit Precision { get; set; }
-
         public DateTime? Timestamp { get; set; }
 
         public Point()
         {
             Tags = new Dictionary<string, object>();
             Fields = new Dictionary<string, object>();
-            Precision = TimeUnit.Milliseconds;
         }
     }
 }

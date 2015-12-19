@@ -1,12 +1,30 @@
+using InfluxData.Net.Common.Helpers;
+
 namespace InfluxData.Net.Common.Enums
 {
+    /// <summary>
+    /// Time unit used in writing data points or parsing series.
+    /// </summary>
     public enum TimeUnit
     {
-        Seconds,
+        // NOTE: currently not supported
+        //[ParamValue("n")]
+        //Nanoseconds,
+
+        // NOTE: currently not supported
+        //[ParamValue("u")]
+        //Microseconds,
+
+        [ParamValue("ms")]
         Milliseconds,
-        Microseconds,
+
+        [ParamValue("s")]
+        Seconds,
+
+        [ParamValue("m")]
         Minutes,
-        Hours,
-        Days
+
+        [ParamValue("h")]
+        Hours
     }
 }

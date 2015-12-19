@@ -34,13 +34,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Enums\InfluxDbVersion.cs" />
     <Compile Include="Enums\TimeUnit.cs" />
+    <Compile Include="Helpers\EnumDescriptionAttribute.cs" />
     <Compile Include="Helpers\HttpUtility.cs" />
     <Compile Include="Helpers\ObjectExtensions.cs" />
     <Compile Include="Helpers\Stopwatch.cs" />
-    <Compile Include="Helpers\TimeUnitUtility.cs" />
     <Compile Include="Helpers\Validate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

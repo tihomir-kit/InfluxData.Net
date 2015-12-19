@@ -23,7 +23,6 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
             var tags = BuildTags(continuousQuery.Tags);
             var fillType = BuildFillType(continuousQuery.FillType);
 
-            // TODO: perhaps extract subquery and query building to formatter
             var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery, 
                 downsamplers, continuousQuery.DsSerieName, continuousQuery.SourceSerieName, continuousQuery.Interval, tags, fillType);
 

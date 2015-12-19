@@ -2,6 +2,9 @@
 
 namespace InfluxData.Net.Common.Helpers
 {
+    /// <summary>
+    /// Used by <see cref="{PingAsync}"/> to measure the response time.
+    /// </summary>
     public sealed class Stopwatch
     {
         private long _elapsed;

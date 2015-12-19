@@ -3,7 +3,7 @@ using System.Net;
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
 {
-    internal static class InfluxDbResponseExtensions
+    public static class InfluxDbResponseExtensions
     {
         public static T ReadAs<T>(this IInfluxDbApiResponse response)
         {

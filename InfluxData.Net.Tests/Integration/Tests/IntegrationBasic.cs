@@ -28,7 +28,7 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public void Formats_Point()
+        public void Formatter_OnGetLineTemplate_ShouldFormatPoint()
         {
             const string value = @"\=&,""*"" -";
             const string escapedFieldValue = @"\\=&\,\""*\""\ -";
@@ -64,7 +64,7 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public async Task Influx_OnPing_ShouldReturnVersion()
+        public async Task ClientPing_ShouldReturnVersion()
         {
             var pong = await _fixture.Sut.Client.PingAsync();
 
@@ -75,7 +75,7 @@ namespace InfluxData.Net.Integration.Tests
 
 
         [Fact]
-        public async Task DbWrite_OnMultiplePoints_ShouldWritePoints()
+        public async Task ClientWrite_OnMultipleValidPoints_ShouldReturnSuccess()
         {
             var points = _fixture.CreateMockPoints(5);
 
@@ -84,7 +84,7 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public void DbWrite_OnPointsWithoutFields_ShouldThrowException()
+        public void ClientWrite_OnPointsWithMissingFields_ShouldThrowException()
         {
             var points = _fixture.CreateMockPoints(1);
             points.Single().Timestamp = null;
@@ -95,14 +95,14 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public void DbQuery_OnInvalidQuery_ShouldThrowException()
+        public void ClientQuery_OnInvalidQuery_ShouldThrowException()
         {
             Func<Task> act = async () => { await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "blah"); };
             act.ShouldThrow<InfluxDbApiException>();
         }
 
         [Fact]
-        public async Task DbQuery_OnNonExistantSeries_ShouldReturnEmptyList()
+        public async Task ClientQuery_OnNonExistantSeries_ShouldReturnEmptyList()
         {
             var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "select * from nonexistentseries");
             result.Should().NotBeNull();
@@ -110,7 +110,7 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public async Task DbQuery_OnNonExistantFields_ShouldReturnEmptyList()
+        public async Task ClientQuery_OnNonExistantFields_ShouldReturnEmptyList()
         {
             var points = _fixture.CreateMockPoints(1);
             var response = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
@@ -123,7 +123,7 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public async Task DbQuery_OnWhereClauseNotMet_ShouldReturnNoSeries()
+        public async Task ClientQuery_OnWhereClauseNotMet_ShouldReturnNoSeries()
         {
             // Arrange
             var points = _fixture.CreateMockPoints(1);
@@ -137,8 +137,9 @@ namespace InfluxData.Net.Integration.Tests
             queryResponse.Count.Should().Be(0);
         }
 
+        // TODO: move to unit tests
         [Fact]
-        public void WriteRequestGetLines_OnCall_ShouldReturnNewLineSeparatedPoints()
+        public void WriteRequest_OnGetLines_ShouldReturnNewLineSeparatedPoints()
         {
             var points = _fixture.CreateMockPoints(2);
             var formatter = _fixture.Sut.GetFormatter();

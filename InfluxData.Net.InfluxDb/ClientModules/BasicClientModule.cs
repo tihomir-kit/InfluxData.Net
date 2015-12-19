@@ -23,12 +23,12 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _basicRequestModule = basicRequestModule;
         }
 
-        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default")
+        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
-            return await WriteAsync(dbName, new[] { point }, retenionPolicy);
+            return await WriteAsync(dbName, new[] { point }, retenionPolicy, precision);
         }
 
-        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default")
+        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
             var request = new WriteRequest(_requestClient.GetFormatter())
             {
@@ -37,10 +37,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
                 RetentionPolicy = retenionPolicy
             };
 
-            // TODO: handle precision (if set by client, it makes no difference because it gets overriden here)
-            var result = await _basicRequestModule.Write(request, TimeUnitUtility.ToTimePrecision(TimeUnit.Milliseconds));
-
-            return result;
+            return await _basicRequestModule.Write(request, precision.GetParamValue());
         }
 
         public async Task<List<Serie>> QueryAsync(string dbName, string query)
