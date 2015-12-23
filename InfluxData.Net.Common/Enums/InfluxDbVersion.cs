@@ -6,9 +6,9 @@ namespace InfluxData.Net.Common.Enums
     public enum InfluxDbVersion
     {
         Latest,
-        v096,
-        v095,
-        v092,
-        v08x
+        v_0_9_6,
+        v_0_9_5,
+        v_0_9_2,
+        v_0_8_x
     }
 }

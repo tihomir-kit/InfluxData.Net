@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using InfluxData.Net.InfluxDb.Infrastructure;
-using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.Common.Enums;
+using InfluxData.Net.InfluxDb.ClientModules;
+using InfluxData.Net.InfluxDb.Formatters;
+using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.RequestClients.Modules;
-using InfluxData.Net.InfluxDb.Models.Responses;
-using InfluxData.Net.InfluxDb.Models;
-using InfluxData.Net.InfluxDb.Formatters;
-using InfluxData.Net.InfluxDb.ClientModules;
 
 namespace InfluxData.Net.InfluxDb
 {
@@ -46,8 +40,8 @@ namespace InfluxData.Net.InfluxDb
             get { return _cqClientModule.Value; }
         }
 
-        public InfluxDbClient(string url, string username, string password, InfluxDbVersion influxVersion)
-             : this(new InfluxDbClientConfiguration(new Uri(url), username, password, influxVersion))
+        public InfluxDbClient(string uri, string username, string password, InfluxDbVersion influxVersion)
+             : this(new InfluxDbClientConfiguration(new Uri(uri), username, password, influxVersion))
         {
         }
 

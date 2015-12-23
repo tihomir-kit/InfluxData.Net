@@ -1,14 +1,12 @@
-﻿using InfluxData.Net.Common.Helpers;
+﻿using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.RequestClients.Modules;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -40,7 +38,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var error = queryResult.Results.Single().Error;
             if (error != null)
             {
-                throw new InfluxDbApiException(System.Net.HttpStatusCode.BadRequest, error);
+                throw new InfluxDbApiException(HttpStatusCode.BadRequest, error);
             }
 
             var series = queryResult.Results.Single().Series;
@@ -53,7 +51,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return await _cqRequestModule.DeleteContinuousQuery(dbName, cqName);
         }
 
-        public async Task<IInfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
+        public async Task<IInfluxDbApiResponse> BackfillAsync(string dbName, Backfill backfill)
         {
             return await _cqRequestModule.Backfill(dbName, backfill);
         }

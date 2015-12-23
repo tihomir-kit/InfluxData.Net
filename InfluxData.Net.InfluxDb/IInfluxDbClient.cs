@@ -1,11 +1,5 @@
 using InfluxData.Net.InfluxDb.ClientModules;
 using InfluxData.Net.InfluxDb.Formatters;
-using InfluxData.Net.InfluxDb.Infrastructure;
-using InfluxData.Net.InfluxDb.Models;
-using InfluxData.Net.InfluxDb.Models.Responses;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace InfluxData.Net.InfluxDb
 {

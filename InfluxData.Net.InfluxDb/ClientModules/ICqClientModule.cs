@@ -36,6 +36,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="backfill"></param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> Backfill(string dbName, Backfill backfill);
+        Task<IInfluxDbApiResponse> BackfillAsync(string dbName, Backfill backfill);
     }
 }

@@ -33,10 +33,10 @@ namespace InfluxData.Net.Integration
         {
             InfluxDbVersion influxVersion;
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out influxVersion))
-                influxVersion = InfluxDbVersion.v096;
+                influxVersion = InfluxDbVersion.v_0_9_6;
 
             this.Sut = new InfluxDb.InfluxDbClient(
-                ConfigurationManager.AppSettings.Get("url"),
+                ConfigurationManager.AppSettings.Get("endpointUri"),
                 ConfigurationManager.AppSettings.Get("username"),
                 ConfigurationManager.AppSettings.Get("password"),
                 influxVersion);
@@ -106,7 +106,7 @@ namespace InfluxData.Net.Integration
             return String.Format("{0}{1}", _fakeMeasurementPrefix, timestamp);
         }
 
-        public async Task<List<Serie>> Query(Serie expected)
+        public async Task<IList<Serie>> Query(Serie expected)
         {
             // 0.9.3 need 'group by' to retrieve tags as tags when using select *
             var result = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by *", expected.Name));

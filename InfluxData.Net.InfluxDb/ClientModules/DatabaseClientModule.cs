@@ -1,12 +1,10 @@
-﻿using InfluxData.Net.InfluxDb.Infrastructure;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.RequestClients.Modules;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -25,7 +23,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return await _databaseRequestModule.CreateDatabase(dbName);
         }
 
-        public async Task<List<DatabaseResponse>> GetDatabasesAsync()
+        public async Task<IList<DatabaseResponse>> GetDatabasesAsync()
         {
             var response = await _databaseRequestModule.GetDatabases();
             var queryResult = response.ReadAs<QueryResponse>();

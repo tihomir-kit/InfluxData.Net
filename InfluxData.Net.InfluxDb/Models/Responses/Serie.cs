@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace InfluxData.Net.InfluxDb.Models.Responses
 {
@@ -23,7 +21,7 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
         /// <summary>
         /// Serie tags.
         /// </summary>
-        public Dictionary<string, string> Tags { get; set; }
+        public IDictionary<string, string> Tags { get; set; }
 
         /// <summary>
         /// List of serie fields.

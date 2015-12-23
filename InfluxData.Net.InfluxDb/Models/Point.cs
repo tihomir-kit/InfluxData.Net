@@ -1,7 +1,5 @@
-﻿using InfluxData.Net.Common.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace InfluxData.Net.InfluxDb.Models
 {
@@ -26,12 +24,12 @@ namespace InfluxData.Net.InfluxDb.Models
         /// <summary>
         /// Tags to write.
         /// </summary>
-        public Dictionary<string, object> Tags { get; set; }
+        public IDictionary<string, object> Tags { get; set; }
 
         /// <summary>
         /// Fields to write.
         /// </summary>
-        public Dictionary<string, object> Fields { get; set; }
+        public IDictionary<string, object> Fields { get; set; }
 
         /// <summary>
         /// Explicit point timestamp (optional).

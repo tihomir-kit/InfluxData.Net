@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
-using System.Collections.Generic;
-using InfluxData.Net.Common.Enums;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -23,7 +24,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// Writes multiple serie points to the database.
         /// </summary>
         /// <param name="dbName">Database name.</param>
-        /// <param name="points">A serie <see cref="Array{Point}" />.</param>
+        /// <param name="points">A serie <see cref="Array" />.</param>
         /// <param name="retenionPolicy">The retenion policy.</param>
         /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
         /// <returns></returns>
@@ -35,7 +36,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="query">Query to execute.</param>
         /// <returns></returns>
-        Task<List<Serie>> QueryAsync(string dbName, string query);
+        Task<IList<Serie>> QueryAsync(string dbName, string query);
 
         /// <summary>
         /// Pings the InfluxDb server.

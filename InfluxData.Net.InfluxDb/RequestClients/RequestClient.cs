@@ -6,11 +6,11 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using InfluxData.Net.InfluxDb.Infrastructure;
+using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Formatters;
-using InfluxData.Net.Common.Helpers;
+using InfluxData.Net.InfluxDb.Infrastructure;
+using System.Diagnostics;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
@@ -33,28 +33,28 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await RequestAsync(HttpMethod.Get, RequestPaths.Ping, includeAuthToQuery: false, headerIsBody: true);
         }
 
-        public async Task<IInfluxDbApiResponse> GetQueryAsync(Dictionary<string, string> requestParams)
+        public async Task<IInfluxDbApiResponse> GetQueryAsync(IDictionary<string, string> requestParams)
         {
             return await GetQueryAsync(null, requestParams);
         }
 
         public async Task<IInfluxDbApiResponse> GetQueryAsync(
             HttpContent content = null,
-            Dictionary<string, string> requestParams = null,
+            IDictionary<string, string> requestParams = null,
             bool includeAuthToQuery = true,
             bool headerIsBody = false)
         {
             return await RequestAsync(HttpMethod.Get, RequestPaths.Query, content, requestParams, includeAuthToQuery, headerIsBody);
         }
 
-        public async Task<IInfluxDbApiResponse> PostDataAsync(Dictionary<string, string> requestParams)
+        public async Task<IInfluxDbApiResponse> PostDataAsync(IDictionary<string, string> requestParams)
         {
             return await PostDataAsync(null, requestParams);
         }
 
         public async Task<IInfluxDbApiResponse> PostDataAsync(
             HttpContent content = null,
-            Dictionary<string, string> requestParams = null,
+            IDictionary<string, string> requestParams = null,
             bool includeAuthToQuery = true,
             bool headerIsBody = false)
         {
@@ -75,7 +75,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             HttpMethod method,
             string path,
             HttpContent content = null,
-            Dictionary<string, string> requestParams = null,
+            IDictionary<string, string> requestParams = null,
             bool includeAuthToQuery = true,
             bool headerIsBody = false)
         {
@@ -121,7 +121,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             HttpMethod method,
             string path,
             HttpContent content = null,
-            Dictionary<string, string> extraParams = null,
+            IDictionary<string, string> extraParams = null,
             bool includeAuthToQuery = true)
         {
             HttpClient client = GetHttpClient();
@@ -145,10 +145,10 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await client.SendAsync(request, completionOption, cancellationToken);
         }
 
-        private StringBuilder BuildUri(string path, Dictionary<string, string> requestParams, bool includeAuthToQuery)
+        private StringBuilder BuildUri(string path, IDictionary<string, string> requestParams, bool includeAuthToQuery)
         {
             var urlBuilder = new StringBuilder();
-            urlBuilder.AppendFormat("{0}{1}", _configuration.EndpointBaseUri, path);
+            urlBuilder.AppendFormat("{0}{1}", _configuration.EndpointUri, path);
 
             if (includeAuthToQuery)
             {
