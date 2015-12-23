@@ -15,7 +15,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _retentionRequestModule = databaseRequestModule;
         }
 
-        public async Task<IInfluxDbApiResponse> AlterRetentionPolicy(string dbName, string policyName, string duration, int replicationCopies)
+        public async Task<IInfluxDbApiResponse> AlterRetentionPolicyAsync(string dbName, string policyName, string duration, int replicationCopies)
         {
             return await _retentionRequestModule.AlterRetentionPolicy(dbName, policyName, duration, replicationCopies);
         }

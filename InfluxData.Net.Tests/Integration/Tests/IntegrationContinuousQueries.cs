@@ -66,7 +66,7 @@ namespace InfluxData.Net.Integration.Tests
         {
             var backfill = _fixture.MockBackfill();
 
-            var result = await _fixture.Sut.ContinuousQuery.Backfill("Novaerus01", backfill);
+            var result = await _fixture.Sut.ContinuousQuery.BackfillAsync("Novaerus01", backfill);
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
         }

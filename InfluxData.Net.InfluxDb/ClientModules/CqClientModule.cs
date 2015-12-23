@@ -51,7 +51,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return await _cqRequestModule.DeleteContinuousQuery(dbName, cqName);
         }
 
-        public async Task<IInfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
+        public async Task<IInfluxDbApiResponse> BackfillAsync(string dbName, Backfill backfill)
         {
             return await _cqRequestModule.Backfill(dbName, backfill);
         }

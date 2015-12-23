@@ -130,7 +130,7 @@ This module currently supports only a single [retention-policy](https://docs.inf
 
 #### AlterRetentionPolicy
 
-This example alter the _retentionPolicyName_ policy to _1h_ and 3 copies.
+This example alter the _retentionPolicyName_ policy to _1h_ and 3 copies:
 
 ```cs
 var response = await influxDbClient.Retention.AlterRetentionPolicy("yourDbName", "retentionPolicyName", "1h", 3);
@@ -184,8 +184,8 @@ Deletes a CQ from the database:
 var response = await influxDbClient.ContinuousQuery.DeleteContinuousQueryAsync("yourDbName", "cqNameToDelete");
 ```
 
-#### Backfill
-The `ContinuousQuery.Backfill` method can be used to manually calculate aggregate data for the data that was already in your DB, not only for the newly incoming data. 
+#### BackfillAsync
+The `ContinuousQuery.BackfillAsync` method can be used to manually calculate aggregate data for the data that was already in your DB, not only for the newly incoming data. 
 
 Similarly to `CreateContinuousQueryAsync`, a `Backfill` object needs to be created first:
 
@@ -207,10 +207,10 @@ var newBackfill = new Backfill()
 };
 ```
 
-To understand `FillType`, please refer to the `fill()` [documentation](https://docs.influxdata.com/influxdb/v0.9/query_language/data_exploration/#the-group-by-clause-and-fill). After that, simply call `ContinuousQuery.Backfill` to execute the backfill:
+To understand `FillType`, please refer to the `fill()` [documentation](https://docs.influxdata.com/influxdb/v0.9/query_language/data_exploration/#the-group-by-clause-and-fill). After that, simply call `ContinuousQuery.BackfillAsync` to execute the backfill:
 
 ```cs
-var response = await influxDbClient.ContinuousQuery.Backfill("yourDbName", newBackfill);
+var response = await influxDbClient.ContinuousQuery.BackfillAsync("yourDbName", newBackfill);
 ```
 
 ## Bugs & feature requests
