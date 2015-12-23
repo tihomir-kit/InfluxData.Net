@@ -5,7 +5,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 {
     internal static class RequestClientUtility
     {
-        internal static Dictionary<string, string> BuildQueryRequestParams(string query)
+        internal static IDictionary<string, string> BuildQueryRequestParams(string query)
         {
             return new Dictionary<string, string>
             {
@@ -13,12 +13,12 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             };
         }
 
-        internal static Dictionary<string, string> BuildQueryRequestParams(string dbName, string query)
+        internal static IDictionary<string, string> BuildQueryRequestParams(string dbName, string query)
         {
             return BuildRequestParams(dbName, QueryParams.Query, query);
         }
 
-        internal static Dictionary<string, string> BuildRequestParams(string dbName, string paramKey, string paramValue)
+        internal static IDictionary<string, string> BuildRequestParams(string dbName, string paramKey, string paramValue)
         {
             return new Dictionary<string, string>
             {

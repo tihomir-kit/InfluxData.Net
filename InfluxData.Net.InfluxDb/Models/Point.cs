@@ -24,12 +24,12 @@ namespace InfluxData.Net.InfluxDb.Models
         /// <summary>
         /// Tags to write.
         /// </summary>
-        public Dictionary<string, object> Tags { get; set; }
+        public IDictionary<string, object> Tags { get; set; }
 
         /// <summary>
         /// Fields to write.
         /// </summary>
-        public Dictionary<string, object> Fields { get; set; }
+        public IDictionary<string, object> Fields { get; set; }
 
         /// <summary>
         /// Explicit point timestamp (optional).

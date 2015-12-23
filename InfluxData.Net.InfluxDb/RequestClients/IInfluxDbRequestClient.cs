@@ -12,12 +12,12 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 
         Task<IInfluxDbApiResponse> PingAsync();
 
-        Task<IInfluxDbApiResponse> GetQueryAsync(Dictionary<string, string> requestParams);
+        Task<IInfluxDbApiResponse> GetQueryAsync(IDictionary<string, string> requestParams);
 
-        Task<IInfluxDbApiResponse> GetQueryAsync(HttpContent content = null, Dictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
+        Task<IInfluxDbApiResponse> GetQueryAsync(HttpContent content = null, IDictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
 
-        Task<IInfluxDbApiResponse> PostDataAsync(Dictionary<string, string> requestParams);
+        Task<IInfluxDbApiResponse> PostDataAsync(IDictionary<string, string> requestParams);
 
-        Task<IInfluxDbApiResponse> PostDataAsync(HttpContent content = null, Dictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
+        Task<IInfluxDbApiResponse> PostDataAsync(HttpContent content = null, IDictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
     }
 }
