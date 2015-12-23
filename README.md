@@ -42,7 +42,7 @@ To write new data into InfluxDb, a Point object must be created first:
 ```cs
 var pointToWrite = new Point()
 {
-    Name = "reading",
+    Name = "reading", // serie/measurement/table to write into
     Tags = new Dictionary<string, object>()
     {
         { "SensorId", 8 },
@@ -59,13 +59,13 @@ var pointToWrite = new Point()
 };
 ```
 
-Point is then passed into `Client.WriteAsync` method together with the database name.
+Point is then passed into `Client.WriteAsync` method together with the database name:
 
 ```cs
 var response = await influxDbClient.Client.WriteAsync("yourDbName", pointToWrite);
 ```
 
-If you would like to write multiple points at once, simply create an array of `Point` objects and pass it into the second `WriteAsync` overload.
+If you would like to write multiple points at once, simply create an array of `Point` objects and pass it into the second `WriteAsync` overload:
 
 ```cs
 var response = await influxDbClient.Client.WriteAsync("yourDbName", pointsToWrite);
@@ -73,28 +73,145 @@ var response = await influxDbClient.Client.WriteAsync("yourDbName", pointsToWrit
 
 #### QueryAsync
 
-The `Client.QueryAsync` can be used to execute any officially supported [InfluxDb query](https://docs.influxdata.com/influxdb/v0.9/query_language/).
+The `Client.QueryAsync` can be used to execute any officially supported [InfluxDb query](https://docs.influxdata.com/influxdb/v0.9/query_language/):
 
 ```cs
 var query = "SELECT * FROM reading WHERE time > now() - 1h";
-var response = await influxDbClient.QueryAsync("yourDbName", query);
+var response = await influxDbClient.Client.QueryAsync("yourDbName", query);
 ```
 
 #### PingAsync
 
-The `Client.PingAsync` will return a `Pong` object which will return endpoint's InfluxDb version number, round-trip time and ping success status.
+The `Client.PingAsync` will return a `Pong` object which will return endpoint's InfluxDb version number, round-trip time and ping success status:
 
 ```cs
-var response = await influxDbClient.PingAsync();
+var response = await influxDbClient.Client.PingAsync();
 ```
 
 ### Database Module
 
+The database module can be used to [manage the databases](https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/) on the InfluxDb system.
+
+#### CreateDatabaseAsync
+
+You can create a new database in the following way:
+
+```cs
+var resposne = await influxDbClient.Database.CreateDatabaseAsync("newDbName");
+```
+
+#### GetDatabasesAsync
+
+Gets a list of all databases accessible to the current user:
+
+```cs
+var response = await influxDbClient.Database.GetDatabasesAsync();
+```
+
+#### DropDatabaseAsync
+
+Drops a database:
+
+```cs
+var response = await influxDbClient.Database.DropDatabaseAsync("dbNameToDrop");
+```
+
+#### DropSeriesAsync
+
+[Drops all data points](https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#delete-series-with-drop-series) from series in database. The series itself will remain in the index.
+
+```cs
+var response = await influxDbClient.Database.DropSeriesAsync("yourDbName", "serieNameToDrop");
+```
+
 ### Retention Module
+
+This module currently supports only a single [retention-policy](https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#retention-policy-management) action.
+
+#### AlterRetentionPolicy
+
+This example alter the _retentionPolicyName_ policy to _1h_ and 3 copies.
+
+```cs
+var response = await influxDbClient.Retention.AlterRetentionPolicy("yourDbName", "retentionPolicyName", "1h", 3);
+```
 
 ### Continuous Query Module
 
+This module can be used to manage [CQ's](https://docs.influxdata.com/influxdb/v0.9/query_language/continuous_queries/) and to backfill with aggregate data.
 
+#### CreateContinuousQueryAsync
+
+To create a new CQ, a `ContinuousQuery` object must first be created:
+
+```cs
+var newCq = new ContinuousQuery()
+{
+    DbName = "yourDbName",
+    CqName = "reading_minMax_5m", // CQ name
+    Downsamplers = new List<string>()
+    {
+        "MAX(field_int) AS max_field_int",
+        "MIN(field_int) AS min_field_int"
+    },
+    DsSerieName = "reading.minMax.5m", // new (downsample) serie name
+    SourceSerieName = "reading", // source serie name to get data from
+    Interval = "5m",
+    FillType = FillType.Previous
+    // you can also add a list of tags to keep in the DS serie here
+};
+```
+
+To understand `FillType`, please refer to the `fill()` [documentation](https://docs.influxdata.com/influxdb/v0.9/query_language/data_exploration/#the-group-by-clause-and-fill). After that, simply call `ContinuousQuery.CreateContinuousQueryAsync` to create it:
+
+```cs
+var response = await influxDbClient.ContinuousQuery.CreateContinuousQueryAsync("yourDbName", newCq);
+```
+
+#### GetContinuousQueriesAsync
+
+This will return a list of currently existing CQ's on the system:
+
+```cs
+var response = await influxDbClient.ContinuousQuery.GetContinuousQueriesAsync("yourDbName");
+```
+
+#### DeleteContinuousQueryAsync
+
+Deletes a CQ from the database:
+
+```cs
+var response = await influxDbClient.ContinuousQuery.DeleteContinuousQueryAsync("yourDbName", "cqNameToDelete");
+```
+
+#### Backfill
+The `ContinuousQuery.Backfill` method can be used to manually calculate aggregate data for the data that was already in your DB, not only for the newly incoming data. 
+
+Similarly to `CreateContinuousQueryAsync`, a `Backfill` object needs to be created first:
+
+```cs
+var newBackfill = new Backfill()
+{
+    Downsamplers = new List<string>()
+    {
+        "MAX(field_int) AS max_field_int",
+        "MIN(field_int) AS min_field_int"
+    },
+    DsSerieName = "reading.minMax.5m", // new (downsample) serie name
+    SourceSerieName = "reading", // source serie name to get data from
+    TimeFrom = DateTime.UtcNow.AddMonths(-1),
+    TimeTo = DateTime.UtcNow,
+    Interval = "5m",
+    FillType = FillType.None
+    // you can also add a list of tags to keep in the DS serie here
+};
+```
+
+To understand `FillType`, please refer to the `fill()` [documentation](https://docs.influxdata.com/influxdb/v0.9/query_language/data_exploration/#the-group-by-clause-and-fill). After that, simply call `ContinuousQuery.Backfill` to execute the backfill:
+
+```cs
+var response = await influxDbClient.ContinuousQuery.Backfill("yourDbName", newBackfill);
+```
 
 ## Bugs & feature requests
 
