@@ -1,8 +1,6 @@
-﻿using InfluxData.Net.InfluxDb.Formatters;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
 using System.Linq;
+using InfluxData.Net.InfluxDb.Formatters;
 
 namespace InfluxData.Net.InfluxDb.Models
 {

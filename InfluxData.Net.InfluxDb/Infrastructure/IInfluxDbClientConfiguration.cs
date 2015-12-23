@@ -1,6 +1,5 @@
 using System;
 using InfluxData.Net.Common.Enums;
-using InfluxData.Net.Common.Helpers;
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
 {

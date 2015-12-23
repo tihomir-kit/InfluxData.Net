@@ -1,6 +1,6 @@
-﻿using InfluxData.Net.InfluxDb.Infrastructure;
+﻿using System.Threading.Tasks;
+using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
-using System.Threading.Tasks;
 
 namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 {

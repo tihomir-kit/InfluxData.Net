@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using InfluxData.Net.InfluxDb.Infrastructure;
-using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
-using System.Collections.Generic;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -19,7 +18,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// Gets all available databases.
         /// </summary>
         /// <returns>A list of all databases.</returns>
-        Task<List<DatabaseResponse>> GetDatabasesAsync();
+        Task<IList<DatabaseResponse>> GetDatabasesAsync();
 
         /// <summary>
         /// Drops a database.
