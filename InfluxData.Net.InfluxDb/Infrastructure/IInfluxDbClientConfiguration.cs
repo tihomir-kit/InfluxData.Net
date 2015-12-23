@@ -5,7 +5,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 {
     public interface IInfluxDbClientConfiguration
     {
-        Uri EndpointBaseUri { get; }
+        Uri EndpointUri { get; }
 
         string Username { get; }
 

@@ -148,7 +148,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         private StringBuilder BuildUri(string path, IDictionary<string, string> requestParams, bool includeAuthToQuery)
         {
             var urlBuilder = new StringBuilder();
-            urlBuilder.AppendFormat("{0}{1}", _configuration.EndpointBaseUri, path);
+            urlBuilder.AppendFormat("{0}{1}", _configuration.EndpointUri, path);
 
             if (includeAuthToQuery)
             {

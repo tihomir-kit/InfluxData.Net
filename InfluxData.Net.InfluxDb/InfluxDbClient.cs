@@ -40,8 +40,8 @@ namespace InfluxData.Net.InfluxDb
             get { return _cqClientModule.Value; }
         }
 
-        public InfluxDbClient(string url, string username, string password, InfluxDbVersion influxVersion)
-             : this(new InfluxDbClientConfiguration(new Uri(url), username, password, influxVersion))
+        public InfluxDbClient(string uri, string username, string password, InfluxDbVersion influxVersion)
+             : this(new InfluxDbClientConfiguration(new Uri(uri), username, password, influxVersion))
         {
         }
 

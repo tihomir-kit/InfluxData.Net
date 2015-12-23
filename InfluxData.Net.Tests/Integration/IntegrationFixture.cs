@@ -33,10 +33,10 @@ namespace InfluxData.Net.Integration
         {
             InfluxDbVersion influxVersion;
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out influxVersion))
-                influxVersion = InfluxDbVersion.v096;
+                influxVersion = InfluxDbVersion.v_0_9_6;
 
             this.Sut = new InfluxDb.InfluxDbClient(
-                ConfigurationManager.AppSettings.Get("url"),
+                ConfigurationManager.AppSettings.Get("endpointUri"),
                 ConfigurationManager.AppSettings.Get("username"),
                 ConfigurationManager.AppSettings.Get("password"),
                 influxVersion);

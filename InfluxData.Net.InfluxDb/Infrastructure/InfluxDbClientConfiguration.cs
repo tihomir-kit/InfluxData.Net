@@ -6,7 +6,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 {
     public class InfluxDbClientConfiguration : IInfluxDbClientConfiguration
     {
-        public Uri EndpointBaseUri { get; internal set; }
+        public Uri EndpointUri { get; internal set; }
 
         public string Username { get; private set; }
 
@@ -14,21 +14,21 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 
         public InfluxDbVersion InfluxVersion { get; private set; }
 
-        public InfluxDbClientConfiguration(Uri endpoint, string username, string password, InfluxDbVersion influxVersion)
+        public InfluxDbClientConfiguration(Uri endpointUri, string username, string password, InfluxDbVersion influxVersion)
         {
-            Validate.NotNull(endpoint, "Endpoint may not be null or empty.");
+            Validate.NotNull(endpointUri, "Endpoint may not be null or empty.");
             Validate.NotNullOrEmpty(password, "Password may not be null or empty.");
             Validate.NotNullOrEmpty(username, "Username may not be null or empty.");
 
+            EndpointUri = SanitizeEndpoint(endpointUri, false);
             Username = username;
             Password = password;
             InfluxVersion = influxVersion;
-            EndpointBaseUri = SanitizeEndpoint(endpoint, false);
         }
 
-        private static Uri SanitizeEndpoint(Uri endpoint, bool isTls)
+        private static Uri SanitizeEndpoint(Uri endpointUri, bool isTls)
         {
-            var builder = new UriBuilder(endpoint);
+            var builder = new UriBuilder(endpointUri);
 
             if (isTls)
             {
