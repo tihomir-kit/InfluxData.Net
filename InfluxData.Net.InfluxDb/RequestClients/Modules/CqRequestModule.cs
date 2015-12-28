@@ -21,7 +21,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
             var tags = BuildTags(continuousQuery.Tags);
             var fillType = BuildFillType(continuousQuery.FillType);
 
-            var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery, 
+            var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery,
                 downsamplers, continuousQuery.DsSerieName, continuousQuery.SourceSerieName, continuousQuery.Interval, tags, fillType);
 
             var query = String.Format(QueryStatements.CreateContinuousQuery, continuousQuery.CqName, continuousQuery.DbName, subQuery);

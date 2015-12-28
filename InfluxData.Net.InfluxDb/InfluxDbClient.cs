@@ -12,6 +12,7 @@ namespace InfluxData.Net.InfluxDb
     {
         private readonly IInfluxDbRequestClient _requestClient;
         private readonly Lazy<IBasicRequestModule> _basicRequestModule;
+        private readonly Lazy<ISerieRequestModule> _serieRequestModule;
         private readonly Lazy<IDatabaseRequestModule> _databaseRequestModule;
         private readonly Lazy<IRetentionRequestModule> _retentionRequestModule;
         private readonly Lazy<ICqRequestModule> _cqRequestModule;
@@ -20,6 +21,12 @@ namespace InfluxData.Net.InfluxDb
         public IBasicClientModule Client
         { 
             get { return _basicClientModule.Value; }
+        }
+
+        private readonly Lazy<ISerieClientModule> _serieClientModule;
+        public ISerieClientModule Serie
+        {
+            get { return _serieClientModule.Value; }
         }
 
         private readonly Lazy<IDatabaseClientModule> _databaseClientModule;
@@ -52,12 +59,14 @@ namespace InfluxData.Net.InfluxDb
 
             // NOTE: once a breaking change occures, RequestModules will need to be resolved with factories
             _basicRequestModule = new Lazy<IBasicRequestModule>(() => new BasicRequestModule(_requestClient), true);
+            _serieRequestModule = new Lazy<ISerieRequestModule>(() => new SerieRequestModule(_requestClient), true);
             _databaseRequestModule = new Lazy<IDatabaseRequestModule>(() => new DatabaseRequestModule(_requestClient), true);
             _retentionRequestModule = new Lazy<IRetentionRequestModule>(() => new RetentionRequestModule(_requestClient), true);
             _cqRequestModule = new Lazy<ICqRequestModule>(() => new CqRequestModule(_requestClient), true);
 
             // NOTE: once a breaking change occures, ClientModules will need to be resolved with factories
             _basicClientModule = new Lazy<IBasicClientModule>(() => new BasicClientModule(_requestClient, _basicRequestModule.Value));
+            _serieClientModule = new Lazy<ISerieClientModule>(() => new SerieClientModule(_requestClient, _serieRequestModule.Value));
             _databaseClientModule = new Lazy<IDatabaseClientModule>(() => new DatabaseClientModule(_requestClient, _databaseRequestModule.Value));
             _retentionClientModule = new Lazy<IRetentionClientModule>(() => new RetentionClientModule(_requestClient, _retentionRequestModule.Value));
             _cqClientModule = new Lazy<ICqClientModule>(() => new CqClientModule(_requestClient, _cqRequestModule.Value));

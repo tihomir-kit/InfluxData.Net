@@ -2,6 +2,7 @@
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
+using System;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {

@@ -45,7 +45,7 @@ namespace InfluxData.Net.Integration
 
             this.DbName = CreateRandomDbName();
 
-            Task.Run(() => this.PurgeFakeDatabases()).Wait();
+            //Task.Run(() => this.PurgeFakeDatabases()).Wait();
             Task.Run(() => this.CreateEmptyDatabase()).Wait();
         }
 

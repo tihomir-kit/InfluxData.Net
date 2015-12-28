@@ -71,7 +71,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
         protected virtual string FormatPointTags(IDictionary<string, object> tags)
         {
             // NOTE: from InfluxDB documentation - "Tags should be sorted by key before being sent for best performance."
-            return String.Join(",", tags.OrderBy(p => p.Key).Select(p => FormatPointTag(p.Key, p.Value)));
+            return tags.OrderBy(p => p.Key).Select(p => FormatPointTag(p.Key, p.Value)).ToCommaSeparatedString();
         }
 
         protected virtual string FormatPointTag(string key, object value)
@@ -81,7 +81,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string FormatPointFields(IDictionary<string, object> fields)
         {
-            return String.Join(",", fields.Select(p => FormatPointField(p.Key, p.Value)));
+            return fields.Select(p => FormatPointField(p.Key, p.Value)).ToCommaSeparatedString();
         }
 
         protected virtual string FormatPointField(string key, object value)

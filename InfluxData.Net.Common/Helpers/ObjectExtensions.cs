@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace InfluxData.Net.Common.Helpers
@@ -54,6 +55,46 @@ namespace InfluxData.Net.Common.Helpers
         public static DateTime FromUnixTime(this long unixTimeInMillis)
         {
             return _epoch.AddMilliseconds(unixTimeInMillis);
+        }
+
+        /// <summary>
+        /// Joins items separating them with "," (comma).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>Comma separated list as a string.</returns>
+        public static string ToCommaSeparatedString(this IEnumerable<string> items)
+        {
+            return String.Join(",", items);
+        }
+
+        /// <summary>
+        /// Joins items separating them with "," (comma).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>Comma separated list as a string.</returns>
+        public static string ToCommaSeparatedString(this IList<string> items)
+        {
+            return String.Join(",", items);
+        }
+
+        /// <summary>
+        /// Joins items separating them with ", " (comma and one whitespace).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>Comma-space separated list as a string.</returns>
+        public static string ToCommaSpaceSeparatedString(this IEnumerable<string> items)
+        {
+            return String.Join(", ", items);
+        }
+
+        /// <summary>
+        /// Joins items separating them with ", " (comma and one whitespace).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>Comma-space separated list as a string.</returns>
+        public static string ToCommaSpaceSeparatedString(this IList<string> items)
+        {
+            return String.Join(", ", items);
         }
     }
 }

@@ -7,6 +7,7 @@ using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.RequestClients.Modules;
+using System;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -22,7 +23,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         public async Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery)
         {
-            return await _cqRequestModule.CreateContinuousQuery(continuousQuery);
+            return await CreateContinuousQueryAsync(continuousQuery);
         }
 
         public async Task<Serie> GetContinuousQueriesAsync(string dbName)

@@ -9,6 +9,8 @@ namespace InfluxData.Net.InfluxDb
     {
         IBasicClientModule Client { get; }
 
+        ISerieClientModule Serie { get; }
+
         IDatabaseClientModule Database { get; }
 
         IRetentionClientModule Retention { get; }

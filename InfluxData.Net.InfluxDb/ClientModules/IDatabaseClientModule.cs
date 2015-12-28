@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
+using System;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -33,6 +34,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="serieName">Serie name.</param>
         /// <returns></returns>
+        [Obsolete("Plese use 'DropSeries' from .Serie instead.")]
         Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName);
     }
 }

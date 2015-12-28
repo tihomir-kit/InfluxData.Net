@@ -29,6 +29,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
             return await this.RequestClient.GetQueryAsync(requestParams: RequestClientUtility.BuildQueryRequestParams(query));
         }
 
+        [Obsolete("Plese use 'DropSeries' from .Serie instead.")]
         public async Task<IInfluxDbApiResponse> DropSeries(string dbName, string serieName)
         {
             var query = String.Format(QueryStatements.DropSeries, serieName);

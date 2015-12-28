@@ -4,10 +4,14 @@
     {
         // NOTE: formatted time for WHERE clause needs to go in single quotes whereas downsampled serie name needs to go into double quotes
 
+        internal const string GetSeries = "SHOW SERIES";
+        internal const string DropSeries = "DROP SERIES FROM \"{0}\"";
+        internal const string GetMeasurements = "SHOW MEASUREMENTS ";
+        internal const string DropMeasurement = "DROP MEASUREMENT \"{0}\"";
+
         internal const string CreateDatabase = "CREATE DATABASE \"{0}\"";
         internal const string GetDatabases = "SHOW DATABASES";
         internal const string DropDatabase = "DROP DATABASE \"{0}\"";
-        internal const string DropSeries = "DROP SERIES FROM \"{0}\"";
 
         internal const string AlterRetentionPolicy = "ALTER RETENTION POLICY {0} ON {1} DURATION {2} REPLICATION {3}";
 
