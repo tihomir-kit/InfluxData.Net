@@ -6,29 +6,34 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
-using InfluxData.Net.InfluxDb.RequestClients.Modules;
 using System;
+using InfluxData.Net.InfluxDb.Constants;
+using InfluxData.Net.InfluxDb.QueryBuilders;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public class CqClientModule : ClientModuleBase, ICqClientModule
     {
-        private readonly ICqRequestModule _cqRequestModule;
+        private readonly ICqQueryBuilder _cqQueryBuilder;
 
-        public CqClientModule(IInfluxDbRequestClient requestClient, ICqRequestModule cqRequestModule)
+        public CqClientModule(IInfluxDbRequestClient requestClient, ICqQueryBuilder cqQueryBuilder)
             : base(requestClient)
         {
-            _cqRequestModule = cqRequestModule;
+            _cqQueryBuilder = cqQueryBuilder;
         }
 
         public async Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery)
         {
-            return await CreateContinuousQueryAsync(continuousQuery);
+            var query = _cqQueryBuilder.CreateContinuousQuery(continuousQuery);
+            var response = await this.GetQueryAsync(continuousQuery.DbName, query);
+
+            return response;
         }
 
         public async Task<Serie> GetContinuousQueriesAsync(string dbName)
         {
-            var response = await _cqRequestModule.GetContinuousQueries(dbName);
+            var query = _cqQueryBuilder.GetContinuousQueries();
+            var response = await this.GetQueryAsync(dbName, query);
             var queryResult = response.ReadAs<QueryResponse>();//.Results.Single().Series;
 
             Validate.NotNull(queryResult, "queryResult");
@@ -43,18 +48,25 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             }
 
             var series = queryResult.Results.Single().Series;
+            var serie = series != null ? series.Where(p => p.Name == dbName).FirstOrDefault() : new Serie();
 
-            return series != null ? series.Where(p => p.Name == dbName).FirstOrDefault() : new Serie();
+            return serie;
         }
 
         public async Task<IInfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
         {
-            return await _cqRequestModule.DeleteContinuousQuery(dbName, cqName);
+            var query = _cqQueryBuilder.DeleteContinuousQuery(dbName, cqName);
+            var response = await this.GetQueryAsync(dbName, query);
+
+            return response;
         }
 
         public async Task<IInfluxDbApiResponse> BackfillAsync(string dbName, Backfill backfill)
         {
-            return await _cqRequestModule.Backfill(dbName, backfill);
+            var query = _cqQueryBuilder.Backfill(dbName, backfill);
+            var response = await this.GetQueryAsync(dbName, query);
+
+            return response;
         }
     }
 }

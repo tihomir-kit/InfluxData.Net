@@ -96,5 +96,25 @@ namespace InfluxData.Net.Common.Helpers
         {
             return String.Join(", ", items);
         }
+
+        /// <summary>
+        /// Joins items separating them with "AND " ('AND' and one whitespace).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>AND-space separated list as a string.</returns>
+        public static string ToAndSpaceSeparatedString(this IEnumerable<string> items)
+        {
+            return String.Join("AND ", items);
+        }
+
+        /// <summary>
+        /// Joins items separating them with "AND " ('AND' and one whitespace).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>AND-space separated list as a string.</returns>
+        public static string ToAndSpaceSeparatedString(this IList<string> items)
+        {
+            return String.Join("AND ", items);
+        }
     }
 }

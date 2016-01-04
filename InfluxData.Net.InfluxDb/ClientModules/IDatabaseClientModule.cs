@@ -27,14 +27,5 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">The name of the database to delete.</param>
         /// <returns></returns>
         Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName);
-
-        /// <summary>
-        /// Deletes all data points from a serie.
-        /// </summary>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="serieName">Serie name.</param>
-        /// <returns></returns>
-        [Obsolete("Plese use 'DropSeries' from .Serie instead.")]
-        Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName);
     }
 }

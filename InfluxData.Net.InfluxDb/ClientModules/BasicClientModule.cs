@@ -8,28 +8,26 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
-using InfluxData.Net.InfluxDb.RequestClients.Modules;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public class BasicClientModule : ClientModuleBase, IBasicClientModule
     {
-        private readonly IBasicRequestModule _basicRequestModule;
-
-        public BasicClientModule(IInfluxDbRequestClient requestClient, IBasicRequestModule basicRequestModule)
+        public BasicClientModule(IInfluxDbRequestClient requestClient)
             : base(requestClient)
         {
-            _basicRequestModule = basicRequestModule;
         }
 
         public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
-            return await WriteAsync(dbName, new[] { point }, retenionPolicy, precision);
+            var response = await WriteAsync(dbName, new[] { point }, retenionPolicy, precision);
+
+            return response;
         }
 
         public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
-            var request = new WriteRequest(_requestClient.GetFormatter())
+            var request = new WriteRequest(this.RequestClient.GetFormatter())
             {
                 DbName = dbName,
                 Points = points,
@@ -37,12 +35,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
                 Precision = precision.GetParamValue()
             };
 
-            return await _basicRequestModule.Write(request);
+            var response = await this.RequestClient.Write(request);
+
+            return response;
         }
 
         public async Task<IList<Serie>> QueryAsync(string dbName, string query)
         {
-            var response = await _basicRequestModule.Query(dbName, query);
+            var response = await this.RequestClient.Query(dbName, query);
             var queryResult = response.ReadAs<QueryResponse>();
 
             Validate.NotNull(queryResult, "queryResult");
@@ -57,23 +57,26 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             }
 
             var result = queryResult.Results.Single().Series;
+            var series = result != null ? result.ToList() : new List<Serie>();
 
-            return result != null ? result.ToList() : new List<Serie>();
+            return series;
         }
 
         public async Task<Pong> PingAsync()
         {
             var watch = Stopwatch.StartNew();
-            var response = await _requestClient.PingAsync();
+            var response = await this.RequestClient.PingAsync();
 
             watch.Stop();
 
-            return new Pong
+            var pong = new Pong
             {
                 Version = response.Body,
                 ResponseTime = watch.Elapsed,
                 Success = true
             };
+
+            return pong;
         }
     }
 }

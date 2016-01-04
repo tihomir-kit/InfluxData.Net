@@ -5,19 +5,15 @@ using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
+using InfluxData.Net.Common.Helpers;
 
-namespace InfluxData.Net.InfluxDb.RequestClients.Modules
+namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
-    internal class CqRequestModule : RequestModuleBase, ICqRequestModule
+    internal class CqQueryBuilder : ICqQueryBuilder
     {
-        public CqRequestModule(IInfluxDbRequestClient requestClient) 
-            : base(requestClient)
+        public string CreateContinuousQuery(ContinuousQuery continuousQuery)
         {
-        }
-
-        public async Task<IInfluxDbApiResponse> CreateContinuousQuery(ContinuousQuery continuousQuery)
-        {
-            var downsamplers = BuildDownsamplers(continuousQuery.Downsamplers);
+            var downsamplers = continuousQuery.Downsamplers.ToCommaSpaceSeparatedString();
             var tags = BuildTags(continuousQuery.Tags);
             var fillType = BuildFillType(continuousQuery.FillType);
 
@@ -26,23 +22,24 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
 
             var query = String.Format(QueryStatements.CreateContinuousQuery, continuousQuery.CqName, continuousQuery.DbName, subQuery);
 
-            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(continuousQuery.DbName, query));
+            return query;
         }
 
-        public async Task<IInfluxDbApiResponse> GetContinuousQueries(string dbName)
+        public string GetContinuousQueries()
         {
-            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, QueryStatements.GetContinuousQueries));
+            return QueryStatements.GetContinuousQueries;
         }
 
-        public async Task<IInfluxDbApiResponse> DeleteContinuousQuery(string dbName, string cqName)
+        public string DeleteContinuousQuery(string dbName, string cqName)
         {
             var query = String.Format(QueryStatements.DropContinuousQuery, cqName, dbName);
-            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, query));
+
+            return query;
         }
 
-        public async Task<IInfluxDbApiResponse> Backfill(string dbName, Backfill backfill)
+        public string Backfill(string dbName, Backfill backfill)
         {
-            var downsamplers = BuildDownsamplers(backfill.Downsamplers);
+            var downsamplers = backfill.Downsamplers.ToCommaSpaceSeparatedString();
             var filters = BuildFilters(backfill.Filters);
             var timeFrom = backfill.TimeFrom.ToString("yyyy-MM-dd HH:mm:ss");
             var timeTo = backfill.TimeTo.ToString("yyyy-MM-dd HH:mm:ss");
@@ -52,22 +49,17 @@ namespace InfluxData.Net.InfluxDb.RequestClients.Modules
             var query = String.Format(QueryStatements.Backfill, 
                 downsamplers, backfill.DsSerieName, backfill.SourceSerieName, filters, timeFrom, timeTo, backfill.Interval, tags, fillType);
 
-            return await this.RequestClient.GetQueryAsync(RequestClientUtility.BuildQueryRequestParams(dbName, query));
-        }
-
-        private static string BuildDownsamplers(IList<string> downsamplers)
-        {
-            return String.Join(", ", downsamplers);
+            return query;
         }
 
         private static string BuildFilters(IList<string> filters)
         {
-            return filters == null ? String.Empty : String.Join(" ", String.Join("AND ", filters), "AND");
+            return filters == null ? String.Empty : String.Join(" ", filters.ToAndSpaceSeparatedString(), "AND");
         }
 
         private static string BuildTags(IList<string> tags)
         {
-            return tags == null ? String.Empty : String.Join(" ", ",", String.Join(", ", tags));
+            return tags == null ? String.Empty : String.Join(" ", ",", tags.ToCommaSpaceSeparatedString());
         }
 
         private static string BuildFillType(FillType fillType)

@@ -1,23 +1,26 @@
 ﻿using System.Threading.Tasks;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.RequestClients;
-using InfluxData.Net.InfluxDb.RequestClients.Modules;
+using InfluxData.Net.InfluxDb.QueryBuilders;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public class RetentionClientModule : ClientModuleBase, IRetentionClientModule
     {
-        private readonly IRetentionRequestModule _retentionRequestModule;
+        private readonly IRetentionQueryBuilder _retentionQueryBuilder;
 
-        public RetentionClientModule(IInfluxDbRequestClient requestClient, IRetentionRequestModule databaseRequestModule)
+        public RetentionClientModule(IInfluxDbRequestClient requestClient, IRetentionQueryBuilder retentionQueryBuilder)
             : base(requestClient)
         {
-            _retentionRequestModule = databaseRequestModule;
+            _retentionQueryBuilder = retentionQueryBuilder;
         }
 
         public async Task<IInfluxDbApiResponse> AlterRetentionPolicyAsync(string dbName, string policyName, string duration, int replicationCopies)
         {
-            return await _retentionRequestModule.AlterRetentionPolicy(dbName, policyName, duration, replicationCopies);
+            var query = _retentionQueryBuilder.AlterRetentionPolicy(dbName, policyName, duration, replicationCopies);
+            var response = await this.GetQueryAsync(query);
+
+            return response;
         }
     }
 }

@@ -60,20 +60,5 @@ namespace InfluxData.Net.Integration.Tests
                 .Should()
                 .NotBeNull();
         }
-
-        [Fact]
-        public async Task DatabaseDropSeries_OnExistingSeries_ShouldDropSeries()
-        {
-            var points = _fixture.CreateMockPoints(1);
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
-            writeResponse.Success.Should().BeTrue();
-
-            var expected = _fixture.Sut.GetFormatter().PointToSerie(points.First());
-            // query
-            await _fixture.Query(expected);
-
-            var deleteSerieResponse = await _fixture.Sut.Database.DropSeriesAsync(_fixture.DbName, points.First().Name);
-            deleteSerieResponse.Success.Should().BeTrue();
-        }
     }
 }

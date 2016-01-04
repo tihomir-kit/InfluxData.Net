@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using InfluxData.Net.InfluxDb.Constants;
 
-namespace InfluxData.Net.InfluxDb.RequestClients
+namespace InfluxData.Net.InfluxDb.Infrastructure
 {
-    internal static class RequestClientUtility
+    internal static class RequestParamsBuilder
     {
         internal static IDictionary<string, string> BuildQueryRequestParams(string query)
         {

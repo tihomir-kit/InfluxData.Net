@@ -4,18 +4,18 @@ using InfluxData.Net.InfluxDb.ClientModules;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.RequestClients;
-using InfluxData.Net.InfluxDb.RequestClients.Modules;
+using InfluxData.Net.InfluxDb.QueryBuilders;
 
 namespace InfluxData.Net.InfluxDb
 {
     public class InfluxDbClient : IInfluxDbClient
     {
         private readonly IInfluxDbRequestClient _requestClient;
-        private readonly Lazy<IBasicRequestModule> _basicRequestModule;
-        private readonly Lazy<ISerieRequestModule> _serieRequestModule;
-        private readonly Lazy<IDatabaseRequestModule> _databaseRequestModule;
-        private readonly Lazy<IRetentionRequestModule> _retentionRequestModule;
-        private readonly Lazy<ICqRequestModule> _cqRequestModule;
+
+        private readonly Lazy<ISerieQueryBuilder> _serieQueryBuilder;
+        private readonly Lazy<IDatabaseQueryBuilder> _databaseQueryBuilder;
+        private readonly Lazy<IRetentionQueryBuilder> _retentionQueryBuilder;
+        private readonly Lazy<ICqQueryBuilder> _cqQueryBuilder;
 
         private readonly Lazy<IBasicClientModule> _basicClientModule;
         public IBasicClientModule Client
@@ -58,18 +58,17 @@ namespace InfluxData.Net.InfluxDb
             _requestClient = requestClientFactory.GetRequestClient();
 
             // NOTE: once a breaking change occures, RequestModules will need to be resolved with factories
-            _basicRequestModule = new Lazy<IBasicRequestModule>(() => new BasicRequestModule(_requestClient), true);
-            _serieRequestModule = new Lazy<ISerieRequestModule>(() => new SerieRequestModule(_requestClient), true);
-            _databaseRequestModule = new Lazy<IDatabaseRequestModule>(() => new DatabaseRequestModule(_requestClient), true);
-            _retentionRequestModule = new Lazy<IRetentionRequestModule>(() => new RetentionRequestModule(_requestClient), true);
-            _cqRequestModule = new Lazy<ICqRequestModule>(() => new CqRequestModule(_requestClient), true);
+            _serieQueryBuilder = new Lazy<ISerieQueryBuilder>(() => new SerieQueryBuilder(), true);
+            _databaseQueryBuilder = new Lazy<IDatabaseQueryBuilder>(() => new DatabaseQueryBuilder(), true);
+            _retentionQueryBuilder = new Lazy<IRetentionQueryBuilder>(() => new RetentionQueryBuilder(), true);
+            _cqQueryBuilder = new Lazy<ICqQueryBuilder>(() => new CqQueryBuilder(), true);
 
             // NOTE: once a breaking change occures, ClientModules will need to be resolved with factories
-            _basicClientModule = new Lazy<IBasicClientModule>(() => new BasicClientModule(_requestClient, _basicRequestModule.Value));
-            _serieClientModule = new Lazy<ISerieClientModule>(() => new SerieClientModule(_requestClient, _serieRequestModule.Value));
-            _databaseClientModule = new Lazy<IDatabaseClientModule>(() => new DatabaseClientModule(_requestClient, _databaseRequestModule.Value));
-            _retentionClientModule = new Lazy<IRetentionClientModule>(() => new RetentionClientModule(_requestClient, _retentionRequestModule.Value));
-            _cqClientModule = new Lazy<ICqClientModule>(() => new CqClientModule(_requestClient, _cqRequestModule.Value));
+            _basicClientModule = new Lazy<IBasicClientModule>(() => new BasicClientModule(_requestClient));
+            _serieClientModule = new Lazy<ISerieClientModule>(() => new SerieClientModule(_requestClient, _serieQueryBuilder.Value));
+            _databaseClientModule = new Lazy<IDatabaseClientModule>(() => new DatabaseClientModule(_requestClient, _databaseQueryBuilder.Value));
+            _retentionClientModule = new Lazy<IRetentionClientModule>(() => new RetentionClientModule(_requestClient, _retentionQueryBuilder.Value));
+            _cqClientModule = new Lazy<ICqClientModule>(() => new CqClientModule(_requestClient, _cqQueryBuilder.Value));
         }
 
         public IInfluxDbFormatter GetFormatter()
