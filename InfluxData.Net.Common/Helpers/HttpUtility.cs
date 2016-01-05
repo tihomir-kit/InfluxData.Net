@@ -14,7 +14,7 @@ namespace InfluxData.Net.Common.Helpers
         /// <returns>Encoded value.</returns>
         public static string UrlEncode(string value)
         {
-            return Uri.EscapeUriString(value);
+            return Uri.EscapeUriString(value).Replace(";", "%3B");
         }
     }
 }

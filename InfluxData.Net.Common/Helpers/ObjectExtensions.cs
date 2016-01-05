@@ -68,31 +68,11 @@ namespace InfluxData.Net.Common.Helpers
         }
 
         /// <summary>
-        /// Joins items separating them with "," (comma).
-        /// </summary>
-        /// <param name="items">Items to join.</param>
-        /// <returns>Comma separated list as a string.</returns>
-        public static string ToCommaSeparatedString(this IList<string> items)
-        {
-            return String.Join(",", items);
-        }
-
-        /// <summary>
         /// Joins items separating them with ", " (comma and one whitespace).
         /// </summary>
         /// <param name="items">Items to join.</param>
         /// <returns>Comma-space separated list as a string.</returns>
         public static string ToCommaSpaceSeparatedString(this IEnumerable<string> items)
-        {
-            return String.Join(", ", items);
-        }
-
-        /// <summary>
-        /// Joins items separating them with ", " (comma and one whitespace).
-        /// </summary>
-        /// <param name="items">Items to join.</param>
-        /// <returns>Comma-space separated list as a string.</returns>
-        public static string ToCommaSpaceSeparatedString(this IList<string> items)
         {
             return String.Join(", ", items);
         }
@@ -108,13 +88,13 @@ namespace InfluxData.Net.Common.Helpers
         }
 
         /// <summary>
-        /// Joins items separating them with "AND " ('AND' and one whitespace).
+        /// Joins items separating them with "; " (';' and one whitespace).
         /// </summary>
         /// <param name="items">Items to join.</param>
-        /// <returns>AND-space separated list as a string.</returns>
-        public static string ToAndSpaceSeparatedString(this IList<string> items)
+        /// <returns>Semicolon-space separated list as a string.</returns>
+        public static string ToSemicolonSpaceSeparatedString(this IEnumerable<string> items)
         {
-            return String.Join("AND ", items);
+            return String.Join("; ", items);
         }
     }
 }

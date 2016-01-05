@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -58,6 +59,31 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
             var result = queryResult.Results.Single().Series;
             var series = result != null ? result.ToList() : new List<Serie>();
+
+            return series;
+        }
+
+        // TODO: implement
+        public async Task<IList<Serie>> QueryAsync(string dbName, string[] queries)
+        {
+            var response = await this.RequestClient.Query(dbName, queries.ToSemicolonSpaceSeparatedString());
+            var queryResult = response.ReadAs<QueryResponse>();
+            var series = new List<Serie>();
+
+            Validate.NotNull(queryResult, "queryResult");
+            Validate.NotNull(queryResult.Results, "queryResult.Results");
+
+            // Apparently a 200 OK can return an error in the results
+            // https://github.com/influxdb/influxdb/pull/1813
+            foreach (var result in queryResult.Results)
+            {
+                if (result.Error != null)
+                {
+                    throw new InfluxDbApiException(HttpStatusCode.BadRequest, result.Error);
+                }
+
+                series.AddRange(result.Series);
+            }
 
             return series;
         }

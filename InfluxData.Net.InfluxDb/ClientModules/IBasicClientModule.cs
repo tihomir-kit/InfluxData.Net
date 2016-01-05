@@ -31,12 +31,20 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds);
 
         /// <summary>
-        /// Execute a query agains the database.
+        /// Executes a query against the database.
         /// </summary>
         /// <param name="dbName">Database name.</param>
         /// <param name="query">Query to execute.</param>
         /// <returns></returns>
         Task<IList<Serie>> QueryAsync(string dbName, string query);
+
+        /// <summary>
+        /// Executes multiple queries against the database in a single request.
+        /// </summary>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="queries">Queries to execute.</param>
+        /// <returns></returns>
+        Task<IList<Serie>> QueryAsync(string dbName, string[] queries);
 
         /// <summary>
         /// Pings the InfluxDb server.

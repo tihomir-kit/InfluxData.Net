@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Constants;
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
@@ -9,7 +10,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
         {
             return new Dictionary<string, string>
             {
-                { QueryParams.Query, query }
+                { QueryParams.Query, HttpUtility.UrlEncode(query) }
             };
         }
 
@@ -23,7 +24,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             return new Dictionary<string, string>
             {
                 { QueryParams.Db, dbName },
-                { paramKey, paramValue }
+                { paramKey, HttpUtility.UrlEncode(paramValue) }
             };
         }
     }
