@@ -63,12 +63,11 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series;
         }
 
-        // TODO: implement
-        public async Task<IList<Serie>> QueryAsync(string dbName, string[] queries)
+        public async Task<IList<IList<Serie>>> QueryAsync(string dbName, string[] queries)
         {
             var response = await this.RequestClient.Query(dbName, queries.ToSemicolonSpaceSeparatedString());
             var queryResult = response.ReadAs<QueryResponse>();
-            var series = new List<Serie>();
+            var seriesList = new List<IList<Serie>>();
 
             Validate.NotNull(queryResult, "queryResult");
             Validate.NotNull(queryResult.Results, "queryResult.Results");
@@ -82,10 +81,10 @@ namespace InfluxData.Net.InfluxDb.ClientModules
                     throw new InfluxDbApiException(HttpStatusCode.BadRequest, result.Error);
                 }
 
-                series.AddRange(result.Series);
+                seriesList.Add(result.Series.ToList());
             }
 
-            return series;
+            return seriesList;
         }
 
         public async Task<Pong> PingAsync()

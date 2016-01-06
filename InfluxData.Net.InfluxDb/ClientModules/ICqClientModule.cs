@@ -3,6 +3,7 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using System;
+using System.Collections.Generic;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -19,8 +20,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// Gets all contious queries from the database.
         /// </summary>
         /// <param name="dbName">Database name.</param>
-        /// <returns>A list of all contious queries formatted as a <see cref="{Serie}"/>.</returns>
-        Task<Serie> GetContinuousQueriesAsync(string dbName);
+        /// <returns>A list of all contious queries.</returns>
+        Task<IList<ContinuousQueryResponse>> GetContinuousQueriesAsync(string dbName);
 
         /// <summary>
         /// Deletes a continous query.

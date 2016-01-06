@@ -30,9 +30,7 @@ namespace InfluxData.Net.Integration.Tests
             var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
             writeResponse.Success.Should().BeTrue();
 
-            var expected = _fixture.Sut.GetFormatter().PointToSerie(points.First());
-            // query
-            await _fixture.Query(expected);
+            await _fixture.EnsurePointExists(points.First());
 
             var deleteSerieResponse = await _fixture.Sut.Serie.DropSeriesAsync(_fixture.DbName, points.First().Name);
             deleteSerieResponse.Success.Should().BeTrue();

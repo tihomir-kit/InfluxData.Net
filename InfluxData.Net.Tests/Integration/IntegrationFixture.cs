@@ -21,6 +21,7 @@ namespace InfluxData.Net.Integration
     {
         public static readonly string _fakeDbPrefix = "FakeDb";
         public static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
+        public static readonly string _fakeCq = "FakeCq";
         private MockRepository _mockRepository;
 
         public IInfluxDbClient Sut { get; set; }
@@ -45,7 +46,7 @@ namespace InfluxData.Net.Integration
 
             this.DbName = CreateRandomDbName();
 
-            //Task.Run(() => this.PurgeFakeDatabases()).Wait();
+            Task.Run(() => this.PurgeFakeDatabases()).Wait();
             Task.Run(() => this.CreateEmptyDatabase()).Wait();
         }
 
@@ -106,25 +107,47 @@ namespace InfluxData.Net.Integration
             return String.Format("{0}{1}", _fakeMeasurementPrefix, timestamp);
         }
 
-        public async Task<IList<Serie>> Query(Serie expected)
+        public string CreateRandomCqName()
         {
-            // 0.9.3 need 'group by' to retrieve tags as tags when using select *
-            var result = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by *", expected.Name));
+            var timestamp = DateTime.UtcNow.ToUnixTime();
+            return String.Format("{0}{1}", _fakeCq, timestamp);
+        }
 
-            result.Should().NotBeNull();
-            result.Count().Should().Be(1);
+        /// <summary>
+        /// Checks if the serie has expected point count.
+        /// </summary>
+        /// <param name="serieName">Serie name to check.</param>
+        /// <param name="countField">Point field to be used in 'count()' portion of the query.</param>
+        /// <param name="expectedPoints">Expected number of saved points.</param>
+        public async Task EnsureValidPointCount(string serieName, string countField, int expectedPoints)
+        {
+            var response = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select count({0}) from \"{1}\"", countField, serieName));
+            response.Should().NotBeNull();
+            response.Count().Should().Be(1);
+            var countIndex = Array.IndexOf(response.First().Columns, "count");
+            response.First().Values.First()[countIndex].ToString().Should().Be(expectedPoints.ToString());
+        }
 
-            var actual = result.Single();
+        /// <summary>
+        /// Checks if the point is in the database. (checks by serie name and timestamp).
+        /// </summary>
+        /// <param name="expectedPoint">Expected point.</param>
+        public async Task EnsurePointExists(Point expectedPoint)
+        {
+            var expectedSerie = this.Sut.GetFormatter().PointToSerie(expectedPoint);
 
-            actual.Name.Should().Be(expected.Name);
-            actual.Tags.Count.Should().Be(expected.Tags.Count);
-            actual.Tags.ShouldAllBeEquivalentTo(expected.Tags);
-            actual.Columns.ShouldAllBeEquivalentTo(expected.Columns);
-            actual.Columns.Count().Should().Be(expected.Columns.Count());
-            actual.Values[0].Count().Should().Be(expected.Values[0].Count());
-            ((DateTime)actual.Values[0][0]).ToUnixTime().Should().Be(((DateTime)expected.Values[0][0]).ToUnixTime());
+            var response = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by * order by time desc", expectedPoint.Name));
+            response.Should().NotBeNull();
+            response.Count().Should().BeGreaterOrEqualTo(1);
 
-            return result;
+            var serie = response.FirstOrDefault(p => ((DateTime)p.Values[0][0]).ToUnixTime() == ((DateTime)expectedPoint.Timestamp).ToUnixTime());
+            serie.Should().NotBeNull();
+            serie.Name.Should().Be(expectedSerie.Name);
+            serie.Tags.Count.Should().Be(expectedSerie.Tags.Count);
+            serie.Tags.ShouldAllBeEquivalentTo(expectedSerie.Tags);
+            serie.Columns.ShouldAllBeEquivalentTo(expectedSerie.Columns);
+            serie.Columns.Count().Should().Be(expectedSerie.Columns.Count());
+            serie.Values[0].Count().Should().Be(expectedSerie.Values[0].Count());
         }
 
         public Point[] CreateMockPoints(int amount)
@@ -156,11 +179,11 @@ namespace InfluxData.Net.Integration
                 // quotes in the tag value are creating problems
                 // https://github.com/influxdb/influxdb/issues/3928
                 //{"tag_string", rnd.NextPrintableString(50).Replace("\"", string.Empty)},
-                {"tag_bool", (rnd.Next(2) == 0).ToString()},
-                {"tag_datetime", DateTime.Now.ToString()},
-                {"tag_decimal", ((decimal) rnd.NextDouble()).ToString()},
-                {"tag_float", ((float) rnd.NextDouble()).ToString()},
-                {"tag_int", rnd.Next().ToString()}
+                { "tag_bool", (rnd.Next(2) == 0).ToString() },
+                { "tag_datetime", DateTime.Now.ToString() },
+                { "tag_decimal", ((decimal) rnd.NextDouble()).ToString() },
+                { "tag_float", ((float) rnd.NextDouble()).ToString() },
+                { "tag_int", rnd.Next().ToString() }
             };
         }
 
@@ -177,19 +200,19 @@ namespace InfluxData.Net.Integration
             };
         }
 
-        public ContinuousQuery MockContinuousQuery()
+        public ContinuousQuery MockContinuousQuery(string serieName)
         {
             return new ContinuousQuery()
             {
                 DbName = this.DbName,
-                CqName = "FakeCQ",
+                CqName = CreateRandomCqName(),
                 Downsamplers = new List<string>()
                 {
                     "MAX(field_int) AS max_field_int",
                     "MIN(field_int) AS min_field_int"
                 },
-                DsSerieName = String.Format("{0}.5s", _fakeMeasurementPrefix),
-                SourceSerieName = _fakeMeasurementPrefix,
+                DsSerieName = String.Format("{0}.5s", serieName),
+                SourceSerieName = serieName,
                 Interval = "5s",
                 FillType = FillType.Previous
             };

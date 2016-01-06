@@ -10,7 +10,6 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
         /// <summary>
         /// Database name.
         /// </summary>
-        [JsonProperty("name")]
         public string Name { get; set; }
     }
 }

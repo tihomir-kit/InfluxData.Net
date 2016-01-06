@@ -44,7 +44,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="queries">Queries to execute.</param>
         /// <returns></returns>
-        Task<IList<Serie>> QueryAsync(string dbName, string[] queries);
+        Task<IList<IList<Serie>>> QueryAsync(string dbName, string[] queries);
 
         /// <summary>
         /// Pings the InfluxDb server.
