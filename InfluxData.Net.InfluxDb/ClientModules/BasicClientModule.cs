@@ -82,7 +82,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
                     throw new InfluxDbApiException(HttpStatusCode.BadRequest, result.Error);
                 }
 
-                series.AddRange(result.Series);
+                // multi-queries can have results that are empty (just like handled in single QueryAsync)
+                series.AddRange(result.Series ?? new Serie[0]);
             }
 
             return series;
