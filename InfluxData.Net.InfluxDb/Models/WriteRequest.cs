@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using InfluxData.Net.InfluxDb.Formatters;
 
@@ -24,7 +25,7 @@ namespace InfluxData.Net.InfluxDb.Models
         /// <summary>
         /// Points to write.
         /// </summary>
-        public Point[] Points { get; set; }
+        public IEnumerable<Point> Points { get; set; }
 
         /// <summary>
         /// Pont data time precision.

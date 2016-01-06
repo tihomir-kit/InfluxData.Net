@@ -1,28 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using InfluxData.Net.InfluxDb.Enums;
-using System;
 
 namespace InfluxData.Net.InfluxDb.Models
 {
     /// <summary>
-    /// Represents a continuous query object that describes a CQ to create.
+    /// Represents a backfill object for manually backfilling (downsampling) aggregated series data.
     /// </summary>
-    public class ContinuousQuery
+    public class BackfillParams
     {
-        /// <summary>
-        /// Database name.
-        /// </summary>
-        public string DbName { get; set; }
-
-        /// <summary>
-        /// New continuous query name.
-        /// </summary>
-        public string CqName { get; set; }
-
         /// <summary>
         /// InfluxDb downsampling functions/fields for the "SELECT" part of the query.
         /// </summary>
-        public IList<string> Downsamplers { get; set; }
+        public IEnumerable<string> Downsamplers { get; set; }
 
         /// <summary>
         /// Downsample serie name for the serie to write into.
@@ -33,6 +23,21 @@ namespace InfluxData.Net.InfluxDb.Models
         /// Source serie name.
         /// </summary>
         public string SourceSerieName { get; set; }
+
+        /// <summary>
+        /// Time from boundary.
+        /// </summary>
+        public DateTime TimeFrom { get; set; }
+
+        /// <summary>
+        /// Time to boundary.
+        /// </summary>
+        public DateTime TimeTo { get; set; }
+
+        /// <summary>
+        /// List of "WHERE" clause filters.
+        /// </summary>
+        public IList<string> Filters { get; set; }
 
         /// <summary>
         /// Data aggregation time interval.

@@ -11,16 +11,16 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
     internal class CqQueryBuilder : ICqQueryBuilder
     {
-        public string CreateContinuousQuery(ContinuousQuery continuousQuery)
+        public string CreateContinuousQuery(CqParams cqParams)
         {
-            var downsamplers = continuousQuery.Downsamplers.ToCommaSpaceSeparatedString();
-            var tags = BuildTags(continuousQuery.Tags);
-            var fillType = BuildFillType(continuousQuery.FillType);
+            var downsamplers = cqParams.Downsamplers.ToCommaSpaceSeparatedString();
+            var tags = BuildTags(cqParams.Tags);
+            var fillType = BuildFillType(cqParams.FillType);
 
             var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery,
-                downsamplers, continuousQuery.DsSerieName, continuousQuery.SourceSerieName, continuousQuery.Interval, tags, fillType);
+                downsamplers, cqParams.DsSerieName, cqParams.SourceSerieName, cqParams.Interval, tags, fillType);
 
-            var query = String.Format(QueryStatements.CreateContinuousQuery, continuousQuery.CqName, continuousQuery.DbName, subQuery);
+            var query = String.Format(QueryStatements.CreateContinuousQuery, cqParams.CqName, cqParams.DbName, subQuery);
 
             return query;
         }
@@ -37,7 +37,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
             return query;
         }
 
-        public string Backfill(string dbName, Backfill backfill)
+        public string Backfill(string dbName, BackfillParams backfill)
         {
             var downsamplers = backfill.Downsamplers.ToCommaSpaceSeparatedString();
             var filters = BuildFilters(backfill.Filters);
@@ -52,12 +52,12 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
             return query;
         }
 
-        private static string BuildFilters(IList<string> filters)
+        private static string BuildFilters(IEnumerable<string> filters)
         {
             return filters == null ? String.Empty : String.Join(" ", filters.ToAndSpaceSeparatedString(), "AND");
         }
 
-        private static string BuildTags(IList<string> tags)
+        private static string BuildTags(IEnumerable<string> tags)
         {
             return tags == null ? String.Empty : String.Join(" ", ",", tags.ToCommaSpaceSeparatedString());
         }

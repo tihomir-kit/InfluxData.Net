@@ -23,76 +23,40 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _cqQueryBuilder = cqQueryBuilder;
         }
 
-        public async Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery)
+        public async Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(CqParams cqParams)
         {
-            var query = _cqQueryBuilder.CreateContinuousQuery(continuousQuery);
-            var response = await this.GetQueryAsync(continuousQuery.DbName, query);
-
-            var queryResult = response.ReadAs<QueryResponse>();//.Results.Single().Series;
-
-            Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.Results, "queryResult.Results");
-
-            // Apparently a 200 OK can return an error in the results
-            // https://github.com/influxdb/influxdb/pull/1813
-            var error = queryResult.Results.Single().Error;
-            if (error != null)
-            {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, error);
-            }
+            var query = _cqQueryBuilder.CreateContinuousQuery(cqParams);
+            var response = await this.GetQueryAsync(cqParams.DbName, query);
+            this.ValidateResponse(response);
 
             return response;
         }
 
-        public async Task<IList<ContinuousQueryResponse>> GetContinuousQueriesAsync(string dbName)
+        public async Task<IEnumerable<ContinuousQuery>> GetContinuousQueriesAsync(string dbName)
         {
             var query = _cqQueryBuilder.GetContinuousQueries();
             var response = await this.GetQueryAsync(dbName, query);
-            var queryResult = response.ReadAs<QueryResponse>();//.Results.Single().Series;
+            var queryResult = this.ReadAsQueryResponse(response);
 
-            Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.Results, "queryResult.Results");
+            var cqs = new List<ContinuousQuery>();
 
-            // Apparently a 200 OK can return an error in the results
-            // https://github.com/influxdb/influxdb/pull/1813
-            var error = queryResult.Results.Single().Error;
-            if (error != null)
-            {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, error);
-            }
-
-            var series = queryResult.Results.Single().Series;
+            var series = queryResult.Results.Single().Series; // TODO: test if InfluxDB ever returns null '.Series'
             if (series == null)
-            {
-                return new List<ContinuousQueryResponse>();
-            }
+                return cqs;
 
             var serie = series.FirstOrDefault(p => p.Name == dbName);
             if (serie == null || serie.Values == null)
-            {
-                return new List<ContinuousQueryResponse>();
-            }
-
-            var cqs = new List<ContinuousQueryResponse>();
-
-            if (serie.Values == null)
-            {
                 return cqs;
-            }
 
-            var indexOfName = Array.IndexOf(serie.Columns, "name");
-            var indexOfQuery = Array.IndexOf(serie.Columns, "query");
+            var columns = serie.Columns.ToArray();
+            var indexOfName = Array.IndexOf(columns, "name");
+            var indexOfQuery = Array.IndexOf(columns, "query");
 
-            foreach (var value in serie.Values)
+            cqs.AddRange(serie.Values.Select(p => new ContinuousQuery()
             {
-                var cq = new ContinuousQueryResponse()
-                {
-                    Name = (string)value[indexOfName],
-                    Query = (string)value[indexOfQuery]
-                };
-
-                cqs.Add(cq);
-            }
+                Name = (string)p[indexOfName],
+                Query = (string)p[indexOfQuery]
+            }));
 
             return cqs;
         }
@@ -101,27 +65,16 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         {
             var query = _cqQueryBuilder.DeleteContinuousQuery(dbName, cqName);
             var response = await this.GetQueryAsync(dbName, query);
-
-            var queryResult = response.ReadAs<QueryResponse>();//.Results.Single().Series;
-
-            Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.Results, "queryResult.Results");
-
-            // Apparently a 200 OK can return an error in the results
-            // https://github.com/influxdb/influxdb/pull/1813
-            var error = queryResult.Results.Single().Error;
-            if (error != null)
-            {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, error);
-            }
+            this.ValidateResponse(response);
 
             return response;
         }
 
-        public async Task<IInfluxDbApiResponse> BackfillAsync(string dbName, Backfill backfill)
+        public async Task<IInfluxDbApiResponse> BackfillAsync(string dbName, BackfillParams backfillParams)
         {
-            var query = _cqQueryBuilder.Backfill(dbName, backfill);
+            var query = _cqQueryBuilder.Backfill(dbName, backfillParams);
             var response = await this.GetQueryAsync(dbName, query);
+            this.ValidateResponse(response);
 
             return response;
         }

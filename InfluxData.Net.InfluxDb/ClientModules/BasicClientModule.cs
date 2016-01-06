@@ -21,12 +21,12 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
-            var response = await WriteAsync(dbName, new[] { point }, retenionPolicy, precision);
+            var response = await WriteAsync(dbName, new [] { point }, retenionPolicy, precision);
 
             return response;
         }
 
-        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
             var request = new WriteRequest(this.RequestClient.GetFormatter())
             {
@@ -41,50 +41,38 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public async Task<IList<Serie>> QueryAsync(string dbName, string query)
+        public async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query)
         {
             var response = await this.RequestClient.Query(dbName, query);
-            var queryResult = response.ReadAs<QueryResponse>();
-
-            Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.Results, "queryResult.Results");
-
-            // Apparently a 200 OK can return an error in the results
-            // https://github.com/influxdb/influxdb/pull/1813
-            var error = queryResult.Results.Single().Error;
-            if (error != null)
-            {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, error);
-            }
-
-            var result = queryResult.Results.Single().Series;
-            var series = result != null ? result.ToList() : new List<Serie>();
+            var queryResult = this.ReadAsQueryResponse(response);
+            var result = queryResult.Results.Single();
+            var series = GetSeries(result);
 
             return series;
         }
 
-        public async Task<IList<IList<Serie>>> QueryAsync(string dbName, string[] queries)
+        public async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries)
         {
             var response = await this.RequestClient.Query(dbName, queries.ToSemicolonSpaceSeparatedString());
-            var queryResult = response.ReadAs<QueryResponse>();
-            var seriesList = new List<IList<Serie>>();
+            var queryResult = this.ReadAsQueryResponse(response);
+            var series = new List<Serie>();
 
-            Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.Results, "queryResult.Results");
-
-            // Apparently a 200 OK can return an error in the results
-            // https://github.com/influxdb/influxdb/pull/1813
             foreach (var result in queryResult.Results)
             {
-                if (result.Error != null)
-                {
-                    throw new InfluxDbApiException(HttpStatusCode.BadRequest, result.Error);
-                }
-
-                seriesList.Add(result.Series.ToList());
+                series.AddRange(result.Series ?? new Serie[0]);
             }
 
-            return seriesList;
+            return series;
+        }
+
+
+        public async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries)
+        {
+            var response = await this.RequestClient.Query(dbName, queries.ToSemicolonSpaceSeparatedString());
+            var queryResult = this.ReadAsQueryResponse(response);
+            var results = queryResult.Results.Select(GetSeries);
+
+            return results;
         }
 
         public async Task<Pong> PingAsync()

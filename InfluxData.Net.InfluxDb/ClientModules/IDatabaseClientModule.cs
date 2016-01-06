@@ -18,8 +18,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <summary>
         /// Gets all available databases.
         /// </summary>
-        /// <returns>A list of all databases.</returns>
-        Task<IList<DatabaseResponse>> GetDatabasesAsync();
+        /// <returns>A collection of all databases.</returns>
+        Task<IEnumerable<Database>> GetDatabasesAsync();
 
         /// <summary>
         /// Drops a database.

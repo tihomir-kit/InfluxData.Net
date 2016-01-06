@@ -26,7 +26,7 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
         /// <summary>
         /// List of serie fields.
         /// </summary>
-        public string[] Columns { get; set; }
+        public IList<string> Columns { get; set; }
 
         /// <summary>
         /// Serie values.

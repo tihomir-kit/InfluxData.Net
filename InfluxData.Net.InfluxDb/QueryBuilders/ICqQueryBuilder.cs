@@ -10,9 +10,9 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
         /// <summary>
         /// Builds a "create continuous query" query.
         /// </summary>
-        /// <param name="continuousQuery">Cq request object which describes the Cq that wants to be created.</param>
+        /// <param name="cqParams">Cq request object which describes the Cq that wants to be created.</param>
         /// <returns></returns>
-        string CreateContinuousQuery(ContinuousQuery continuousQuery);
+        string CreateContinuousQuery(CqParams cqParams);
 
         /// <summary>
         /// Builds a "get all contious queries" query.
@@ -34,6 +34,6 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
         /// <param name="dbName">Database name.</param>
         /// <param name="backfill">Backfill object which describes the backfill action to execute.</param>
         /// <returns></returns>
-        string Backfill(string dbName, Backfill backfill);
+        string Backfill(string dbName, BackfillParams backfill);
     }
 }

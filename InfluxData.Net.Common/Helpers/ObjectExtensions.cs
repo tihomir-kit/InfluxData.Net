@@ -61,7 +61,7 @@ namespace InfluxData.Net.Common.Helpers
         /// Joins items separating them with "," (comma).
         /// </summary>
         /// <param name="items">Items to join.</param>
-        /// <returns>Comma separated list as a string.</returns>
+        /// <returns>Comma separated collection as a string.</returns>
         public static string ToCommaSeparatedString(this IEnumerable<string> items)
         {
             return String.Join(",", items);
@@ -71,7 +71,7 @@ namespace InfluxData.Net.Common.Helpers
         /// Joins items separating them with ", " (comma and one whitespace).
         /// </summary>
         /// <param name="items">Items to join.</param>
-        /// <returns>Comma-space separated list as a string.</returns>
+        /// <returns>Comma-space separated collection as a string.</returns>
         public static string ToCommaSpaceSeparatedString(this IEnumerable<string> items)
         {
             return String.Join(", ", items);
@@ -81,7 +81,7 @@ namespace InfluxData.Net.Common.Helpers
         /// Joins items separating them with "AND " ('AND' and one whitespace).
         /// </summary>
         /// <param name="items">Items to join.</param>
-        /// <returns>AND-space separated list as a string.</returns>
+        /// <returns>AND-space separated collection as a string.</returns>
         public static string ToAndSpaceSeparatedString(this IEnumerable<string> items)
         {
             return String.Join("AND ", items);
@@ -91,7 +91,7 @@ namespace InfluxData.Net.Common.Helpers
         /// Joins items separating them with "; " (';' and one whitespace).
         /// </summary>
         /// <param name="items">Items to join.</param>
-        /// <returns>Semicolon-space separated list as a string.</returns>
+        /// <returns>Semicolon-space separated collection as a string.</returns>
         public static string ToSemicolonSpaceSeparatedString(this IEnumerable<string> items)
         {
             return String.Join("; ", items);

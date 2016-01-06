@@ -53,7 +53,7 @@
     <Compile Include="InfluxDbClient.cs" />
     <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
     <Compile Include="Infrastructure\IInfluxDbApiResponse.cs" />
-    <Compile Include="Models\Responses\ContinuousQueryResponse.cs" />
+    <Compile Include="Models\Responses\ContinuousQuery.cs" />
     <Compile Include="RequestClients\IInfluxDbRequestClient.cs" />
     <Compile Include="QueryBuilders\SerieQueryBuilder.cs" />
     <Compile Include="QueryBuilders\ISerieQueryBuilder.cs" />
@@ -74,10 +74,10 @@
     <Compile Include="Infrastructure\InfluxDbException.cs" />
     <Compile Include="Infrastructure\InfluxDbApiResponse.cs" />
     <Compile Include="Infrastructure\InfluxDbResponseExtensions.cs" />
-    <Compile Include="Models\Backfill.cs" />
-    <Compile Include="Models\ContinuousQuery.cs" />
+    <Compile Include="Models\BackfillParams.cs" />
+    <Compile Include="Models\CqParams.cs" />
     <Compile Include="Models\Point.cs" />
-    <Compile Include="Models\Responses\DatabaseResponse.cs" />
+    <Compile Include="Models\Responses\Database.cs" />
     <Compile Include="Models\Responses\Pong.cs" />
     <Compile Include="Models\Responses\QueryResponse.cs" />
     <Compile Include="Models\Responses\Serie.cs" />

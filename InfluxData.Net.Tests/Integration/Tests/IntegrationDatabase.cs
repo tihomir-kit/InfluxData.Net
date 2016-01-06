@@ -39,7 +39,7 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public async Task DatabaseShow_OnDatabaseExists_ShouldReturnDatabaseList()
+        public async Task DatabaseShow_OnDatabaseExists_ShouldReturnDatabaseCollection()
         {
             // Arrange
             var dbName = _fixture.CreateRandomDbName();
@@ -55,8 +55,7 @@ namespace InfluxData.Net.Integration.Tests
                 .NotBeNullOrEmpty();
 
             databases
-                .Where(db => db.Name.Equals(dbName))
-                .Single()
+                .Single(db => db.Name.Equals(dbName))
                 .Should()
                 .NotBeNull();
         }

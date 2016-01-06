@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using System.Threading.Tasks;
 using Xunit;
@@ -28,44 +29,39 @@ namespace InfluxData.Net.Integration.Tests
         [Fact]
         public async Task CreateContinuousQuery_OnExistingMeasurement_ShouldCreateContinuousQuery()
         {
-            var points = _fixture.CreateMockPoints(1);
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
-            writeResponse.Success.Should().BeTrue();
-            var cq = _fixture.MockContinuousQuery(points.First().Name);
+            var points = await _fixture.MockAndWritePoints(1);
+            var mockedCq = _fixture.MockContinuousQuery(points.First().Name);
 
-            var result = await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
+            var result = await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(mockedCq);
 
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
             var cqs = await _fixture.Sut.ContinuousQuery.GetContinuousQueriesAsync(_fixture.DbName);
-            var savedCq = cqs.FirstOrDefault(p => p.Name == cq.CqName);
-            savedCq.Should().NotBeNull();
-            savedCq.Name.Should().Be(cq.CqName);
+            var cq = cqs.FirstOrDefault(p => p.Name == mockedCq.CqName);
+            cq.Should().NotBeNull();
+            cq.Name.Should().Be(mockedCq.CqName);
         }
 
         [Fact]
         public async Task CreateContinuousQuery_OnNonExistingMeasurement_ShouldCreateContinuousQuery()
         {
-            var cq = _fixture.MockContinuousQuery("nonexistingseriename");
+            var mockedCq = _fixture.MockContinuousQuery("nonexistingseriename");
 
-            var result = await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
+            var result = await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(mockedCq);
 
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
             var cqs = await _fixture.Sut.ContinuousQuery.GetContinuousQueriesAsync(_fixture.DbName);
-            var savedCq = cqs.FirstOrDefault(p => p.Name == cq.CqName);
-            savedCq.Should().NotBeNull();
-            savedCq.Name.Should().Be(cq.CqName);
+            var cq = cqs.FirstOrDefault(p => p.Name == mockedCq.CqName);
+            cq.Should().NotBeNull();
+            cq.Name.Should().Be(mockedCq.CqName);
         }
 
         [Fact]
         public async Task CreateContinuousQuery_OnExistingCqName_ShouldThrow()
         {
-            var points = _fixture.CreateMockPoints(1);
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
-            writeResponse.Success.Should().BeTrue();
-            var cq = _fixture.MockContinuousQuery(points.First().Name);
-            await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
+            var points = await _fixture.MockAndWritePoints(1);
+            var cq = await _fixture.MockAndWriteCq(points.First().Name);
 
             Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq); };
 
@@ -73,15 +69,38 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
+        public async Task GetContinuousQueries_OnExistingCq_ShouldReturnCqs()
+        {
+            var points = await _fixture.MockAndWritePoints(1);
+            var cq = await _fixture.MockAndWriteCq(points.First().Name);
+
+            var cqs = await _fixture.Sut.ContinuousQuery.GetContinuousQueriesAsync(_fixture.DbName);
+
+            var savedCq = cqs.FirstOrDefault(p => p.Name == cq.CqName);
+            savedCq.Should().NotBeNull();
+            savedCq.Name.Should().Be(cq.CqName);
+        }
+
+        [Fact]
+        public async Task GetContinuousQueries_OnNonExistingCq_ShouldReturnEmptyCqCollection()
+        {
+            var dbName = _fixture.CreateRandomDbName();
+            await _fixture.CreateEmptyDatabase(dbName);
+
+            var cqs = await _fixture.Sut.ContinuousQuery.GetContinuousQueriesAsync(dbName);
+
+            cqs.Should().NotBeNull();
+            cqs.Should().HaveCount(0);
+        }
+
+        [Fact]
         public async Task DeleteContinuousQuery_OnExistingCq_ShouldReturnSuccess()
         {
-            var points = _fixture.CreateMockPoints(1);
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
-            writeResponse.Success.Should().BeTrue();
-            var cq = _fixture.MockContinuousQuery(points.First().Name);
-            await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
+            var points = await _fixture.MockAndWritePoints(1);
+            var cq = await _fixture.MockAndWriteCq(points.First().Name);
 
             var result = await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, cq.CqName);
+
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
         }
@@ -95,36 +114,12 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public async Task GetContinuousQueries_OnExistingCq_ShouldReturnCqs()
-        {
-            var points = _fixture.CreateMockPoints(1);
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
-            writeResponse.Success.Should().BeTrue();
-            var cq = _fixture.MockContinuousQuery(points.First().Name);
-            var result = await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
-            result.Should().NotBeNull();
-            result.Success.Should().BeTrue();
-
-            var cqs = await _fixture.Sut.ContinuousQuery.GetContinuousQueriesAsync(_fixture.DbName);
-            var savedCq = cqs.FirstOrDefault(p => p.Name == cq.CqName);
-            savedCq.Should().NotBeNull();
-            savedCq.Name.Should().Be(cq.CqName);
-        }
-
-        [Fact]
-        public async Task GetContinuousQueries_OnNonExistingCq_ShouldReturnEmptyCqList()
-        {
-            //var cqs = await _fixture.Sut.ContinuousQuery.GetContinuousQueriesAsync(_fixture.DbName);
-            //cqs.Should().NotBeNull();
-            //cqs.Should().HaveCount(0);
-        }
-
-        [Fact]
         public async Task Backfill_OnValidBackfillObject_ShouldReturnSuccess()
         {
             var backfill = _fixture.MockBackfill();
 
-            var result = await _fixture.Sut.ContinuousQuery.BackfillAsync("Novaerus01", backfill);
+            var result = await _fixture.Sut.ContinuousQuery.BackfillAsync(_fixture.DbName, backfill);
+
             result.Should().NotBeNull();
             result.Success.Should().BeTrue();
         }

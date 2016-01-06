@@ -30,7 +30,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         /// <param name="dbName">Database name.</param>
         /// <param name="query">Queries to execute. For language specification please see
         /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
-        /// <returns>A list of Series that match the query.</returns>
+        /// <returns></returns>
         Task<IInfluxDbApiResponse> Query(string dbName, string query);
 
         Task<IInfluxDbApiResponse> GetQueryAsync(IDictionary<string, string> requestParams);

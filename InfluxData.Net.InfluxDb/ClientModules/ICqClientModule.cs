@@ -12,16 +12,16 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <summary>
         /// Creates a continuous query in the database.
         /// </summary>
-        /// <param name="continuousQuery">Cq request object which describes the Cq that wants to be created.</param>
+        /// <param name="cqParams">Cq request object which describes the Cq that wants to be created.</param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery);
+        Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(CqParams cqParams);
 
         /// <summary>
         /// Gets all contious queries from the database.
         /// </summary>
         /// <param name="dbName">Database name.</param>
-        /// <returns>A list of all contious queries.</returns>
-        Task<IList<ContinuousQueryResponse>> GetContinuousQueriesAsync(string dbName);
+        /// <returns>A collection of all contious queries.</returns>
+        Task<IEnumerable<ContinuousQuery>> GetContinuousQueriesAsync(string dbName);
 
         /// <summary>
         /// Deletes a continous query.
@@ -36,8 +36,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// PLEASE EXCERSISE CAUTION WITH THIS CALL. Not specifying additional filters might cause your CPU to go to 100% for a long time.
         /// </summary>
         /// <param name="dbName">Database name.</param>
-        /// <param name="backfill"></param>
+        /// <param name="backfillParams"></param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> BackfillAsync(string dbName, Backfill backfill);
+        Task<IInfluxDbApiResponse> BackfillAsync(string dbName, BackfillParams backfillParams);
     }
 }
