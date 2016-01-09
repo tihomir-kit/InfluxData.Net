@@ -5,7 +5,7 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
     /// <summary>
     /// Represents <see cref="{Database}"/> query response.
     /// </summary>
-    public class DatabaseResponse
+    public class Database
     {
         /// <summary>
         /// Database name.

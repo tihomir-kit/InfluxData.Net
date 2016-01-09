@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 namespace InfluxData.Net.InfluxDb.Models.Responses
 {
     /// <summary>
-    /// Represents <see cref="{ContinuousQueryResponse}"/> query response.
+    /// Represents <see cref="{ContinuousQuery}"/> query response.
     /// </summary>
-    public class ContinuousQueryResponse
+    public class ContinuousQuery
     {
         /// <summary>
         /// CQ name.

@@ -26,7 +26,7 @@ namespace InfluxData.Net.Integration.Tests
         [Fact]
         public async Task DropSeries_OnExistingSeries_ShouldDropSeries()
         {
-            var points = _fixture.CreateMockPoints(1);
+            var points = _fixture.MockPoints(1);
             var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
             writeResponse.Success.Should().BeTrue();
 

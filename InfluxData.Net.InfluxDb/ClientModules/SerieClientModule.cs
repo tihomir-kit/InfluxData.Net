@@ -18,20 +18,22 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _serieQueryBuilder = serieQueryBuilder;
         }
 
-        public async Task<IInfluxDbApiResponse> GetSeriesAsync(string dbName, string measurementName, IList<string> filters = null)
+        public async Task<IInfluxDbApiResponse> GetSeriesAsync(string dbName, string measurementName, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetSeries(dbName, measurementName, filters);
             var response = await this.GetQueryAsync(dbName, query);
 
+            // TODO: format to a strongly-typed object
+
             return response;
         }
 
-        public async Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string measurementName, IList<string> filters = null)
+        public async Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string measurementName, IEnumerable<string> filters = null)
         {
             return await DropSeriesAsync(dbName, new List<string>() { measurementName }, filters);
         }
 
-        public async Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, IList<string> measurementNames, IList<string> filters = null)
+        public async Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, IEnumerable<string> measurementNames, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.DropSeries(dbName, measurementNames, filters);
             var response = await this.GetQueryAsync(dbName, query);
@@ -39,10 +41,12 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public async Task<IInfluxDbApiResponse> GetMeasurementsAsync(string dbName, string withClause = null, IList<string> filters = null)
+        public async Task<IInfluxDbApiResponse> GetMeasurementsAsync(string dbName, string withClause = null, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetMeasurements(dbName, withClause, filters);
             var response = await this.GetQueryAsync(dbName, query);
+
+            // TODO: format to a strongly-typed object
 
             return response;
         }

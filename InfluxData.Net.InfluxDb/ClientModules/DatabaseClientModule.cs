@@ -27,22 +27,19 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public async Task<IList<DatabaseResponse>> GetDatabasesAsync()
+        public async Task<IEnumerable<Database>> GetDatabasesAsync()
         {
             var query = _databaseQueryBuilder.GetDatabases();
             var response = await this.GetQueryAsync(query);
 
-            var queryResult = response.ReadAs<QueryResponse>();
-            var serie = queryResult.Results.Single().Series.Single();
-            var databases = new List<DatabaseResponse>();
+            var queryResult = this.ReadAsQueryResponse(response);
 
-            foreach (var value in serie.Values)
+            var serie = queryResult.Results.Single().Series.Single(); // TODO: check for empty
+
+            var databases = serie.Values.Select(p => new Database()
             {
-                databases.Add(new DatabaseResponse
-                {
-                    Name = (string)value[0]
-                });
-            }
+                Name = (string)p[0]
+            }).ToList();
 
             return databases;
         }

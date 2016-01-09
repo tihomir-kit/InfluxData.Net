@@ -51,7 +51,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
                 Name = point.Name
             };
 
-            foreach (var key in point.Tags.Keys.ToList())
+            foreach (var key in point.Tags.Keys)
             {
                 serie.Tags.Add(key, point.Tags[key].ToString());
             }

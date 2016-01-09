@@ -22,6 +22,9 @@ namespace InfluxData.Net.Integration
         public static readonly string _fakeDbPrefix = "FakeDb";
         public static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
         public static readonly string _fakeCq = "FakeCq";
+
+        private static readonly Random _random = new Random();
+        private static readonly object _syncLock = new object();
         private MockRepository _mockRepository;
 
         public IInfluxDbClient Sut { get; set; }
@@ -78,9 +81,9 @@ namespace InfluxData.Net.Integration
         }
 
 
-        private async Task CreateEmptyDatabase()
+        public async Task CreateEmptyDatabase(string dbName = null)
         {
-            var createResponse = await this.Sut.Database.CreateDatabaseAsync(this.DbName);
+            var createResponse = await this.Sut.Database.CreateDatabaseAsync(dbName ?? this.DbName);
             createResponse.Success.Should().BeTrue();
         }
 
@@ -97,20 +100,28 @@ namespace InfluxData.Net.Integration
 
         public string CreateRandomDbName()
         {
-            var timestamp = DateTime.UtcNow.ToUnixTime();
-            return String.Format("{0}{1}", _fakeDbPrefix, timestamp);
+            return String.Format("{0}{1}", _fakeDbPrefix, CreateRandomSuffix());
         }
 
         public string CreateRandomMeasurementName()
         {
-            var timestamp = DateTime.UtcNow.ToUnixTime();
-            return String.Format("{0}{1}", _fakeMeasurementPrefix, timestamp);
+            return String.Format("{0}{1}", _fakeMeasurementPrefix, CreateRandomSuffix());
         }
 
         public string CreateRandomCqName()
         {
+            return String.Format("{0}{1}", _fakeCq, CreateRandomSuffix());
+        }
+
+        /// <see cref="http://stackoverflow.com/a/768001/413785"/>
+        public static string CreateRandomSuffix()
+        {
             var timestamp = DateTime.UtcNow.ToUnixTime();
-            return String.Format("{0}{1}", _fakeCq, timestamp);
+            lock (_syncLock)
+            {
+                var randomInt = _random.Next(Int32.MaxValue);
+                return String.Format("{0}{1}", timestamp, randomInt);
+            }
         }
 
         /// <summary>
@@ -124,7 +135,7 @@ namespace InfluxData.Net.Integration
             var response = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select count({0}) from \"{1}\"", countField, serieName));
             response.Should().NotBeNull();
             response.Count().Should().Be(1);
-            var countIndex = Array.IndexOf(response.First().Columns, "count");
+            var countIndex = Array.IndexOf(response.First().Columns.ToArray(), "count");
             response.First().Values.First()[countIndex].ToString().Should().Be(expectedPoints.ToString());
         }
 
@@ -150,15 +161,49 @@ namespace InfluxData.Net.Integration
             serie.Values[0].Count().Should().Be(expectedSerie.Values[0].Count());
         }
 
-        public Point[] CreateMockPoints(int amount)
+        /// <summary>
+        /// Mocks a desired amount of points and saves them to the DB.
+        /// </summary>
+        /// <param name="amount">Amount per measurement to mock.</param>
+        /// <param name="uniqueMeasurements">Unique measurements amount.</param>
+        public async Task<IEnumerable<Point>> MockAndWritePoints(int amount, int uniqueMeasurements = 1)
+        {
+            var points = new Point[0];
+
+            for (var i = 0; i < uniqueMeasurements; i++)
+            {
+                points = points.Concat(MockPoints(amount)).ToArray();
+            }
+
+            var writeResponse = await Sut.Client.WriteAsync(this.DbName, points.ToArray());
+            writeResponse.Success.Should().BeTrue();
+
+            return points;
+        }
+
+        /// <summary>
+        /// Mocks a CQ and saves it to the DB.
+        /// </summary>
+        /// <param name="serieName">CQ for serie name?</param>
+        public async Task<CqParams> MockAndWriteCq(string serieName)
+        {
+            var cq = MockContinuousQuery(serieName);
+            var result = await Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
+
+            return cq;
+        }
+
+        public IEnumerable<Point> MockPoints(int amount)
         {
             var rnd = new Random();
             var fixture = new Fixture();
 
             fixture.Customize<Point>(c => c
                 .With(p => p.Name, CreateRandomMeasurementName())
-                .Do(p => p.Tags = CreateNewTags(rnd))
-                .Do(p => p.Fields = CreateNewFields(rnd))
+                .Do(p => p.Tags = MockPointTags(rnd))
+                .Do(p => p.Fields = MockPointFields(rnd))
                 .OmitAutoProperties());
 
             var points = fixture.CreateMany<Point>(amount).ToArray();
@@ -172,7 +217,7 @@ namespace InfluxData.Net.Integration
             return points;
         }
 
-        public Dictionary<string, object> CreateNewTags(Random rnd)
+        public Dictionary<string, object> MockPointTags(Random rnd)
         {
             return new Dictionary<string, object>
             {
@@ -187,7 +232,7 @@ namespace InfluxData.Net.Integration
             };
         }
 
-        public Dictionary<string, object> CreateNewFields(Random rnd)
+        public Dictionary<string, object> MockPointFields(Random rnd)
         {
             return new Dictionary<string, object>
             {
@@ -200,9 +245,9 @@ namespace InfluxData.Net.Integration
             };
         }
 
-        public ContinuousQuery MockContinuousQuery(string serieName)
+        public CqParams MockContinuousQuery(string serieName)
         {
-            return new ContinuousQuery()
+            return new CqParams()
             {
                 DbName = this.DbName,
                 CqName = CreateRandomCqName(),
@@ -218,9 +263,9 @@ namespace InfluxData.Net.Integration
             };
         }
 
-        public Backfill MockBackfill()
+        public BackfillParams MockBackfill()
         {
-            return new Backfill()
+            return new BackfillParams()
             {
                 Downsamplers = new List<string>()
                 {

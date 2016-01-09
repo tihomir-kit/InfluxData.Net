@@ -10,7 +10,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
     internal class SerieQueryBuilder : ISerieQueryBuilder
     {
-        public string GetSeries(string dbName, string measurementName, IList<string> filters = null)
+        public string GetSeries(string dbName, string measurementName, IEnumerable<string> filters = null)
         {
             var query = QueryStatements.GetSeries;
 
@@ -19,7 +19,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
                 query = String.Join(" FROM ", query, measurementName);
             }
 
-            if (filters != null && filters.Count > 0)
+            if (filters != null && filters.Any())
             {
                 query = String.Join(" WHERE ", query, filters.ToCommaSpaceSeparatedString());
             }
@@ -27,16 +27,16 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
             return query;
         }
 
-        public string DropSeries(string dbName, string measurementName, IList<string> filters = null)
+        public string DropSeries(string dbName, string measurementName, IEnumerable<string> filters = null)
         {
             return DropSeries(dbName, new List<string>() { measurementName }, filters);
         }
 
-        public string DropSeries(string dbName, IList<string> measurementNames, IList<string> filters = null)
+        public string DropSeries(string dbName, IEnumerable<string> measurementNames, IEnumerable<string> filters = null)
         {
             var query = String.Format(QueryStatements.DropSeries, measurementNames.ToCommaSeparatedString());
 
-            if (filters != null && filters.Count > 0)
+            if (filters != null && filters.Any())
             {
                 query = String.Join(" WHERE ", query, filters.ToCommaSpaceSeparatedString());
             }
@@ -44,7 +44,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
             return query;
         }
 
-        public string GetMeasurements(string dbName, string withClause = null, IList<string> filters = null)
+        public string GetMeasurements(string dbName, string withClause = null, IEnumerable<string> filters = null)
         {
             var query = QueryStatements.GetMeasurements;
 
@@ -53,7 +53,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
                 query = String.Join(" WITH MEASUREMENT ", query, withClause);
             }
 
-            if (filters != null && filters.Count > 0)
+            if (filters != null && filters.Any())
             {
                 query = String.Join(" WHERE ", query, filters.ToCommaSpaceSeparatedString());
             }
