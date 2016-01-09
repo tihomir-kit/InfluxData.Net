@@ -56,7 +56,9 @@
     <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
     <Compile Include="Infrastructure\IInfluxDbApiResponse.cs" />
     <Compile Include="Models\Responses\ContinuousQuery.cs" />
+    <Compile Include="Models\Responses\Measurement.cs" />
     <Compile Include="Models\Responses\Diagnostics.cs" />
+    <Compile Include="Models\Responses\SerieSet.cs" />
     <Compile Include="Models\Responses\Stats.cs" />
     <Compile Include="QueryBuilders\DiagnosticsQueryBuilder.cs" />
     <Compile Include="QueryBuilders\IDiagnosticsQueryBuilder.cs" />

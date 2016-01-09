@@ -58,7 +58,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return queryResult;
         }
 
-        protected void ValidateResponse(IInfluxDbApiResponse response)
+        protected void ValidateQueryResponse(IInfluxDbApiResponse response)
         {
             ReadAsQueryResponse(response);
         }

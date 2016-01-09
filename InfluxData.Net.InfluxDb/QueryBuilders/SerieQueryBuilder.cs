@@ -10,7 +10,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
     internal class SerieQueryBuilder : ISerieQueryBuilder
     {
-        public string GetSeries(string dbName, string measurementName, IEnumerable<string> filters = null)
+        public string GetSeries(string dbName, string measurementName = null, IEnumerable<string> filters = null)
         {
             var query = QueryStatements.GetSeries;
 

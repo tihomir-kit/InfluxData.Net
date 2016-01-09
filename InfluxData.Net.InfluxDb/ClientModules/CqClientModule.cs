@@ -27,7 +27,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         {
             var query = _cqQueryBuilder.CreateContinuousQuery(cqParams);
             var response = await this.GetQueryAsync(cqParams.DbName, query);
-            this.ValidateResponse(response);
+            this.ValidateQueryResponse(response);
 
             return response;
         }
@@ -65,7 +65,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         {
             var query = _cqQueryBuilder.DeleteContinuousQuery(dbName, cqName);
             var response = await this.GetQueryAsync(dbName, query);
-            this.ValidateResponse(response);
+            this.ValidateQueryResponse(response);
 
             return response;
         }
@@ -74,7 +74,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         {
             var query = _cqQueryBuilder.Backfill(dbName, backfillParams);
             var response = await this.GetQueryAsync(dbName, query);
-            this.ValidateResponse(response);
+            this.ValidateQueryResponse(response);
 
             return response;
         }

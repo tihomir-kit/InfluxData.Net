@@ -13,7 +13,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
         /// <param name="measurementName">Measurement name (optional).</param>
         /// <param name="filters">A collection of "WHERE" clause filters (optional).</param>
         /// <returns></returns>
-        string GetSeries(string dbName, string measurementName, IEnumerable<string> filters = null);
+        string GetSeries(string dbName, string measurementName = null, IEnumerable<string> filters = null);
 
         /// <summary>
         /// Deletes all data points from a serie.

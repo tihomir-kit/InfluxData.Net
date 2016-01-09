@@ -26,38 +26,26 @@ namespace InfluxData.Net.Integration.Tests
         [Fact]
         public async Task Database_OnCreateAndDrop_ShouldReturnSuccess()
         {
-            // Arrange
             var dbName = _fixture.CreateRandomDbName();
 
-            // Act
             var createResponse = await _fixture.Sut.Database.CreateDatabaseAsync(dbName);
             var deleteResponse = await _fixture.Sut.Database.DropDatabaseAsync(dbName);
 
-            // Assert
             createResponse.Success.Should().BeTrue();
             deleteResponse.Success.Should().BeTrue();
         }
-
+        
         [Fact]
-        public async Task DatabaseShow_OnDatabaseExists_ShouldReturnDatabaseCollection()
+        public async Task GetDatabase_OnDatabaseExists_ShouldReturnDatabaseCollection()
         {
-            // Arrange
             var dbName = _fixture.CreateRandomDbName();
             var createResponse = await _fixture.Sut.Database.CreateDatabaseAsync(dbName);
             createResponse.Success.Should().BeTrue();
 
-            // Act
             var databases = await _fixture.Sut.Database.GetDatabasesAsync();
 
-            // Assert
-            databases
-                .Should()
-                .NotBeNullOrEmpty();
-
-            databases
-                .Single(db => db.Name.Equals(dbName))
-                .Should()
-                .NotBeNull();
+            databases.Should().NotBeNullOrEmpty();
+            databases.Single(p => p.Name.Equals(dbName)).Should().NotBeNull();
         }
     }
 }

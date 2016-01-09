@@ -166,7 +166,7 @@ namespace InfluxData.Net.Integration
         /// </summary>
         /// <param name="amount">Amount per measurement to mock.</param>
         /// <param name="uniqueMeasurements">Unique measurements amount.</param>
-        public async Task<IEnumerable<Point>> MockAndWritePoints(int amount, int uniqueMeasurements = 1)
+        public async Task<IEnumerable<Point>> MockAndWritePoints(int amount, int uniqueMeasurements = 1, string dbName = null)
         {
             var points = new Point[0];
 
@@ -175,7 +175,7 @@ namespace InfluxData.Net.Integration
                 points = points.Concat(MockPoints(amount)).ToArray();
             }
 
-            var writeResponse = await Sut.Client.WriteAsync(this.DbName, points.ToArray());
+            var writeResponse = await Sut.Client.WriteAsync(dbName ?? this.DbName, points.ToArray());
             writeResponse.Success.Should().BeTrue();
 
             return points;

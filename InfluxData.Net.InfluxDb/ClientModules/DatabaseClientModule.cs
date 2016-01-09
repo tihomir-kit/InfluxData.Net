@@ -31,15 +31,18 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         {
             var query = _databaseQueryBuilder.GetDatabases();
             var response = await this.GetQueryAsync(query);
-
             var queryResult = this.ReadAsQueryResponse(response);
 
-            var serie = queryResult.Results.Single().Series.Single(); // TODO: check for empty
+            var databases = new List<Database>();
 
-            var databases = serie.Values.Select(p => new Database()
+            var series = queryResult.Results.Single().Series;
+            if (series == null)
+                return databases;
+
+            databases.AddRange(series.Single().Values.Select(p => new Database()
             {
                 Name = (string)p[0]
-            }).ToList();
+            }));
 
             return databases;
         }
