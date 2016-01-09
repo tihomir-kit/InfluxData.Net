@@ -86,22 +86,5 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
             return seriesList;
         }
-
-        public async Task<Pong> PingAsync()
-        {
-            var watch = Stopwatch.StartNew();
-            var response = await this.RequestClient.PingAsync();
-
-            watch.Stop();
-
-            var pong = new Pong
-            {
-                Version = response.Body,
-                ResponseTime = watch.Elapsed,
-                Success = true
-            };
-
-            return pong;
-        }
     }
 }

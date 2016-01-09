@@ -186,15 +186,5 @@ namespace InfluxData.Net.Integration.Tests
 
             actual.Should().Be(expected);
         }
-
-        [Fact]
-        public async Task ClientPing_ShouldReturnVersion()
-        {
-            var pong = await _fixture.Sut.Client.PingAsync();
-
-            pong.Should().NotBeNull();
-            pong.Success.Should().BeTrue();
-            pong.Version.Should().NotBeEmpty();
-        }
     }
 }

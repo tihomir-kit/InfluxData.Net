@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\IntegrationCollection.cs" />
+    <Compile Include="Integration\Tests\IntegrationDiagnostics.cs" />
     <Compile Include="Integration\Tests\IntegrationBasic.cs" />
     <Compile Include="Integration\Tests\IntegrationContinuousQueries.cs" />
     <Compile Include="Integration\Tests\IntegrationSerie.cs" />

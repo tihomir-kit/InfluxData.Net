@@ -17,6 +17,8 @@ namespace InfluxData.Net.InfluxDb
 
         ICqClientModule ContinuousQuery { get; }
 
+        IDiagnosticsClientModule Diagnostics { get; }
+
         IInfluxDbFormatter GetFormatter();
     }
 }

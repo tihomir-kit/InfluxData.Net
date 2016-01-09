@@ -16,6 +16,7 @@ namespace InfluxData.Net.InfluxDb
         private readonly Lazy<IDatabaseQueryBuilder> _databaseQueryBuilder;
         private readonly Lazy<IRetentionQueryBuilder> _retentionQueryBuilder;
         private readonly Lazy<ICqQueryBuilder> _cqQueryBuilder;
+        private readonly Lazy<IDiagnosticsQueryBuilder> _diagnosticsQueryBuilder;
 
         private readonly Lazy<IBasicClientModule> _basicClientModule;
         public IBasicClientModule Client
@@ -47,6 +48,12 @@ namespace InfluxData.Net.InfluxDb
             get { return _cqClientModule.Value; }
         }
 
+        private readonly Lazy<IDiagnosticsClientModule> _diagnosticsClientModule;
+        public IDiagnosticsClientModule Diagnostics
+        {
+            get { return _diagnosticsClientModule.Value; }
+        }
+
         public InfluxDbClient(string uri, string username, string password, InfluxDbVersion influxVersion)
              : this(new InfluxDbClientConfiguration(new Uri(uri), username, password, influxVersion))
         {
@@ -62,6 +69,7 @@ namespace InfluxData.Net.InfluxDb
             _databaseQueryBuilder = new Lazy<IDatabaseQueryBuilder>(() => new DatabaseQueryBuilder(), true);
             _retentionQueryBuilder = new Lazy<IRetentionQueryBuilder>(() => new RetentionQueryBuilder(), true);
             _cqQueryBuilder = new Lazy<ICqQueryBuilder>(() => new CqQueryBuilder(), true);
+            _diagnosticsQueryBuilder = new Lazy<IDiagnosticsQueryBuilder>(() => new DiagnosticsQueryBuilder(), true);
 
             // NOTE: once a breaking change occures, ClientModules will need to be resolved with factories
             _basicClientModule = new Lazy<IBasicClientModule>(() => new BasicClientModule(_requestClient));
@@ -69,6 +77,7 @@ namespace InfluxData.Net.InfluxDb
             _databaseClientModule = new Lazy<IDatabaseClientModule>(() => new DatabaseClientModule(_requestClient, _databaseQueryBuilder.Value));
             _retentionClientModule = new Lazy<IRetentionClientModule>(() => new RetentionClientModule(_requestClient, _retentionQueryBuilder.Value));
             _cqClientModule = new Lazy<ICqClientModule>(() => new CqClientModule(_requestClient, _cqQueryBuilder.Value));
+            _diagnosticsClientModule = new Lazy<IDiagnosticsClientModule>(() => new DiagnosticsClientModule(_requestClient, _diagnosticsQueryBuilder.Value));
         }
 
         public IInfluxDbFormatter GetFormatter()
