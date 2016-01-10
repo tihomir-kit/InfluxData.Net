@@ -31,7 +31,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return serieSets;
         }
 
-        private IList<SerieSet> GetSerieSets(IEnumerable<Serie> series)
+        private IEnumerable<SerieSet> GetSerieSets(IEnumerable<Serie> series)
         {
             var serieSets = new List<SerieSet>();
 
@@ -95,7 +95,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IEnumerable<Measurement>> GetMeasurementsAsync(string dbName, string withClause = null, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetMeasurements(dbName, withClause, filters);
-            var response = await this.GetQueryAsync(dbName, query));
+            var response = await this.GetQueryAsync(dbName, query);
             var queryResult = this.ReadAsQueryResponse(response);
 
             var measurements = new List<Measurement>();

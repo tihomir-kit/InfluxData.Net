@@ -43,13 +43,13 @@ namespace InfluxData.Net.Integration.Tests
 
             var result = await _fixture.Sut.Serie.GetSeriesAsync(dbName);
             result.Should().HaveCount(2);
-            var firstSet = result.First();
-            firstSet.Name.Should().Be(points.First().Name);
+            var firstSet = result.FirstOrDefault(p => p.Name == points.First().Name);
+            firstSet.Should().NotBeNull();
             firstSet.Series.Should().HaveCount(3);
             firstSet.Series.First().Key.Should().NotBeNullOrEmpty();
             firstSet.Series.First().Tags.Should().HaveCount(points.First().Tags.Count);
-            var lastSet = result.Last();
-            lastSet.Name.Should().Be(points.Last().Name);
+            var lastSet = result.FirstOrDefault(p => p.Name == points.Last().Name);
+            lastSet.Should().NotBeNull();
             lastSet.Series.Should().HaveCount(3);
             lastSet.Series.First().Key.Should().NotBeNullOrEmpty();
             lastSet.Series.First().Tags.Should().HaveCount(points.First().Tags.Count);
@@ -94,8 +94,8 @@ namespace InfluxData.Net.Integration.Tests
 
             var result = await _fixture.Sut.Serie.GetMeasurementsAsync(dbName);
             result.Should().HaveCount(2);
-            result.First().Name.Should().Be(points.First().Name);
-            result.Last().Name.Should().Be(points.Last().Name);
+            result.FirstOrDefault(p => p.Name == points.First().Name).Name.Should().NotBeNull();
+            result.FirstOrDefault(p => p.Name == points.Last().Name).Name.Should().NotBeNull();
         }
     }
 }

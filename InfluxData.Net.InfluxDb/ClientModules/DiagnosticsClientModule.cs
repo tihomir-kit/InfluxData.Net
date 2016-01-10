@@ -40,14 +40,26 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return pong;
         }
 
-        public async Task<Stats> GetStats(string dbName)
+        public async Task<IEnumerable<Serie>> GetStats()
         {
-            throw new NotImplementedException();
+            var query = _diagnosticsQueryBuilder.GetStats();
+            var response = await this.GetQueryAsync(query);
+            var queryResult = this.ReadAsQueryResponse(response);
+            var result = queryResult.Results.Single();
+            var series = GetSeries(result);
+
+            return series;
         }
 
-        public async Task<Diagnostics> GetDiagnostics()
+        public async Task<IEnumerable<Serie>> GetDiagnostics()
         {
-            throw new NotImplementedException();
+            var query = _diagnosticsQueryBuilder.GetDiagnostics();
+            var response = await this.GetQueryAsync(query);
+            var queryResult = this.ReadAsQueryResponse(response);
+            var result = queryResult.Results.Single();
+            var series = GetSeries(result);
+
+            return series;
         }
     }
 }

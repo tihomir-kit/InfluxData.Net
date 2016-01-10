@@ -22,7 +22,9 @@
         internal const string Backfill = "SELECT {0} INTO \"{1}\" FROM {2} WHERE {3} time >= '{4}' AND time < '{5}' GROUP BY time({6}) {7} {8}";
         internal const string Fill = "fill({0})";
 
-        
+        internal const string GetStats = "SHOW STATS";
+        internal const string GetDiagnostics = "SHOW DIAGNOSTICS";
+
 
         //internal const string CreateRetentionPolicy = "CREATE RETENTION POLICY \"{0}\" ON {1} {2} {3} {4} {5}";
         //internal const string CreateUser = "CREATE USER {0} WITH PASSWORD {1} {2}";

@@ -11,6 +11,14 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
     internal class DiagnosticsQueryBuilder : IDiagnosticsQueryBuilder
     {
+        public string GetStats()
+        {
+            return QueryStatements.GetStats;
+        }
 
+        public string GetDiagnostics()
+        {
+            return QueryStatements.GetDiagnostics;
+        }
     }
 }

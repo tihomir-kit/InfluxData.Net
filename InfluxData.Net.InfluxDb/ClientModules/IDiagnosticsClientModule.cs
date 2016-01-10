@@ -16,8 +16,17 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <returns>Response of the ping execution (success, dbVersion, response time).</returns>
         Task<Pong> PingAsync();
 
-        Task<Stats> GetStats(string dbName);
+        /// <summary>
+        /// Gets node statistics.
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<Serie>> GetStats();
 
-        Task<Diagnostics> GetDiagnostics();
+        /// <summary>
+        /// Gets node diagnostics. This returns information such as build information, uptime, 
+        /// hostname, server configuration, memory usage, and Go runtime diagnostics.
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<Serie>> GetDiagnostics();
     }
 }

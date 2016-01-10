@@ -28,13 +28,25 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public async Task ClientPing_ShouldReturnVersion()
+        public async Task Ping_ShouldReturnVersion()
         {
             var pong = await _fixture.Sut.Diagnostics.PingAsync();
 
             pong.Should().NotBeNull();
             pong.Success.Should().BeTrue();
             pong.Version.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task GetStats_ShouldReturnDbStats()
+        {
+            var stats = await _fixture.Sut.Diagnostics.GetStats();
+        }
+
+        [Fact]
+        public async Task GetDiagnostics_ShouldReturnDbDiagnostics()
+        {
+            var diagnostics = await _fixture.Sut.Diagnostics.GetDiagnostics();
         }
     }
 }

@@ -45,7 +45,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         {
             var response = await this.RequestClient.Query(dbName, query);
             var queryResult = this.ReadAsQueryResponse(response);
-
             var result = queryResult.Results.Single();
             var series = GetSeries(result);
 
