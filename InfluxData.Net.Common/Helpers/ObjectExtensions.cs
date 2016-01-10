@@ -43,7 +43,7 @@ namespace InfluxData.Net.Common.Helpers
         /// <returns>Unix-style timestamp in milliseconds.</returns>
         public static long ToUnixTime(this DateTime date)
         {
-            return Convert.ToInt64((date - _epoch).Milliseconds);
+            return Convert.ToInt64((date - _epoch).TotalMilliseconds);
         }
 
         /// <summary>
