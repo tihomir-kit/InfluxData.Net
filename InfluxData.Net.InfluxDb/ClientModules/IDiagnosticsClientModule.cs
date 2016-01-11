@@ -20,13 +20,13 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// Gets node statistics.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<Serie>> GetStats();
+        Task<Stats> GetStatsAsync();
 
         /// <summary>
         /// Gets node diagnostics. This returns information such as build information, uptime, 
         /// hostname, server configuration, memory usage, and Go runtime diagnostics.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<Serie>> GetDiagnostics();
+        Task<Diagnostics> GetDiagnosticsAsync();
     }
 }

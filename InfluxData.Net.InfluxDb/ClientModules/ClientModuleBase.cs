@@ -37,25 +37,25 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         protected QueryResponse ReadAsQueryResponse(IInfluxDbApiResponse response)
         {
-            var queryResult = response.ReadAs<QueryResponse>();
+            var queryResponse = response.ReadAs<QueryResponse>();
 
-            Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.Results, "queryResult.Results");
+            Validate.NotNull(queryResponse, "queryResponse");
+            Validate.NotNull(queryResponse.Results, "queryResponse.Results");
 
-            if (!String.IsNullOrEmpty(queryResult.Error))
+            if (!String.IsNullOrEmpty(queryResponse.Error))
             {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, queryResult.Error);
+                throw new InfluxDbApiException(HttpStatusCode.BadRequest, queryResponse.Error);
             }
 
             // Apparently a 200 OK can return an error in the results
             // https://github.com/influxdb/influxdb/pull/1813
-            var erroredResults = queryResult.Results.Where(result => !String.IsNullOrEmpty(result.Error));
+            var erroredResults = queryResponse.Results.Where(result => !String.IsNullOrEmpty(result.Error));
             foreach (var erroredResult in erroredResults)
             {
                 throw new InfluxDbApiException(HttpStatusCode.BadRequest, erroredResult.Error);
             }
 
-            return queryResult;
+            return queryResponse;
         }
 
         protected void ValidateQueryResponse(IInfluxDbApiResponse response)

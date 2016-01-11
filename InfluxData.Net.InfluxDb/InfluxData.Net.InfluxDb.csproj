@@ -51,6 +51,7 @@
     <Compile Include="Constants\QueryStatements.cs" />
     <Compile Include="Constants\RequestPaths.cs" />
     <Compile Include="Enums\FillType.cs" />
+    <Compile Include="Helpers\SerieExtensions.cs" />
     <Compile Include="IInfluxDbClient.cs" />
     <Compile Include="InfluxDbClient.cs" />
     <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
@@ -60,6 +61,18 @@
     <Compile Include="Models\Responses\Diagnostics.cs" />
     <Compile Include="Models\Responses\SerieSet.cs" />
     <Compile Include="Models\Responses\Stats.cs" />
+    <Compile Include="ResponseParsers\ISerieResponseParser.cs" />
+    <Compile Include="ResponseParsers\IRetentionResponseParser.cs" />
+    <Compile Include="ResponseParsers\SerieResponseParser.cs" />
+    <Compile Include="ResponseParsers\RetentionResponseParser.cs" />
+    <Compile Include="ResponseParsers\DatabaseResponseParser.cs" />
+    <Compile Include="ResponseParsers\CqResponseParser.cs" />
+    <Compile Include="ResponseParsers\BasicResponseParser.cs" />
+    <Compile Include="ResponseParsers\IDatabaseResponseParser.cs" />
+    <Compile Include="ResponseParsers\ICqResponseParser.cs" />
+    <Compile Include="ResponseParsers\IBasicResponseParser.cs" />
+    <Compile Include="ResponseParsers\IDiagnosticsResponseParser.cs" />
+    <Compile Include="ResponseParsers\DiagnosticsParser.cs" />
     <Compile Include="QueryBuilders\DiagnosticsQueryBuilder.cs" />
     <Compile Include="QueryBuilders\IDiagnosticsQueryBuilder.cs" />
     <Compile Include="RequestClients\IInfluxDbRequestClient.cs" />

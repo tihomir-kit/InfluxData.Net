@@ -6,23 +6,26 @@ using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using System;
 using InfluxData.Net.InfluxDb.QueryBuilders;
+using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public class DatabaseClientModule : ClientModuleBase, IDatabaseClientModule
     {
         private readonly IDatabaseQueryBuilder _databaseQueryBuilder;
+        private readonly IDatabaseResponseParser _databaseResponseParser;
 
-        public DatabaseClientModule(IInfluxDbRequestClient requestClient, IDatabaseQueryBuilder databaseQueryBuilder)
+        public DatabaseClientModule(IInfluxDbRequestClient requestClient, IDatabaseQueryBuilder databaseQueryBuilder, IDatabaseResponseParser databaseResponseParser)
             : base(requestClient)
         {
             _databaseQueryBuilder = databaseQueryBuilder;
+            _databaseResponseParser = databaseResponseParser;
         }
 
         public async Task<IInfluxDbApiResponse> CreateDatabaseAsync(string dbName)
         {
             var query = _databaseQueryBuilder.CreateDatabase(dbName);
-            var response = await this.GetQueryAsync(query);
+            var response = await base.GetQueryAsync(query);
 
             return response;
         }
@@ -30,19 +33,9 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IEnumerable<Database>> GetDatabasesAsync()
         {
             var query = _databaseQueryBuilder.GetDatabases();
-            var response = await this.GetQueryAsync(query);
-            var queryResult = this.ReadAsQueryResponse(response);
-
-            var databases = new List<Database>();
-
-            var series = queryResult.Results.Single().Series;
-            if (series == null)
-                return databases;
-
-            databases.AddRange(series.Single().Values.Select(p => new Database()
-            {
-                Name = (string)p[0]
-            }));
+            var response = await base.GetQueryAsync(query);
+            var queryResponse = base.ReadAsQueryResponse(response);
+            var databases = _databaseResponseParser.GetDatabases(queryResponse);
 
             return databases;
         }
@@ -50,7 +43,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName)
         {
             var query = _databaseQueryBuilder.DropDatabase(dbName);
-            var response = await this.GetQueryAsync(query);
+            var response = await base.GetQueryAsync(query);
 
             return response;
         }

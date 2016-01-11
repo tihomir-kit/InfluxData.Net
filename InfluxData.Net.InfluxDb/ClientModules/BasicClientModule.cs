@@ -9,14 +9,18 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
+using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public class BasicClientModule : ClientModuleBase, IBasicClientModule
     {
-        public BasicClientModule(IInfluxDbRequestClient requestClient)
+        private readonly IBasicResponseParser _basicResponseParser;
+
+        public BasicClientModule(IInfluxDbRequestClient requestClient, IBasicResponseParser basicResponseParser)
             : base(requestClient)
         {
+            _basicResponseParser = basicResponseParser;
         }
 
         public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
@@ -44,8 +48,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query)
         {
             var response = await this.RequestClient.Query(dbName, query);
-            var queryResult = this.ReadAsQueryResponse(response);
-            var result = queryResult.Results.Single();
+            var queryResponse = this.ReadAsQueryResponse(response);
+            var result = queryResponse.Results.Single();
             var series = GetSeries(result);
 
             return series;
@@ -54,23 +58,17 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries)
         {
             var response = await this.RequestClient.Query(dbName, queries.ToSemicolonSpaceSeparatedString());
-            var queryResult = this.ReadAsQueryResponse(response);
-            var series = new List<Serie>();
-
-            foreach (var result in queryResult.Results)
-            {
-                series.AddRange(result.Series ?? new Serie[0]);
-            }
+            var queryResponse = this.ReadAsQueryResponse(response);
+            var series = _basicResponseParser.FlattenQueryResponseSeries(queryResponse);
 
             return series;
         }
 
-
         public async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries)
         {
             var response = await this.RequestClient.Query(dbName, queries.ToSemicolonSpaceSeparatedString());
-            var queryResult = this.ReadAsQueryResponse(response);
-            var results = queryResult.Results.Select(GetSeries);
+            var queryResponse = this.ReadAsQueryResponse(response);
+            var results = queryResponse.Results.Select(GetSeries);
 
             return results;
         }

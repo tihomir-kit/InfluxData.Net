@@ -10,17 +10,21 @@ using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.QueryBuilders;
+using InfluxData.Net.InfluxDb.Helpers;
+using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public class DiagnosticsClientModule : ClientModuleBase, IDiagnosticsClientModule
     {
         private readonly IDiagnosticsQueryBuilder _diagnosticsQueryBuilder;
+        private readonly IDiagnosticsResponseParser _diagnosticsResponseParser;
 
-        public DiagnosticsClientModule(IInfluxDbRequestClient requestClient, IDiagnosticsQueryBuilder diagnosticsQueryBuilder)
+        public DiagnosticsClientModule(IInfluxDbRequestClient requestClient, IDiagnosticsQueryBuilder diagnosticsQueryBuilder, IDiagnosticsResponseParser diagnosticsResponseParser)
             : base(requestClient)
         {
             _diagnosticsQueryBuilder = diagnosticsQueryBuilder;
+            _diagnosticsResponseParser = diagnosticsResponseParser;
         }
 
         public async Task<Pong> PingAsync()
@@ -40,26 +44,28 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return pong;
         }
 
-        public async Task<IEnumerable<Serie>> GetStats()
+        public async Task<Stats> GetStatsAsync()
         {
             var query = _diagnosticsQueryBuilder.GetStats();
             var response = await this.GetQueryAsync(query);
-            var queryResult = this.ReadAsQueryResponse(response);
-            var result = queryResult.Results.Single();
+            var queryResponse = this.ReadAsQueryResponse(response);
+            var result = queryResponse.Results.Single();
             var series = GetSeries(result);
+            var stats = _diagnosticsResponseParser.GetStats(series);
 
-            return series;
+            return stats;
         }
 
-        public async Task<IEnumerable<Serie>> GetDiagnostics()
+        public async Task<Diagnostics> GetDiagnosticsAsync()
         {
             var query = _diagnosticsQueryBuilder.GetDiagnostics();
             var response = await this.GetQueryAsync(query);
-            var queryResult = this.ReadAsQueryResponse(response);
-            var result = queryResult.Results.Single();
+            var queryResponse = this.ReadAsQueryResponse(response);
+            var result = queryResponse.Results.Single();
             var series = GetSeries(result);
+            var diagnostics = _diagnosticsResponseParser.GetDiagnostics(series);
 
-            return series;
+            return diagnostics;
         }
     }
 }
