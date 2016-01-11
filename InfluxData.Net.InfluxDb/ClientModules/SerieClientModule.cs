@@ -24,7 +24,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IEnumerable<SerieSet>> GetSeriesAsync(string dbName, string measurementName = null, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetSeries(dbName, measurementName, filters);
-            var series = await base.ResolveSingleResultSeriesAsync(dbName, query);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
             var serieSets = _serieResponseParser.GetSerieSets(series);
 
             return serieSets;
@@ -38,8 +38,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, IEnumerable<string> measurementNames, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.DropSeries(dbName, measurementNames, filters);
-            var response = await base.GetQueryAsync(dbName, query);
-            ValidateQueryResponse(response);
+            var response = await base.GetAndValidateQueryAsync(dbName, query);
 
             return response;
         }
@@ -47,9 +46,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IEnumerable<Measurement>> GetMeasurementsAsync(string dbName, string withClause = null, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetMeasurements(dbName, withClause, filters);
-            var response = await base.GetQueryAsync(dbName, query);
-            var queryResponse = base.ReadAsQueryResponse(response);
-            var measurements = _serieResponseParser.GetMeasurements(queryResponse);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
+            var measurements = _serieResponseParser.GetMeasurements(series);
 
             return measurements;
         }
@@ -57,8 +55,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDbApiResponse> DropMeasurementAsync(string dbName, string measurementName)
         {
             var query = _serieQueryBuilder.DropMeasurement(dbName, measurementName);
-            var response = await base.GetQueryAsync(dbName, query);
-            ValidateQueryResponse(response);
+            var response = await base.GetAndValidateQueryAsync(dbName, query);
 
             return response;
         }

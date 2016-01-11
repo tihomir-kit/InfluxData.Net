@@ -8,6 +8,8 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
     public interface IBasicResponseParser
     {
-        IEnumerable<Serie> FlattenQueryResponseSeries(QueryResponse queryResponse);
+        IEnumerable<Serie> FlattenResultsSeries(IEnumerable<SeriesResult> seriesResults);
+
+        IEnumerable<IEnumerable<Serie>> MapResultsSeries(IEnumerable<SeriesResult> seriesResults);
     }
 }

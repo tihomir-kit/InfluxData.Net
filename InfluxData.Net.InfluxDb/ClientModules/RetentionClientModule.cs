@@ -21,7 +21,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDbApiResponse> AlterRetentionPolicyAsync(string dbName, string policyName, string duration, int replicationCopies)
         {
             var query = _retentionQueryBuilder.AlterRetentionPolicy(dbName, policyName, duration, replicationCopies);
-            var response = await this.GetQueryAsync(query);
+            var response = await base.GetAndValidateQueryAsync(query);
 
             return response;
         }

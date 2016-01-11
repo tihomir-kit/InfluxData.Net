@@ -30,9 +30,9 @@ namespace InfluxData.Net.InfluxDb.Formatters
         /// </remarks>
         public virtual string PointToString(Point point)
         {
-            Validate.NotNullOrEmpty(point.Name, "measurement");
-            Validate.NotNull(point.Tags, "tags");
-            Validate.NotNull(point.Fields, "fields");
+            Validate.IsNotNullOrEmpty(point.Name, "measurement");
+            Validate.IsNotNull(point.Tags, "tags");
+            Validate.IsNotNull(point.Fields, "fields");
 
             var tags = FormatPointTags(point.Tags);
             var fields = FormatPointFields(point.Fields);
@@ -86,8 +86,8 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string FormatPointField(string key, object value)
         {
-            Validate.NotNullOrEmpty(key, "key");
-            Validate.NotNull(value, "value");
+            Validate.IsNotNullOrEmpty(key, "key");
+            Validate.IsNotNull(value, "value");
 
             var result = value.ToString();
 
@@ -146,7 +146,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string EscapeNonTagValue(string value)
         {
-            Validate.NotNull(value, "value");
+            Validate.IsNotNull(value, "value");
 
             var result = value
                 // literal backslash escaping is broken
@@ -162,7 +162,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string EscapeTagValue(string value)
         {
-            Validate.NotNull(value, "value");
+            Validate.IsNotNull(value, "value");
 
             var result = value
                 .Replace(@" ", @"\ ")
@@ -174,7 +174,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string QuoteValue(string value)
         {
-            Validate.NotNull(value, "value");
+            Validate.IsNotNull(value, "value");
 
             return "\"" + value + "\"";
         }

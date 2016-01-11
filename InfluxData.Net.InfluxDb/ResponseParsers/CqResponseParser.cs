@@ -7,13 +7,12 @@ using System.Text;
 
 namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
-    public class CqResponseParser : ICqResponseParser
+    internal class CqResponseParser : ICqResponseParser
     {
-        public IEnumerable<ContinuousQuery> GetContinuousQueries(string dbName, QueryResponse queryResponse)
+        public virtual IEnumerable<ContinuousQuery> GetContinuousQueries(string dbName, IEnumerable<Serie> series)
         {
             var cqs = new List<ContinuousQuery>();
 
-            var series = queryResponse.Results.Single().Series; // TODO: test if InfluxDB ever returns null '.Series'
             if (series == null)
                 return cqs;
 

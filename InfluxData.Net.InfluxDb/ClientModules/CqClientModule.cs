@@ -29,8 +29,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(CqParams cqParams)
         {
             var query = _cqQueryBuilder.CreateContinuousQuery(cqParams);
-            var response = await base.GetQueryAsync(cqParams.DbName, query);
-            base.ValidateQueryResponse(response);
+            var response = await base.GetAndValidateQueryAsync(cqParams.DbName, query);
 
             return response;
         }
@@ -38,10 +37,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IEnumerable<ContinuousQuery>> GetContinuousQueriesAsync(string dbName)
         {
             var query = _cqQueryBuilder.GetContinuousQueries();
-            var response = await base.GetQueryAsync(dbName, query);
-            var queryResponse = base.ReadAsQueryResponse(response);
-
-            var cqs = _cqResponseParser.GetContinuousQueries(dbName, queryResponse);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
+            var cqs = _cqResponseParser.GetContinuousQueries(dbName, series);
 
             return cqs;
         }
@@ -49,8 +46,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
         {
             var query = _cqQueryBuilder.DeleteContinuousQuery(dbName, cqName);
-            var response = await base.GetQueryAsync(dbName, query);
-            this.ValidateQueryResponse(response);
+            var response = await base.GetAndValidateQueryAsync(dbName, query);
 
             return response;
         }
@@ -58,8 +54,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDbApiResponse> BackfillAsync(string dbName, BackfillParams backfillParams)
         {
             var query = _cqQueryBuilder.Backfill(dbName, backfillParams);
-            var response = await base.GetQueryAsync(dbName, query);
-            base.ValidateQueryResponse(response);
+            var response = await base.GetAndValidateQueryAsync(dbName, query);
 
             return response;
         }

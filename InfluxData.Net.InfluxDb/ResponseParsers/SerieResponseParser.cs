@@ -7,11 +7,14 @@ using System.Text;
 
 namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
-    public class SerieResponseParser : ISerieResponseParser
+    internal class SerieResponseParser : ISerieResponseParser
     {
         public virtual IEnumerable<SerieSet> GetSerieSets(IEnumerable<Serie> series)
         {
             var serieSets = new List<SerieSet>();
+
+            if (series == null)
+                return serieSets;
 
             foreach (var serie in series)
             {
@@ -37,7 +40,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             return serieSet;
         }
 
-        protected virtual SerieSetItem GetSerieSetItem(int keyIndex, Dictionary<string, int> indexedKeyColumns, object[] serieValues)
+        protected virtual SerieSetItem GetSerieSetItem(int keyIndex, Dictionary<string, int> indexedKeyColumns, IList<object> serieValues)
         {
             var serieSetItemTags = new Dictionary<string, string>();
 
@@ -56,12 +59,11 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             return serieSetItem;
         }
 
-        public virtual IEnumerable<Measurement> GetMeasurements(QueryResponse queryResponse)
+        public virtual IEnumerable<Measurement> GetMeasurements(IEnumerable<Serie> series)
         {
             var measurements = new List<Measurement>();
 
-            var series = queryResponse.Results.Single().Series;
-            if (series == null)
+            if (series == null || series.Count() == 0)
                 return measurements;
 
             measurements.AddRange(series.Single().Values.Select(p => new Measurement()

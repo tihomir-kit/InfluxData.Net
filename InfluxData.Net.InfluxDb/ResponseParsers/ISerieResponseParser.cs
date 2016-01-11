@@ -10,6 +10,6 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
     {
         IEnumerable<SerieSet> GetSerieSets(IEnumerable<Serie> series);
 
-        IEnumerable<Measurement> GetMeasurements(QueryResponse queryResponse);
+        IEnumerable<Measurement> GetMeasurements(IEnumerable<Serie> series);
     }
 }

@@ -8,6 +8,6 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
     public interface IDatabaseResponseParser
     {
-        IEnumerable<Database> GetDatabases(QueryResponse queryResponse);
+        IEnumerable<Database> GetDatabases(IEnumerable<Serie> series);
     }
 }

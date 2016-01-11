@@ -47,10 +47,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<Stats> GetStatsAsync()
         {
             var query = _diagnosticsQueryBuilder.GetStats();
-            var response = await this.GetQueryAsync(query);
-            var queryResponse = this.ReadAsQueryResponse(response);
-            var result = queryResponse.Results.Single();
-            var series = base.GetSeries(result);
+            var series = await this.ResolveSingleGetSeriesResultAsync(query);
             var stats = _diagnosticsResponseParser.GetStats(series);
 
             return stats;
@@ -59,10 +56,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<Diagnostics> GetDiagnosticsAsync()
         {
             var query = _diagnosticsQueryBuilder.GetDiagnostics();
-            var response = await this.GetQueryAsync(query);
-            var queryResponse = this.ReadAsQueryResponse(response);
-            var result = queryResponse.Results.Single();
-            var series = GetSeries(result);
+            var series = await this.ResolveSingleGetSeriesResultAsync(query);
             var diagnostics = _diagnosticsResponseParser.GetDiagnostics(series);
 
             return diagnostics;

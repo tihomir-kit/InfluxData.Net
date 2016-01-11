@@ -58,22 +58,22 @@ namespace InfluxData.Net.Integration.Tests
 
         // NOTE: this test is currently useles because of this:
         // https://github.com/influxdata/influxdb/issues/3087#issuecomment-170290120
-        [Fact]
-        public async Task DropSeries_OnExistingSeries_ShouldDropSeries()
-        {
-            var points = await _fixture.MockAndWritePoints(1);
-            await _fixture.EnsurePointExists(points.First());
+        //[Fact]
+        //public async Task DropSeries_OnExistingSeries_ShouldDropSeries()
+        //{
+        //    var points = await _fixture.MockAndWritePoints(1);
+        //    await _fixture.EnsurePointExists(points.First());
 
-            var result = await _fixture.Sut.Serie.DropSeriesAsync(_fixture.DbName, points.First().Name);
-            result.Success.Should().BeTrue();
+        //    var result = await _fixture.Sut.Serie.DropSeriesAsync(_fixture.DbName, points.First().Name);
+        //    result.Success.Should().BeTrue();
 
-            var query = String.Format("select * from {0}", points.First().Name);
-            var series = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, query);
-            series.Should().HaveCount(0);
+        //    var query = String.Format("select * from {0}", points.First().Name);
+        //    var series = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, query);
+        //    series.Should().HaveCount(0);
 
-            var serieSets = await _fixture.Sut.Serie.GetSeriesAsync(_fixture.DbName);
-            serieSets.FirstOrDefault(p => p.Name == points.First().Name).Should().BeNull();
-        }
+        //    var serieSets = await _fixture.Sut.Serie.GetSeriesAsync(_fixture.DbName);
+        //    serieSets.FirstOrDefault(p => p.Name == points.First().Name).Should().BeNull();
+        //}
 
         [Fact]
         public async Task GetMeasurements_OnNoSeries_ShouldReturnEmptyCollection()

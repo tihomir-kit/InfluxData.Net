@@ -7,13 +7,12 @@ using System.Text;
 
 namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
-    public class DatabaseResponseParser : IDatabaseResponseParser
+    internal class DatabaseResponseParser : IDatabaseResponseParser
     {
-        public IEnumerable<Database> GetDatabases(QueryResponse queryResponse)
+        public virtual IEnumerable<Database> GetDatabases(IEnumerable<Serie> series)
         {
             var databases = new List<Database>();
 
-            var series = queryResponse.Results.Single().Series;
             if (series == null)
                 return databases;
 

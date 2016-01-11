@@ -7,8 +7,7 @@ using System.Text;
 
 namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
-    public class RetentionResponseParser : IRetentionResponseParser
+    internal class RetentionResponseParser : IRetentionResponseParser
     {
-
     }
 }

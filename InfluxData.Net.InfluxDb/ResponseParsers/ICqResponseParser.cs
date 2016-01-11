@@ -8,6 +8,6 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
     public interface ICqResponseParser
     {
-        IEnumerable<ContinuousQuery> GetContinuousQueries(string dbName, QueryResponse queryResponse);
+        IEnumerable<ContinuousQuery> GetContinuousQueries(string dbName, IEnumerable<Serie> series);
     }
 }

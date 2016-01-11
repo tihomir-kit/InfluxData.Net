@@ -19,62 +19,45 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             this.RequestClient = requestClient;
         }
 
-        protected async Task<IInfluxDbApiResponse> GetQueryAsync(string query)
+        protected async Task<IInfluxDbApiResponse> GetAndValidateQueryAsync(string query)
         {
-            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(query);
-            var response = await this.RequestClient.GetQueryAsync(requestParams);
+            var response = await this.RequestClient.QueryAsync(query);
+            response.ValidateQueryResponse();
 
             return response;
         }
 
-        protected async Task<IInfluxDbApiResponse> GetQueryAsync(string dbName, string query)
+        protected async Task<IInfluxDbApiResponse> GetAndValidateQueryAsync(string dbName, string query)
         {
-            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
-            var response = await this.RequestClient.GetQueryAsync(requestParams);
+            var response = await this.RequestClient.QueryAsync(dbName, query);
+            response.ValidateQueryResponse();
 
             return response;
         }
 
-        protected QueryResponse ReadAsQueryResponse(IInfluxDbApiResponse response)
+        protected async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string query)
         {
-            var queryResponse = response.ReadAs<QueryResponse>();
+            var response = await this.RequestClient.QueryAsync(query);
+            var series = ResolveSingleGetSeriesResult(response);
 
-            Validate.NotNull(queryResponse, "queryResponse");
-            Validate.NotNull(queryResponse.Results, "queryResponse.Results");
-
-            if (!String.IsNullOrEmpty(queryResponse.Error))
-            {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, queryResponse.Error);
-            }
-
-            // Apparently a 200 OK can return an error in the results
-            // https://github.com/influxdb/influxdb/pull/1813
-            var erroredResults = queryResponse.Results.Where(result => !String.IsNullOrEmpty(result.Error));
-            foreach (var erroredResult in erroredResults)
-            {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, erroredResult.Error);
-            }
-
-            return queryResponse;
+            return series;
         }
 
-        protected void ValidateQueryResponse(IInfluxDbApiResponse response)
+        protected async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string dbName, string query)
         {
-            ReadAsQueryResponse(response);
+            var response = await this.RequestClient.QueryAsync(dbName, query);
+            var series = ResolveSingleGetSeriesResult(response);
+
+            return series;
         }
 
-        protected IEnumerable<Serie> GetSeries(SeriesResult result)
+        private IEnumerable<Serie> ResolveSingleGetSeriesResult(IInfluxDbApiResponse response)
         {
-            Validate.NotNull(result, "result");
-            return result.Series != null ? result.Series.ToList() : new List<Serie>();
-        }
-
-        protected async Task<IEnumerable<Serie>> ResolveSingleResultSeriesAsync(string dbName, string query)
-        {
-            var response = await GetQueryAsync(dbName, query);
-            var queryResponse = ReadAsQueryResponse(response);
+            var queryResponse = response.ReadAs<QueryResponse>().Validate();
             var result = queryResponse.Results.Single();
-            var series = GetSeries(result);
+            Validate.IsNotNull(result, "result");
+
+            var series = result.Series != null ? result.Series.ToList() : new List<Serie>();
 
             return series;
         }

@@ -40,37 +40,37 @@ namespace InfluxData.Net.InfluxDb.ClientModules
                 Precision = precision.GetParamValue()
             };
 
-            var response = await this.RequestClient.Write(request);
+            var response = await this.RequestClient.WriteAsync(request);
 
             return response;
         }
 
         public async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query)
         {
-            var response = await this.RequestClient.Query(dbName, query);
-            var queryResponse = this.ReadAsQueryResponse(response);
-            var result = queryResponse.Results.Single();
-            var series = GetSeries(result);
+            var response = await base.RequestClient.QueryAsync(dbName, query);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
 
             return series;
         }
 
         public async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries)
         {
-            var response = await this.RequestClient.Query(dbName, queries.ToSemicolonSpaceSeparatedString());
-            var queryResponse = this.ReadAsQueryResponse(response);
-            var series = _basicResponseParser.FlattenQueryResponseSeries(queryResponse);
+            var response = await base.RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString());
+            var results = response.ReadAs<QueryResponse>().Validate().Results;
+            var series = _basicResponseParser.FlattenResultsSeries(results);
 
             return series;
         }
 
         public async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries)
         {
-            var response = await this.RequestClient.Query(dbName, queries.ToSemicolonSpaceSeparatedString());
-            var queryResponse = this.ReadAsQueryResponse(response);
-            var results = queryResponse.Results.Select(GetSeries);
+            var response = await base.RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString());
+            var results = response.ReadAs<QueryResponse>().Validate().Results;
+            var resultSeries = _basicResponseParser.MapResultsSeries(results);
 
-            return results;
+            return resultSeries;
         }
+
+
     }
 }

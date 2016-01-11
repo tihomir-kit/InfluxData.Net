@@ -21,7 +21,7 @@ namespace InfluxData.Net.InfluxDb.Helpers
         public static Serie GetByName(this IEnumerable<Serie> series, string serieName)
         {
             var serie = series.FirstOrDefault(p => p.Name == serieName);
-            Validate.NotNull(serie, String.Format("serie.GetByName('{0}')", serieName));
+            Validate.IsNotNull(serie, String.Format("serie.GetByName('{0}')", serieName));
             return serie;
         }
     }

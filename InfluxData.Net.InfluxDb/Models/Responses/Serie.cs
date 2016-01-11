@@ -32,6 +32,6 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
         /// <summary>
         /// Serie values.
         /// </summary>
-        public object[][] Values { get; set; }
+        public IList<IList<object>> Values { get; set; }
     }
 }
