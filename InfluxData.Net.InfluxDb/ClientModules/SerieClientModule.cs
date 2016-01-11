@@ -24,10 +24,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IEnumerable<SerieSet>> GetSeriesAsync(string dbName, string measurementName = null, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetSeries(dbName, measurementName, filters);
-            var response = await base.GetQueryAsync(dbName, query);
-            var queryResponse = base.ReadAsQueryResponse(response);
-            var result = queryResponse.Results.Single();
-            var series = GetSeries(result);
+            var series = await base.ResolveSingleResultSeriesAsync(dbName, query);
             var serieSets = _serieResponseParser.GetSerieSets(series);
 
             return serieSets;

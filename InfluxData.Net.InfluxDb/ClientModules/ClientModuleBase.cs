@@ -68,5 +68,15 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             Validate.NotNull(result, "result");
             return result.Series != null ? result.Series.ToList() : new List<Serie>();
         }
+
+        protected async Task<IEnumerable<Serie>> ResolveSingleResultSeriesAsync(string dbName, string query)
+        {
+            var response = await GetQueryAsync(dbName, query);
+            var queryResponse = ReadAsQueryResponse(response);
+            var result = queryResponse.Results.Single();
+            var series = GetSeries(result);
+
+            return series;
+        }
     }
 }

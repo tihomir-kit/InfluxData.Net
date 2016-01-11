@@ -50,7 +50,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var response = await this.GetQueryAsync(query);
             var queryResponse = this.ReadAsQueryResponse(response);
             var result = queryResponse.Results.Single();
-            var series = GetSeries(result);
+            var series = base.GetSeries(result);
             var stats = _diagnosticsResponseParser.GetStats(series);
 
             return stats;
