@@ -7,6 +7,7 @@ using InfluxData.Net.InfluxDb.RequestClients;
 using System.Threading.Tasks;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Models.Responses;
+using InfluxData.Net.InfluxDb.Helpers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {

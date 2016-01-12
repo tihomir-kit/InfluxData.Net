@@ -10,6 +10,7 @@ using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
+using InfluxData.Net.InfluxDb.Helpers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {

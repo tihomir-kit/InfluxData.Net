@@ -1,12 +1,13 @@
-﻿using InfluxData.Net.InfluxDb.Models.Responses;
+﻿using InfluxData.Net.InfluxDb.Infrastructure;
+using InfluxData.Net.InfluxDb.Models.Responses;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Net;
 
-namespace InfluxData.Net.InfluxDb.Infrastructure
+namespace InfluxData.Net.InfluxDb.Helpers
 {
-    public static class InfluxDbResponseExtensions
+    public static class ResponseExtensions
     {
         public static T ReadAs<T>(this IInfluxDbApiResponse response)
         {
