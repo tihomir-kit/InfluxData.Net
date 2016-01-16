@@ -6,7 +6,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 {
     internal static class RequestParamsBuilder
     {
-        internal static IDictionary<string, string> BuildQueryRequestParams(string query)
+        public static IDictionary<string, string> BuildQueryRequestParams(string query)
         {
             return new Dictionary<string, string>
             {
@@ -14,12 +14,12 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             };
         }
 
-        internal static IDictionary<string, string> BuildQueryRequestParams(string dbName, string query)
+        public static IDictionary<string, string> BuildQueryRequestParams(string dbName, string query)
         {
             return BuildRequestParams(dbName, QueryParams.Query, query);
         }
 
-        internal static IDictionary<string, string> BuildRequestParams(string dbName, string paramKey, string paramValue)
+        public static IDictionary<string, string> BuildRequestParams(string dbName, string paramKey, string paramValue)
         {
             return new Dictionary<string, string>
             {

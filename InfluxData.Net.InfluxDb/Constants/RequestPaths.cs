@@ -2,8 +2,8 @@
 {
     internal static class RequestPaths
     {
-        internal const string Write = "write";
-        internal const string Query = "query";
-        internal const string Ping = "ping";
+        public const string Write = "write";
+        public const string Query = "query";
+        public const string Ping = "ping";
     }
 }

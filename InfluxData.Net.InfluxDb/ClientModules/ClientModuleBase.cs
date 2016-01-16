@@ -20,7 +20,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             this.RequestClient = requestClient;
         }
 
-        protected async Task<IInfluxDbApiResponse> GetAndValidateQueryAsync(string query)
+        protected virtual async Task<IInfluxDbApiResponse> GetAndValidateQueryAsync(string query)
         {
             var response = await this.RequestClient.QueryAsync(query);
             response.ValidateQueryResponse();
@@ -28,7 +28,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        protected async Task<IInfluxDbApiResponse> GetAndValidateQueryAsync(string dbName, string query)
+        protected virtual async Task<IInfluxDbApiResponse> GetAndValidateQueryAsync(string dbName, string query)
         {
             var response = await this.RequestClient.QueryAsync(dbName, query);
             response.ValidateQueryResponse();
@@ -36,7 +36,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        protected async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string query)
+        protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string query)
         {
             var response = await this.RequestClient.QueryAsync(query);
             var series = ResolveSingleGetSeriesResult(response);
@@ -44,7 +44,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series;
         }
 
-        protected async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string dbName, string query)
+        protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string dbName, string query)
         {
             var response = await this.RequestClient.QueryAsync(dbName, query);
             var series = ResolveSingleGetSeriesResult(response);
@@ -52,7 +52,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series;
         }
 
-        private IEnumerable<Serie> ResolveSingleGetSeriesResult(IInfluxDbApiResponse response)
+        protected virtual IEnumerable<Serie> ResolveSingleGetSeriesResult(IInfluxDbApiResponse response)
         {
             var queryResponse = response.ReadAs<QueryResponse>().Validate();
             var result = queryResponse.Results.Single();

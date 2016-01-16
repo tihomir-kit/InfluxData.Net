@@ -27,7 +27,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             return seriesResults.Select(GetSeries);
         }
 
-        private IEnumerable<Serie> GetSeries(SeriesResult result)
+        protected virtual IEnumerable<Serie> GetSeries(SeriesResult result)
         {
             Validate.IsNotNull(result, "result");
             return result.Series != null ? result.Series.ToList() : new List<Serie>();

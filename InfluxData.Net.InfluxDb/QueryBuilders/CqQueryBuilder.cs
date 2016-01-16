@@ -11,7 +11,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
     internal class CqQueryBuilder : ICqQueryBuilder
     {
-        public string CreateContinuousQuery(CqParams cqParams)
+        public virtual string CreateContinuousQuery(CqParams cqParams)
         {
             var downsamplers = cqParams.Downsamplers.ToCommaSpaceSeparatedString();
             var tags = BuildTags(cqParams.Tags);
@@ -25,19 +25,19 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
             return query;
         }
 
-        public string GetContinuousQueries()
+        public virtual string GetContinuousQueries()
         {
             return QueryStatements.GetContinuousQueries;
         }
 
-        public string DeleteContinuousQuery(string dbName, string cqName)
+        public virtual string DeleteContinuousQuery(string dbName, string cqName)
         {
             var query = String.Format(QueryStatements.DropContinuousQuery, cqName, dbName);
 
             return query;
         }
 
-        public string Backfill(string dbName, BackfillParams backfill)
+        public virtual string Backfill(string dbName, BackfillParams backfill)
         {
             var downsamplers = backfill.Downsamplers.ToCommaSpaceSeparatedString();
             var filters = BuildFilters(backfill.Filters);
@@ -52,17 +52,17 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
             return query;
         }
 
-        private static string BuildFilters(IEnumerable<string> filters)
+        protected virtual string BuildFilters(IEnumerable<string> filters)
         {
             return filters == null ? String.Empty : String.Join(" ", filters.ToAndSpaceSeparatedString(), "AND");
         }
 
-        private static string BuildTags(IEnumerable<string> tags)
+        protected virtual string BuildTags(IEnumerable<string> tags)
         {
-            return tags == null ? String.Empty : String.Join(" ", ",", tags.ToCommaSpaceSeparatedString());
+            return tags == null ? String.Empty : String.Concat(", ", tags.ToCommaSpaceSeparatedString());
         }
 
-        private static string BuildFillType(FillType fillType)
+        protected virtual string BuildFillType(FillType fillType)
         {
             return fillType == FillType.Null ? String.Empty : String.Format(QueryStatements.Fill, fillType.ToString().ToLower());
         }

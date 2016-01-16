@@ -24,14 +24,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _basicResponseParser = basicResponseParser;
         }
 
-        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
             var response = await WriteAsync(dbName, new [] { point }, retenionPolicy, precision);
 
             return response;
         }
 
-        public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDbApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
             var request = new WriteRequest(this.RequestClient.GetPointFormatter())
             {
@@ -46,7 +46,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query)
+        public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query)
         {
             var response = await base.RequestClient.QueryAsync(dbName, query);
             var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
@@ -54,7 +54,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series;
         }
 
-        public async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries)
+        public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries)
         {
             var response = await base.RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString());
             var results = response.ReadAs<QueryResponse>().Validate().Results;
@@ -63,7 +63,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series;
         }
 
-        public async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries)
+        public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries)
         {
             var response = await base.RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString());
             var results = response.ReadAs<QueryResponse>().Validate().Results;
