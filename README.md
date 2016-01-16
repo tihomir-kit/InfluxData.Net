@@ -32,7 +32,7 @@ Clients modules (properties of `InfluxDbClient` object) can then be consumed and
  - _[MultiQueryAsync()](#multiqueryasync)_
 - [Database](#database-module)
  - _[CreateDatabaseAsync()](#createdatabaseasync)_
- - _[GetDatabaseAsync()](#getdatabaseasync)_
+ - _[GetDatabasesAsync()](#getdatabasesasync)_
  - _[DropDatabaseAsync()](#dropdatabaseasync)_
 - [ContinuousQuery](#continuous-query-module)
  - _[CreateContinuousQueryAsync()](#createcontinuousqueryasync)_
@@ -113,7 +113,7 @@ var response = await influxDbClient.Client.QueryAsync("yourDbName", queries);
 
 #### MultiQueryAsync
 
-`MultiQueryAsync` also returns the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. Unlike the second `QueryAsync` overload, the results will not be *flattened*. This method will return a collection of results where each result contains the series of a corresponding query.
+`MultiQueryAsync` also returns the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. Unlike the second `QueryAsync` overload, the results *will not be flattened*. This method will return a collection of results where each result contains the series of a corresponding query.
 
 ```cs
 var queries = new [] 
