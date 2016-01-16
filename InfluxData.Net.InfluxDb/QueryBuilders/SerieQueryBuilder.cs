@@ -44,14 +44,9 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
             return query;
         }
 
-        public virtual string GetMeasurements(string dbName, string withClause = null, IEnumerable<string> filters = null)
+        public virtual string GetMeasurements(string dbName, IEnumerable<string> filters = null)
         {
             var query = QueryStatements.GetMeasurements;
-
-            if (!String.IsNullOrEmpty(withClause))
-            {
-                query = String.Join(" WITH MEASUREMENT ", query, withClause);
-            }
 
             if (filters != null && filters.Any())
             {

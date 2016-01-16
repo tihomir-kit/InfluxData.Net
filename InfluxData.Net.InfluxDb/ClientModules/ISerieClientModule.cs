@@ -38,10 +38,9 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// Gets distinct measurements.
         /// </summary>
         /// <param name="dbName">Database name.</param>
-        /// <param name="withClause">Regular expression with clause (optional).</param>
         /// <param name="filters">A collection of "WHERE" clause filters (optional).</param>
         /// <returns></returns>
-        Task<IEnumerable<Measurement>> GetMeasurementsAsync(string dbName, string withClause = null, IEnumerable<string> filters = null);
+        Task<IEnumerable<Measurement>> GetMeasurementsAsync(string dbName, IEnumerable<string> filters = null);
 
         /// <summary>
         /// Deletes all data points and series itself. Unlike DROP SERIES it also deletes

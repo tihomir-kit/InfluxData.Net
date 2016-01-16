@@ -43,9 +43,9 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public virtual async Task<IEnumerable<Measurement>> GetMeasurementsAsync(string dbName, string withClause = null, IEnumerable<string> filters = null)
+        public virtual async Task<IEnumerable<Measurement>> GetMeasurementsAsync(string dbName, IEnumerable<string> filters = null)
         {
-            var query = _serieQueryBuilder.GetMeasurements(dbName, withClause, filters);
+            var query = _serieQueryBuilder.GetMeasurements(dbName, filters);
             var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
             var measurements = _serieResponseParser.GetMeasurements(series);
 

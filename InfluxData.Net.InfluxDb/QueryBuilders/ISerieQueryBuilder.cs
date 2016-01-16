@@ -37,10 +37,9 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
         /// Gets distinct measurements.
         /// </summary>
         /// <param name="dbName">Database name.</param>
-        /// <param name="withClause">Regular expression with clause (optional).</param>
         /// <param name="filters">A collection of "WHERE" clause filters (optional).</param>
         /// <returns></returns>
-        string GetMeasurements(string dbName, string withClause = null, IEnumerable<string> filters = null);
+        string GetMeasurements(string dbName, IEnumerable<string> filters = null);
 
         /// <summary>
         /// Deletes all data points and series itself. Unlike DROP SERIES it also deletes
