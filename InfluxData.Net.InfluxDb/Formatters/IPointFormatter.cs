@@ -3,7 +3,7 @@ using InfluxData.Net.InfluxDb.Models.Responses;
 
 namespace InfluxData.Net.InfluxDb.Formatters
 {
-    public interface IInfluxDbFormatter
+    public interface IPointFormatter
     {
         string GetLineTemplate();
 

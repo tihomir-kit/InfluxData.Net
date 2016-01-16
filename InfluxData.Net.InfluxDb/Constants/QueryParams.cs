@@ -2,12 +2,12 @@
 {
     internal static class QueryParams
     {
-        internal const string Username = "u";
-        internal const string Password = "p";
-        internal const string Db = "db";
-        internal const string Query = "q";
-        internal const string Id = "id";
-        internal const string Name = "name";
-        internal const string Precision = "precision";
+        public const string Username = "u";
+        public const string Password = "p";
+        public const string Db = "db";
+        public const string Query = "q";
+        public const string Id = "id";
+        public const string Name = "name";
+        public const string Precision = "precision";
     }
 }

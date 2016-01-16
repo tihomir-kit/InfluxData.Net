@@ -24,12 +24,32 @@ var influxDbClient = new InfluxDbClient("http://yourinflux.com:8086/", "username
 
 Clients modules (properties of `InfluxDbClient` object) can then be consumed and methods for communicating with InfluxDb can be consumed. 
 
-**Supported modules**
+**Supported modules and API calls**
 
 - [Client](#client-module)
+ - _[WriteAsync()](#writeasync)_
+ - _[QueryAsync()](#queryasync)_
+ - _[MultiQueryAsync()](#multiqueryasync)_
 - [Database](#database-module)
-- [Retention](#retention-module)
+ - _[CreateDatabaseAsync()](#createdatabaseasync)_
+ - _[GetDatabasesAsync()](#getdatabasesasync)_
+ - _[DropDatabaseAsync()](#dropdatabaseasync)_
 - [ContinuousQuery](#continuous-query-module)
+ - _[CreateContinuousQueryAsync()](#createcontinuousqueryasync)_
+ - _[GetContinuousQueriesAsync()](#getcontinuousqueriesasync)_
+ - _[DeleteContinuousQueryAsync()](#deletecontinuousqueryasync)_
+ - _[BackfillAsync()](#backfillasync)_
+- [Serie](#serie-module)
+ - _[GetSeriesAsync()](#getseriesasync)_
+ - _[DropSeriesAsync()](#dropseriesasync)_
+ - _[GetMeasurementsAsync()](#getmeasurementsasync)_
+ - _[DropMeasurementAsync()](#dropmeasurementasync)_
+- [Retention](#retention-module)
+ - _[AlterRetentionPolicyAsync()](#alterretentionpolicyasync)_
+- [Diagnostics](#diagnostics-module)
+ - _[PingAsync()](#pingasync)_
+ - _[GetStatsAsync()](#getstatsasync)_
+ - _[GetDiagnosticsAsync()](#getdiagnosticsasync)_
 
 ### Client Module
 
@@ -55,7 +75,7 @@ var pointToWrite = new Point()
         { "Temperature", 22.1 },
         { "Resistance", 34957 }
     },
-    Timestamp = DateTime.UtcNow
+    Timestamp = DateTime.UtcNow // optional (can be set to any DateTime moment)
 };
 ```
 
@@ -65,7 +85,7 @@ Point is then passed into `Client.WriteAsync` method together with the database 
 var response = await influxDbClient.Client.WriteAsync("yourDbName", pointToWrite);
 ```
 
-If you would like to write multiple points at once, simply create an array of `Point` objects and pass it into the second `WriteAsync` overload:
+If you would like to write multiple points at once, simply create an `IEnumerable` collection of `Point` objects and pass it into the second `WriteAsync` overload:
 
 ```cs
 var response = await influxDbClient.Client.WriteAsync("yourDbName", pointsToWrite);
@@ -80,12 +100,28 @@ var query = "SELECT * FROM reading WHERE time > now() - 1h";
 var response = await influxDbClient.Client.QueryAsync("yourDbName", query);
 ```
 
-#### PingAsync
-
-The `Client.PingAsync` will return a `Pong` object which will return endpoint's InfluxDb version number, round-trip time and ping success status:
+The second `QueryAsync` overload will return the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. The response will be a _flattened_ collection of multi-results series. This means that the resulting series from all queries will be extracted into a single collection. This has been implemented to make it easier on the developer in case he is querying the same measurement with different params multiple times at once.
 
 ```cs
-var response = await influxDbClient.Client.PingAsync();
+var queries = new [] 
+{
+    "SELECT * FROM reading WHERE time > now() - 1h",
+    "SELECT * FROM reading WHERE time > now() - 2h"
+}
+var response = await influxDbClient.Client.QueryAsync("yourDbName", queries);
+```
+
+#### MultiQueryAsync
+
+`MultiQueryAsync` also returns the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. Unlike the second `QueryAsync` overload, the results *will not be flattened*. This method will return a collection of results where each result contains the series of a corresponding query.
+
+```cs
+var queries = new [] 
+{
+    "SELECT * FROM reading WHERE time > now() - 1h",
+    "SELECT * FROM reading WHERE time > now() - 2h"
+}
+var response = await influxDbClient.Client.MultiQueryAsync("yourDbName", queries);
 ```
 
 ### Database Module
@@ -97,7 +133,7 @@ The database module can be used to [manage the databases](https://docs.influxdat
 You can create a new database in the following way:
 
 ```cs
-var resposne = await influxDbClient.Database.CreateDatabaseAsync("newDbName");
+var response = await influxDbClient.Database.CreateDatabaseAsync("newDbName");
 ```
 
 #### GetDatabasesAsync
@@ -116,36 +152,16 @@ Drops a database:
 var response = await influxDbClient.Database.DropDatabaseAsync("dbNameToDrop");
 ```
 
-#### DropSeriesAsync
-
-[Drops all data points](https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#delete-series-with-drop-series) from series in database. The series itself will remain in the index.
-
-```cs
-var response = await influxDbClient.Database.DropSeriesAsync("yourDbName", "serieNameToDrop");
-```
-
-### Retention Module
-
-This module currently supports only a single [retention-policy](https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#retention-policy-management) action.
-
-#### AlterRetentionPolicy
-
-This example alter the _retentionPolicyName_ policy to _1h_ and 3 copies:
-
-```cs
-var response = await influxDbClient.Retention.AlterRetentionPolicy("yourDbName", "retentionPolicyName", "1h", 3);
-```
-
 ### Continuous Query Module
 
 This module can be used to manage [CQ's](https://docs.influxdata.com/influxdb/v0.9/query_language/continuous_queries/) and to backfill with aggregate data.
 
 #### CreateContinuousQueryAsync
 
-To create a new CQ, a `ContinuousQuery` object must first be created:
+To create a new CQ, a `CqParams` object must first be created:
 
 ```cs
-var newCq = new ContinuousQuery()
+var cqParams = new CqParams()
 {
     DbName = "yourDbName",
     CqName = "reading_minMax_5m", // CQ name
@@ -165,7 +181,7 @@ var newCq = new ContinuousQuery()
 To understand `FillType`, please refer to the `fill()` [documentation](https://docs.influxdata.com/influxdb/v0.9/query_language/data_exploration/#the-group-by-clause-and-fill). After that, simply call `ContinuousQuery.CreateContinuousQueryAsync` to create it:
 
 ```cs
-var response = await influxDbClient.ContinuousQuery.CreateContinuousQueryAsync("yourDbName", newCq);
+var response = await influxDbClient.ContinuousQuery.CreateContinuousQueryAsync("yourDbName", cqParams);
 ```
 
 #### GetContinuousQueriesAsync
@@ -187,10 +203,10 @@ var response = await influxDbClient.ContinuousQuery.DeleteContinuousQueryAsync("
 #### BackfillAsync
 The `ContinuousQuery.BackfillAsync` method can be used to manually calculate aggregate data for the data that was already in your DB, not only for the newly incoming data. 
 
-Similarly to `CreateContinuousQueryAsync`, a `Backfill` object needs to be created first:
+Similarly to `CreateContinuousQueryAsync`, a `BackfillParams` object needs to be created first:
 
 ```cs
-var newBackfill = new Backfill()
+var backfillParams = new BackfillParams()
 {
     Downsamplers = new List<string>()
     {
@@ -203,6 +219,7 @@ var newBackfill = new Backfill()
     TimeTo = DateTime.UtcNow,
     Interval = "5m",
     FillType = FillType.None
+    // you can also add a list of "WHERE" clause filters here
     // you can also add a list of tags to keep in the DS serie here
 };
 ```
@@ -210,7 +227,83 @@ var newBackfill = new Backfill()
 To understand `FillType`, please refer to the `fill()` [documentation](https://docs.influxdata.com/influxdb/v0.9/query_language/data_exploration/#the-group-by-clause-and-fill). After that, simply call `ContinuousQuery.BackfillAsync` to execute the backfill:
 
 ```cs
-var response = await influxDbClient.ContinuousQuery.BackfillAsync("yourDbName", newBackfill);
+var response = await influxDbClient.ContinuousQuery.BackfillAsync("yourDbName", backfillParams);
+```
+
+### Serie Module
+
+This module provides methods for listing existing DB series and measures as well as methods for removing them.
+
+####GetSeriesAsync
+
+Gets [list of series](https://influxdb.com/docs/v0.9/query_language/schema_exploration.html#explore-series-with-show-series) in the database. If `measurementName` (optional) param is provided, will only return series for that measurement. `WHERE` clauses can be passed in through the optional `filters` param.
+
+```cs
+var response = await influxDbClient.Serie.GetSeriesAsync("yourDbName");
+```
+
+#### DropSeriesAsync
+
+[Drops data points](https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#delete-series-with-drop-series) from series in database. The series itself will remain in the index.
+
+```cs
+var response = await influxDbClient.Serie.DropSeriesAsync("yourDbName", "serieNameToDrop");
+```
+
+####GetMeasurementsAsync
+
+Gets [list of measurements](https://influxdb.com/docs/v0.9/query_language/schema_exploration.html#explore-measurements-with-show-measurements) in the database. `WHERE` clauses can be passed in through the optional `filters` param.
+
+```cs
+var response = await influxDbClient.Serie.GetMeasurementsAsync("yourDbName");
+```
+
+#### DropMeasurementAsync
+
+[Drops measurements](https://influxdb.com/docs/v0.9/query_language/database_management.html#delete-measurements-with-drop-measurement) from series in database. Unlike `DropSeriesAsync` it will also remove the measurement from the DB index.
+
+```cs
+var response = await influxDbClient.Serie.DropMeasurementAsync("yourDbName", "measurementNameToDrop");
+```
+
+### Retention Module
+
+This module currently supports only a single [retention-policy](https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#retention-policy-management) action.
+
+#### AlterRetentionPolicyAsync
+
+This example alter the _retentionPolicyName_ policy to _1h_ and 3 copies:
+
+```cs
+var response = await influxDbClient.Retention.AlterRetentionPolicyAsync("yourDbName", "retentionPolicyName", "1h", 3);
+```
+
+### Diagnostics Module
+
+This module can be used to get [diagnostics information](https://influxdb.com/docs/v0.9/administration/statistics.html) from InfluxDB server.
+
+#### PingAsync
+
+The `Client.PingAsync` will return a `Pong` object which will return endpoint's InfluxDb version number, round-trip time and ping success status:
+
+```cs
+var response = await influxDbClient.Client.PingAsync();
+```
+
+#### GetStatsAsync
+
+`GetStatsAsync` executes [SHOW STATS](https://influxdb.com/docs/v0.9/administration/statistics.html#show-stats) and parses the results into `Stats` response object.
+
+```cs
+var response = await influxDbClient.Client.GetStatsAsync();
+```
+
+#### GetDiagnosticsAsync
+
+`GetDiagnosticsAsync` executes [SHOW DIAGNOSTICS](https://influxdb.com/docs/v0.9/administration/statistics.html#show-diagnostics) and parses the results into `Diagnostics` response object.
+
+```cs
+var response = await influxDbClient.Client.GetDiagnosticsAsync();
 ```
 
 ## Bugs & feature requests

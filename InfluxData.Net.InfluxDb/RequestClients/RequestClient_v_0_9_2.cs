@@ -10,9 +10,9 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         {
         }
 
-        public override IInfluxDbFormatter GetFormatter()
+        public override IPointFormatter GetPointFormatter()
         {
-            return new Formatter_v_0_9_2();
+            return new PointFormatter_v_0_9_2();
         }
     }
 }

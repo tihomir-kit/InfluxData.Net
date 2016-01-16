@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using InfluxData.Net.InfluxDb.Enums;
+using System;
 
 namespace InfluxData.Net.InfluxDb.Models
 {
     /// <summary>
     /// Represents a continuous query object that describes a CQ to create.
     /// </summary>
-    public class ContinuousQuery
+    public class CqParams
     {
         /// <summary>
         /// Database name.

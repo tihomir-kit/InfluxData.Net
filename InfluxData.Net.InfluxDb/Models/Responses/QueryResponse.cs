@@ -1,4 +1,7 @@
-﻿namespace InfluxData.Net.InfluxDb.Models.Responses
+﻿using System;
+using System.Collections.Generic;
+
+namespace InfluxData.Net.InfluxDb.Models.Responses
 {
     /// <summary>
     /// Represents a generic query response.
@@ -11,11 +14,11 @@
         public string Error { get; set; }
 
         /// <summary>
-        /// Query response represented as an array of <see cref="{SeriesResult}"/> objects. 
+        /// Query response represented as an IEnumerable of <see cref="{SeriesResult}"/> objects. 
         /// InfluxDb returns this kind of object by convention.
         /// </summary>
         /// <remarks>NOTE: DO NOT RENAME this property (used by convention to deserialize query response)</remarks>
-        public SeriesResult[] Results { get; set; }
+        public IEnumerable<SeriesResult> Results { get; set; }
     }
 
     /// <summary>
@@ -29,8 +32,8 @@
         public string Error { get; set; }
 
         /// <summary>
-        /// <see cref="Array{Serie}"/> result items.
+        /// <see cref="IEnumerable{Serie}"/> result items.
         /// </summary>
-        public Serie[] Series { get; set; }
+        public IEnumerable<Serie> Series { get; set; }
     }
 }

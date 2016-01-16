@@ -8,12 +8,12 @@ namespace InfluxData.Net.InfluxDb.RequestClients
     {
         private readonly IInfluxDbClientConfiguration _configuration;
 
-        internal RequestClientFactory(IInfluxDbClientConfiguration configuration)
+        public RequestClientFactory(IInfluxDbClientConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        internal IInfluxDbRequestClient GetRequestClient()
+        public IInfluxDbRequestClient GetRequestClient()
         {
             switch (_configuration.InfluxVersion)
             {

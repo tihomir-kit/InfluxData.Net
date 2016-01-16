@@ -6,54 +6,57 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
-using InfluxData.Net.InfluxDb.RequestClients.Modules;
+using System;
+using InfluxData.Net.InfluxDb.Constants;
+using InfluxData.Net.InfluxDb.QueryBuilders;
+using System.Collections.Generic;
+using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public class CqClientModule : ClientModuleBase, ICqClientModule
     {
-        private readonly ICqRequestModule _cqRequestModule;
+        private readonly ICqQueryBuilder _cqQueryBuilder;
+        private readonly ICqResponseParser _cqResponseParser;
 
-        public CqClientModule(IInfluxDbRequestClient requestClient, ICqRequestModule cqRequestModule)
+        public CqClientModule(IInfluxDbRequestClient requestClient, ICqQueryBuilder cqQueryBuilder, ICqResponseParser cqResponseParser)
             : base(requestClient)
         {
-            _cqRequestModule = cqRequestModule;
+            _cqQueryBuilder = cqQueryBuilder;
+            _cqResponseParser = cqResponseParser;
         }
 
-        public async Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(ContinuousQuery continuousQuery)
+        public virtual async Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(CqParams cqParams)
         {
-            return await _cqRequestModule.CreateContinuousQuery(continuousQuery);
+            var query = _cqQueryBuilder.CreateContinuousQuery(cqParams);
+            var response = await base.GetAndValidateQueryAsync(cqParams.DbName, query);
+
+            return response;
         }
 
-        public async Task<Serie> GetContinuousQueriesAsync(string dbName)
+        public virtual async Task<IEnumerable<ContinuousQuery>> GetContinuousQueriesAsync(string dbName)
         {
-            var response = await _cqRequestModule.GetContinuousQueries(dbName);
-            var queryResult = response.ReadAs<QueryResponse>();//.Results.Single().Series;
+            var query = _cqQueryBuilder.GetContinuousQueries();
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
+            var cqs = _cqResponseParser.GetContinuousQueries(dbName, series);
 
-            Validate.NotNull(queryResult, "queryResult");
-            Validate.NotNull(queryResult.Results, "queryResult.Results");
-
-            // Apparently a 200 OK can return an error in the results
-            // https://github.com/influxdb/influxdb/pull/1813
-            var error = queryResult.Results.Single().Error;
-            if (error != null)
-            {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, error);
-            }
-
-            var series = queryResult.Results.Single().Series;
-
-            return series != null ? series.Where(p => p.Name == dbName).FirstOrDefault() : new Serie();
+            return cqs;
         }
 
-        public async Task<IInfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
+        public virtual async Task<IInfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
         {
-            return await _cqRequestModule.DeleteContinuousQuery(dbName, cqName);
+            var query = _cqQueryBuilder.DeleteContinuousQuery(dbName, cqName);
+            var response = await base.GetAndValidateQueryAsync(dbName, query);
+
+            return response;
         }
 
-        public async Task<IInfluxDbApiResponse> BackfillAsync(string dbName, Backfill backfill)
+        public virtual async Task<IInfluxDbApiResponse> BackfillAsync(string dbName, BackfillParams backfillParams)
         {
-            return await _cqRequestModule.Backfill(dbName, backfill);
+            var query = _cqQueryBuilder.Backfill(dbName, backfillParams);
+            var response = await base.GetAndValidateQueryAsync(dbName, query);
+
+            return response;
         }
     }
 }

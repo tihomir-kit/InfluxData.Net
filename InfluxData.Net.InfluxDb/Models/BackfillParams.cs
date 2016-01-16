@@ -7,12 +7,12 @@ namespace InfluxData.Net.InfluxDb.Models
     /// <summary>
     /// Represents a backfill object for manually backfilling (downsampling) aggregated series data.
     /// </summary>
-    public class Backfill
+    public class BackfillParams
     {
         /// <summary>
         /// InfluxDb downsampling functions/fields for the "SELECT" part of the query.
         /// </summary>
-        public IList<string> Downsamplers { get; set; }
+        public IEnumerable<string> Downsamplers { get; set; }
 
         /// <summary>
         /// Downsample serie name for the serie to write into.

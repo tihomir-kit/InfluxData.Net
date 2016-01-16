@@ -28,20 +28,31 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="retenionPolicy">The retenion policy.</param>
         /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point[] points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds);
+        Task<IInfluxDbApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds);
 
         /// <summary>
-        /// Execute a query agains the database.
+        /// Executes a query against the database.
         /// </summary>
         /// <param name="dbName">Database name.</param>
         /// <param name="query">Query to execute.</param>
         /// <returns></returns>
-        Task<IList<Serie>> QueryAsync(string dbName, string query);
+        Task<IEnumerable<Serie>> QueryAsync(string dbName, string query);
 
         /// <summary>
-        /// Pings the InfluxDb server.
+        /// Executes multiple queries against the database in a single request and extracts and flattens
+        /// the series from all results into a single <see cref="Serie"/> collection.
         /// </summary>
-        /// <returns>Response of the ping execution (success, dbVersion, response time).</returns>
-        Task<Pong> PingAsync();
+        /// <param name="dbName">Database name.</param>
+        /// <param name="queries">Queries to execute.</param>
+        /// <returns></returns>
+        Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries);
+
+        /// <summary>
+        /// Executes multiple queries against the database in a single request.
+        /// </summary>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="queries">Queries to execute.</param>
+        /// <returns></returns>
+        Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries);
     }
 }

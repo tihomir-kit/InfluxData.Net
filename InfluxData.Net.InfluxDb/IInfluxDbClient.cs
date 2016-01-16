@@ -9,12 +9,16 @@ namespace InfluxData.Net.InfluxDb
     {
         IBasicClientModule Client { get; }
 
+        ISerieClientModule Serie { get; }
+
         IDatabaseClientModule Database { get; }
 
         IRetentionClientModule Retention { get; }
 
         ICqClientModule ContinuousQuery { get; }
 
-        IInfluxDbFormatter GetFormatter();
+        IDiagnosticsClientModule Diagnostics { get; }
+
+        IPointFormatter GetPointFormatter();
     }
 }

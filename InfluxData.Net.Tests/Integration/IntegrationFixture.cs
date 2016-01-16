@@ -21,6 +21,10 @@ namespace InfluxData.Net.Integration
     {
         public static readonly string _fakeDbPrefix = "FakeDb";
         public static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
+        public static readonly string _fakeCq = "FakeCq";
+
+        private static readonly Random _random = new Random();
+        private static readonly object _syncLock = new object();
         private MockRepository _mockRepository;
 
         public IInfluxDbClient Sut { get; set; }
@@ -77,9 +81,9 @@ namespace InfluxData.Net.Integration
         }
 
 
-        private async Task CreateEmptyDatabase()
+        public async Task CreateEmptyDatabase(string dbName = null)
         {
-            var createResponse = await this.Sut.Database.CreateDatabaseAsync(this.DbName);
+            var createResponse = await this.Sut.Database.CreateDatabaseAsync(dbName ?? this.DbName);
             createResponse.Success.Should().BeTrue();
         }
 
@@ -96,46 +100,110 @@ namespace InfluxData.Net.Integration
 
         public string CreateRandomDbName()
         {
-            var timestamp = DateTime.UtcNow.ToUnixTime();
-            return String.Format("{0}{1}", _fakeDbPrefix, timestamp);
+            return String.Format("{0}{1}", _fakeDbPrefix, CreateRandomSuffix());
         }
 
         public string CreateRandomMeasurementName()
         {
-            var timestamp = DateTime.UtcNow.ToUnixTime();
-            return String.Format("{0}{1}", _fakeMeasurementPrefix, timestamp);
+            return String.Format("{0}{1}", _fakeMeasurementPrefix, CreateRandomSuffix());
         }
 
-        public async Task<IList<Serie>> Query(Serie expected)
+        public string CreateRandomCqName()
         {
-            // 0.9.3 need 'group by' to retrieve tags as tags when using select *
-            var result = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by *", expected.Name));
-
-            result.Should().NotBeNull();
-            result.Count().Should().Be(1);
-
-            var actual = result.Single();
-
-            actual.Name.Should().Be(expected.Name);
-            actual.Tags.Count.Should().Be(expected.Tags.Count);
-            actual.Tags.ShouldAllBeEquivalentTo(expected.Tags);
-            actual.Columns.ShouldAllBeEquivalentTo(expected.Columns);
-            actual.Columns.Count().Should().Be(expected.Columns.Count());
-            actual.Values[0].Count().Should().Be(expected.Values[0].Count());
-            ((DateTime)actual.Values[0][0]).ToUnixTime().Should().Be(((DateTime)expected.Values[0][0]).ToUnixTime());
-
-            return result;
+            return String.Format("{0}{1}", _fakeCq, CreateRandomSuffix());
         }
 
-        public Point[] CreateMockPoints(int amount)
+        /// <see cref="http://stackoverflow.com/a/768001/413785"/>
+        public static string CreateRandomSuffix()
+        {
+            var timestamp = DateTime.UtcNow.ToUnixTime();
+            lock (_syncLock)
+            {
+                var randomInt = _random.Next(Int32.MaxValue);
+                return String.Format("{0}{1}", timestamp, randomInt);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the serie has expected point count.
+        /// </summary>
+        /// <param name="serieName">Serie name to check.</param>
+        /// <param name="countField">Point field to be used in 'count()' portion of the query.</param>
+        /// <param name="expectedPoints">Expected number of saved points.</param>
+        public async Task EnsureValidPointCount(string serieName, string countField, int expectedPoints)
+        {
+            var response = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select count({0}) from \"{1}\"", countField, serieName));
+            response.Should().NotBeNull();
+            response.Count().Should().Be(1);
+            var countIndex = Array.IndexOf(response.First().Columns.ToArray(), "count");
+            response.First().Values.First()[countIndex].ToString().Should().Be(expectedPoints.ToString());
+        }
+
+        /// <summary>
+        /// Checks if the point is in the database. (checks by serie name and timestamp).
+        /// </summary>
+        /// <param name="expectedPoint">Expected point.</param>
+        public async Task EnsurePointExists(Point expectedPoint)
+        {
+            var expectedSerie = this.Sut.GetPointFormatter().PointToSerie(expectedPoint);
+
+            var response = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by * order by time desc", expectedPoint.Name));
+            response.Should().NotBeNull();
+            response.Count().Should().BeGreaterOrEqualTo(1);
+
+            var serie = response.FirstOrDefault(p => ((DateTime)p.Values[0][0]).ToUnixTime() == ((DateTime)expectedPoint.Timestamp).ToUnixTime());
+            serie.Should().NotBeNull();
+            serie.Name.Should().Be(expectedSerie.Name);
+            serie.Tags.Count.Should().Be(expectedSerie.Tags.Count);
+            serie.Tags.ShouldAllBeEquivalentTo(expectedSerie.Tags);
+            serie.Columns.ShouldAllBeEquivalentTo(expectedSerie.Columns);
+            serie.Columns.Count().Should().Be(expectedSerie.Columns.Count());
+            serie.Values[0].Count().Should().Be(expectedSerie.Values[0].Count());
+        }
+
+        /// <summary>
+        /// Mocks a desired amount of points and saves them to the DB.
+        /// </summary>
+        /// <param name="amount">Amount per measurement to mock.</param>
+        /// <param name="uniqueMeasurements">Unique measurements amount.</param>
+        public async Task<IEnumerable<Point>> MockAndWritePoints(int amount, int uniqueMeasurements = 1, string dbName = null)
+        {
+            var points = new Point[0];
+
+            for (var i = 0; i < uniqueMeasurements; i++)
+            {
+                points = points.Concat(MockPoints(amount)).ToArray();
+            }
+
+            var writeResponse = await Sut.Client.WriteAsync(dbName ?? this.DbName, points.ToArray());
+            writeResponse.Success.Should().BeTrue();
+
+            return points;
+        }
+
+        /// <summary>
+        /// Mocks a CQ and saves it to the DB.
+        /// </summary>
+        /// <param name="serieName">CQ for serie name?</param>
+        public async Task<CqParams> MockAndWriteCq(string serieName)
+        {
+            var cq = MockContinuousQuery(serieName);
+            var result = await Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
+
+            return cq;
+        }
+
+        public IEnumerable<Point> MockPoints(int amount)
         {
             var rnd = new Random();
             var fixture = new Fixture();
 
             fixture.Customize<Point>(c => c
                 .With(p => p.Name, CreateRandomMeasurementName())
-                .Do(p => p.Tags = CreateNewTags(rnd))
-                .Do(p => p.Fields = CreateNewFields(rnd))
+                .Do(p => p.Tags = MockPointTags(rnd))
+                .Do(p => p.Fields = MockPointFields(rnd))
                 .OmitAutoProperties());
 
             var points = fixture.CreateMany<Point>(amount).ToArray();
@@ -149,22 +217,22 @@ namespace InfluxData.Net.Integration
             return points;
         }
 
-        public Dictionary<string, object> CreateNewTags(Random rnd)
+        public Dictionary<string, object> MockPointTags(Random rnd)
         {
             return new Dictionary<string, object>
             {
                 // quotes in the tag value are creating problems
                 // https://github.com/influxdb/influxdb/issues/3928
                 //{"tag_string", rnd.NextPrintableString(50).Replace("\"", string.Empty)},
-                {"tag_bool", (rnd.Next(2) == 0).ToString()},
-                {"tag_datetime", DateTime.Now.ToString()},
-                {"tag_decimal", ((decimal) rnd.NextDouble()).ToString()},
-                {"tag_float", ((float) rnd.NextDouble()).ToString()},
-                {"tag_int", rnd.Next().ToString()}
+                { "tag_bool", (rnd.Next(2) == 0).ToString() },
+                { "tag_datetime", DateTime.Now.ToString() },
+                { "tag_decimal", ((decimal) rnd.NextDouble()).ToString() },
+                { "tag_float", ((float) rnd.NextDouble()).ToString() },
+                { "tag_int", rnd.Next().ToString() }
             };
         }
 
-        public Dictionary<string, object> CreateNewFields(Random rnd)
+        public Dictionary<string, object> MockPointFields(Random rnd)
         {
             return new Dictionary<string, object>
             {
@@ -177,27 +245,27 @@ namespace InfluxData.Net.Integration
             };
         }
 
-        public ContinuousQuery MockContinuousQuery()
+        public CqParams MockContinuousQuery(string serieName)
         {
-            return new ContinuousQuery()
+            return new CqParams()
             {
                 DbName = this.DbName,
-                CqName = "FakeCQ",
+                CqName = CreateRandomCqName(),
                 Downsamplers = new List<string>()
                 {
                     "MAX(field_int) AS max_field_int",
                     "MIN(field_int) AS min_field_int"
                 },
-                DsSerieName = String.Format("{0}.5s", _fakeMeasurementPrefix),
-                SourceSerieName = _fakeMeasurementPrefix,
+                DsSerieName = String.Format("{0}.5s", serieName),
+                SourceSerieName = serieName,
                 Interval = "5s",
                 FillType = FillType.Previous
             };
         }
 
-        public Backfill MockBackfill()
+        public BackfillParams MockBackfill()
         {
-            return new Backfill()
+            return new BackfillParams()
             {
                 Downsamplers = new List<string>()
                 {

@@ -4,51 +4,47 @@ using System.Threading.Tasks;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
-using InfluxData.Net.InfluxDb.RequestClients.Modules;
+using System;
+using InfluxData.Net.InfluxDb.QueryBuilders;
+using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public class DatabaseClientModule : ClientModuleBase, IDatabaseClientModule
     {
-        private readonly IDatabaseRequestModule _databaseRequestModule;
+        private readonly IDatabaseQueryBuilder _databaseQueryBuilder;
+        private readonly IDatabaseResponseParser _databaseResponseParser;
 
-        public DatabaseClientModule(IInfluxDbRequestClient requestClient, IDatabaseRequestModule databaseRequestModule)
+        public DatabaseClientModule(IInfluxDbRequestClient requestClient, IDatabaseQueryBuilder databaseQueryBuilder, IDatabaseResponseParser databaseResponseParser)
             : base(requestClient)
         {
-            _databaseRequestModule = databaseRequestModule;
+            _databaseQueryBuilder = databaseQueryBuilder;
+            _databaseResponseParser = databaseResponseParser;
         }
 
-        public async Task<IInfluxDbApiResponse> CreateDatabaseAsync(string dbName)
+        public virtual async Task<IInfluxDbApiResponse> CreateDatabaseAsync(string dbName)
         {
-            return await _databaseRequestModule.CreateDatabase(dbName);
+            var query = _databaseQueryBuilder.CreateDatabase(dbName);
+            var response = await base.GetAndValidateQueryAsync(query);
+
+            return response;
         }
 
-        public async Task<IList<DatabaseResponse>> GetDatabasesAsync()
+        public virtual async Task<IEnumerable<Database>> GetDatabasesAsync()
         {
-            var response = await _databaseRequestModule.GetDatabases();
-            var queryResult = response.ReadAs<QueryResponse>();
-            var serie = queryResult.Results.Single().Series.Single();
-            var databases = new List<DatabaseResponse>();
-
-            foreach (var value in serie.Values)
-            {
-                databases.Add(new DatabaseResponse
-                {
-                    Name = (string)value[0]
-                });
-            }
+            var query = _databaseQueryBuilder.GetDatabases();
+            var series = await base.ResolveSingleGetSeriesResultAsync(query);
+            var databases = _databaseResponseParser.GetDatabases(series);
 
             return databases;
         }
 
-        public async Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName)
+        public virtual async Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName)
         {
-            return await _databaseRequestModule.DropDatabase(dbName);
-        }
+            var query = _databaseQueryBuilder.DropDatabase(dbName);
+            var response = await base.GetAndValidateQueryAsync(query);
 
-        public async Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName)
-        {
-            return await _databaseRequestModule.DropSeries(dbName, serieName);
+            return response;
         }
     }
 }

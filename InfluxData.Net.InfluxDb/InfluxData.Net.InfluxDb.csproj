@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ClientModules\DiagnosticsClientModule.cs" />
+    <Compile Include="ClientModules\IDiagnosticsClientModule.cs" />
+    <Compile Include="ClientModules\ISerieClientModule.cs" />
+    <Compile Include="ClientModules\SerieClientModule.cs" />
     <Compile Include="ClientModules\RetentionClientModule.cs" />
     <Compile Include="ClientModules\DatabaseClientModule.cs" />
     <Compile Include="ClientModules\CqClientModule.cs" />
@@ -47,35 +51,54 @@
     <Compile Include="Constants\QueryStatements.cs" />
     <Compile Include="Constants\RequestPaths.cs" />
     <Compile Include="Enums\FillType.cs" />
+    <Compile Include="Helpers\SerieExtensions.cs" />
     <Compile Include="IInfluxDbClient.cs" />
     <Compile Include="InfluxDbClient.cs" />
     <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
     <Compile Include="Infrastructure\IInfluxDbApiResponse.cs" />
+    <Compile Include="Models\Responses\ContinuousQuery.cs" />
+    <Compile Include="Models\Responses\Measurement.cs" />
+    <Compile Include="Models\Responses\Diagnostics.cs" />
+    <Compile Include="Models\Responses\SerieSet.cs" />
+    <Compile Include="Models\Responses\Stats.cs" />
+    <Compile Include="ResponseParsers\ISerieResponseParser.cs" />
+    <Compile Include="ResponseParsers\IRetentionResponseParser.cs" />
+    <Compile Include="ResponseParsers\SerieResponseParser.cs" />
+    <Compile Include="ResponseParsers\RetentionResponseParser.cs" />
+    <Compile Include="ResponseParsers\DatabaseResponseParser.cs" />
+    <Compile Include="ResponseParsers\CqResponseParser.cs" />
+    <Compile Include="ResponseParsers\BasicResponseParser.cs" />
+    <Compile Include="ResponseParsers\IDatabaseResponseParser.cs" />
+    <Compile Include="ResponseParsers\ICqResponseParser.cs" />
+    <Compile Include="ResponseParsers\IBasicResponseParser.cs" />
+    <Compile Include="ResponseParsers\IDiagnosticsResponseParser.cs" />
+    <Compile Include="ResponseParsers\DiagnosticsParser.cs" />
+    <Compile Include="QueryBuilders\DiagnosticsQueryBuilder.cs" />
+    <Compile Include="QueryBuilders\IDiagnosticsQueryBuilder.cs" />
     <Compile Include="RequestClients\IInfluxDbRequestClient.cs" />
-    <Compile Include="RequestClients\Modules\RetentionRequestModule.cs" />
-    <Compile Include="RequestClients\Modules\IRetentionRequestModule.cs" />
+    <Compile Include="QueryBuilders\SerieQueryBuilder.cs" />
+    <Compile Include="QueryBuilders\ISerieQueryBuilder.cs" />
+    <Compile Include="QueryBuilders\RetentionQueryBuilder.cs" />
+    <Compile Include="QueryBuilders\IRetentionQueryBuilder.cs" />
     <Compile Include="RequestClients\RequestClientFactory.cs" />
-    <Compile Include="RequestClients\RequestClientUtility.cs" />
+    <Compile Include="Infrastructure\RequestParamsBuilder.cs" />
     <Compile Include="RequestClients\RequestClient_v_0_9_2.cs" />
     <Compile Include="RequestClients\RequestClient.cs" />
-    <Compile Include="RequestClients\Modules\IBasicRequestModule.cs" />
-    <Compile Include="RequestClients\Modules\ICqRequestModule.cs" />
-    <Compile Include="RequestClients\Modules\IDatabaseRequestModule.cs" />
-    <Compile Include="RequestClients\Modules\BasicRequestModule.cs" />
-    <Compile Include="RequestClients\Modules\CqRequestModule.cs" />
-    <Compile Include="RequestClients\Modules\DatabaseRequestModule.cs" />
-    <Compile Include="RequestClients\Modules\RequestModuleBase.cs" />
+    <Compile Include="QueryBuilders\ICqQueryBuilder.cs" />
+    <Compile Include="QueryBuilders\IDatabaseQueryBuilder.cs" />
+    <Compile Include="QueryBuilders\CqQueryBuilder.cs" />
+    <Compile Include="QueryBuilders\DatabaseQueryBuilder.cs" />
     <Compile Include="Infrastructure\InfluxDbClientConfiguration.cs" />
-    <Compile Include="Formatters\IInfluxDbFormatter.cs" />
-    <Compile Include="Formatters\Formatter_v_0_9_2.cs" />
-    <Compile Include="Formatters\Formatter.cs" />
+    <Compile Include="Formatters\IPointFormatter.cs" />
+    <Compile Include="Formatters\PointFormatter_v_0_9_2.cs" />
+    <Compile Include="Formatters\PointFormatter.cs" />
     <Compile Include="Infrastructure\InfluxDbException.cs" />
     <Compile Include="Infrastructure\InfluxDbApiResponse.cs" />
-    <Compile Include="Infrastructure\InfluxDbResponseExtensions.cs" />
-    <Compile Include="Models\Backfill.cs" />
-    <Compile Include="Models\ContinuousQuery.cs" />
+    <Compile Include="Helpers\ResponseExtensions.cs" />
+    <Compile Include="Models\BackfillParams.cs" />
+    <Compile Include="Models\CqParams.cs" />
     <Compile Include="Models\Point.cs" />
-    <Compile Include="Models\Responses\DatabaseResponse.cs" />
+    <Compile Include="Models\Responses\Database.cs" />
     <Compile Include="Models\Responses\Pong.cs" />
     <Compile Include="Models\Responses\QueryResponse.cs" />
     <Compile Include="Models\Responses\Serie.cs" />
@@ -84,39 +107,39 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.166\lib\portable-net40+sl4+win8+wp71+wpa81\Microsoft.Threading.Tasks.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net40+sl4+win8+wp71+wpa81\Microsoft.Threading.Tasks.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.166\lib\portable-net40+sl4+win8+wp71+wpa81\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net40+sl4+win8+wp71+wpa81\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.IO, Version=1.5.11.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.9\lib\portable-net40+sl5+win8+wp8+wpa81\System.IO.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\portable-net40+sl5+win8+wp8+wpa81\System.IO.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http, Version=1.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.28\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.Extensions, Version=1.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.28\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Extensions.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.Primitives, Version=1.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.28\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Primitives.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime, Version=2.6.9.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.9\lib\portable-net40+sl5+win8+wp8+wpa81\System.Runtime.dll</HintPath>
+    <Reference Include="System.Runtime, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\portable-net40+sl5+win8+wp8+wpa81\System.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Threading.Tasks, Version=2.6.9.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.9\lib\portable-net40+sl5+win8+wp8+wpa81\System.Threading.Tasks.dll</HintPath>
+    <Reference Include="System.Threading.Tasks, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\portable-net40+sl5+win8+wp8+wpa81\System.Threading.Tasks.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

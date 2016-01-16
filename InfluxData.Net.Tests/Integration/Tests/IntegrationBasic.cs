@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using FluentAssertions;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace InfluxData.Net.Integration.Tests
                 Timestamp = dt
             };
 
-            var formatter = _fixture.Sut.GetFormatter();
+            var formatter = _fixture.Sut.GetPointFormatter();
             var expected = String.Format(formatter.GetLineTemplate(),
                 /* key */ seriesName + "," + tagName + "=" + escapedTagValue,
                 /* fields */ fieldName + "=" + "\"" + escapedFieldValue + "\"",
@@ -64,33 +65,26 @@ namespace InfluxData.Net.Integration.Tests
         }
 
         [Fact]
-        public async Task ClientPing_ShouldReturnVersion()
+        public async Task ClientWrite_OnValidPointsToSave_ShouldWriteSuccessfully()
         {
-            var pong = await _fixture.Sut.Client.PingAsync();
-
-            pong.Should().NotBeNull();
-            pong.Success.Should().BeTrue();
-            pong.Version.Should().NotBeEmpty();
-        }
-
-
-        [Fact]
-        public async Task ClientWrite_OnMultipleValidPoints_ShouldReturnSuccess()
-        {
-            var points = _fixture.CreateMockPoints(5);
+            var points = _fixture.MockPoints(5);
 
             var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
+
             writeResponse.Success.Should().BeTrue();
+            await _fixture.EnsureValidPointCount(points.First().Name, points.First().Fields.First().Key, 5);
+            await _fixture.EnsurePointExists(points.ToArray()[2]);
         }
 
         [Fact]
         public void ClientWrite_OnPointsWithMissingFields_ShouldThrowException()
         {
-            var points = _fixture.CreateMockPoints(1);
+            var points = _fixture.MockPoints(1);
             points.Single().Timestamp = null;
             points.Single().Fields.Clear();
 
             Func<Task> act = async () => { await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points); };
+
             act.ShouldThrow<InfluxDbApiException>();
         }
 
@@ -98,51 +92,146 @@ namespace InfluxData.Net.Integration.Tests
         public void ClientQuery_OnInvalidQuery_ShouldThrowException()
         {
             Func<Task> act = async () => { await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "blah"); };
+
             act.ShouldThrow<InfluxDbApiException>();
         }
 
         [Fact]
-        public async Task ClientQuery_OnNonExistantSeries_ShouldReturnEmptyList()
+        public async Task ClientQuery_OnNonExistantSeries_ShouldReturnEmptySerieCollection()
         {
-            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "select * from nonexistentseries");
+            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "select * from nonexistingseries");
+
             result.Should().NotBeNull();
             result.Should().BeEmpty();
         }
 
         [Fact]
-        public async Task ClientQuery_OnNonExistantFields_ShouldReturnEmptyList()
+        public async Task ClientQuery_OnExistingPoints_ShouldReturnSerieCollection()
         {
-            var points = _fixture.CreateMockPoints(1);
-            var response = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
+            var points = await _fixture.MockAndWritePoints(3);
 
-            response.Success.Should().BeTrue();
+            var query = String.Format("select * from {0}", points.First().Name);
+            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, query);
 
-            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, String.Format("select nonexistentfield from \"{0}\"", points.Single().Name));
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Name.Should().Be(points.First().Name);
+            result.First().Values.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public async Task ClientQueryMultiple_OnExistingPoints_ShouldReturnSerieCollection()
+        {
+            var points = await _fixture.MockAndWritePoints(5, 2);
+
+            var pointNames = points.Select(p => p.Name).Distinct();
+            pointNames.Should().HaveCount(2);
+
+            var queries = new []
+            {
+                String.Format("select * from {0}", pointNames.First()),
+                String.Format("select * from {0}", pointNames.Last())
+            };
+            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, queries);
+
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+            result.First().Name.Should().Be(points.First().Name);
+            result.First().Values.Should().HaveCount(5);
+            result.Last().Name.Should().Be(points.Last().Name);
+            result.Last().Values.Should().HaveCount(5);
+        }
+
+        [Fact]
+        public async Task ClientQueryMultiple_WithOneExistantSeriesQuery_ShouldReturnSingleSerie()
+        {
+            var points = await _fixture.MockAndWritePoints(6);
+
+            var queries = new[]
+            {
+                String.Format("select * from {0}", "nonexistingseries"),
+                String.Format("select * from {0}", points.First().Name)
+            };
+            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, queries);
+
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Name.Should().Be(points.First().Name);
+            result.First().Values.Should().HaveCount(6);
+        }
+
+        [Fact]
+        public async Task ClientMultiQuery_OnExistingPoints_ShouldReturnSerieResultCollection()
+        {
+            var points = await _fixture.MockAndWritePoints(4, 2);
+
+            var pointNames = points.Select(p => p.Name).Distinct();
+            pointNames.Should().HaveCount(2);
+
+            var queries = new []
+            {
+                String.Format("select * from {0}", pointNames.First()),
+                String.Format("select * from {0}", pointNames.Last())
+            };
+            var result = await _fixture.Sut.Client.MultiQueryAsync(_fixture.DbName, queries);
+
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+            result.First().First().Name.Should().Be(points.First().Name);
+            result.First().First().Values.Should().HaveCount(4);
+            result.Last().First().Name.Should().Be(points.Last().Name);
+            result.Last().First().Values.Should().HaveCount(4);
+        }
+
+        [Fact]
+        public async Task ClientMultiQuery_WithOneExistantSeriesQuery_ShouldReturnEmptyAndPopulatedSeries()
+        {
+            var points = await _fixture.MockAndWritePoints(4);
+
+            var queries = new[]
+            {
+                String.Format("select * from {0}", "nonexistingseries"),
+                String.Format("select * from {0}", points.First().Name)
+            };
+            var result = await _fixture.Sut.Client.MultiQueryAsync(_fixture.DbName, queries);
+
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+            result.First().Should().HaveCount(0);
+            result.Last().First().Name.Should().Be(points.First().Name);
+            result.Last().First().Values.Should().HaveCount(4);
+        }
+
+        [Fact]
+        public async Task ClientQuery_OnNonExistantFields_ShouldReturnEmptySerieCollection()
+        {
+            var points = await _fixture.MockAndWritePoints(1);
+
+            var query = String.Format("select nonexistentfield from \"{0}\"", points.Single().Name);
+            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, query);
+
             result.Should().NotBeNull();
             result.Should().BeEmpty();
         }
 
         [Fact]
-        public async Task ClientQuery_OnWhereClauseNotMet_ShouldReturnNoSeries()
+        public async Task ClientQuery_OnWhereClauseNotMet_ShouldReturnEmptySerieCollection()
         {
-            // Arrange
-            var points = _fixture.CreateMockPoints(1);
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
-            writeResponse.Success.Should().BeTrue();
+            var points = await _fixture.MockAndWritePoints(1);
 
-            // Act
-            var queryResponse = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, String.Format("select * from \"{0}\" where 0=1", points.Single().Name));
+            var query = String.Format("select * from \"{0}\" where 0=1", points.Single().Name);
+            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, query);
 
-            // Assert
-            queryResponse.Count.Should().Be(0);
+            result.Should().NotBeNull();
+            result.Should().BeEmpty();
         }
 
         // TODO: move to unit tests
         [Fact]
         public void WriteRequest_OnGetLines_ShouldReturnNewLineSeparatedPoints()
         {
-            var points = _fixture.CreateMockPoints(2);
-            var formatter = _fixture.Sut.GetFormatter();
+            var points = _fixture.MockPoints(2);
+            var formatter = _fixture.Sut.GetPointFormatter();
             var request = new WriteRequest(formatter)
             {
                 Points = points

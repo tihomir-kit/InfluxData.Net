@@ -3,14 +3,13 @@ using Newtonsoft.Json;
 namespace InfluxData.Net.InfluxDb.Models.Responses
 {
     /// <summary>
-    /// Represents <see cref="{Database}"/> query response.
+    /// Represents <see cref="{Measurement}"/> query response.
     /// </summary>
-    public class DatabaseResponse
+    public class Measurement
     {
         /// <summary>
         /// Database name.
         /// </summary>
-        [JsonProperty("name")]
         public string Name { get; set; }
     }
 }

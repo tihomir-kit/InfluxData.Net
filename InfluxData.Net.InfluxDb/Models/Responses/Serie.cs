@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace InfluxData.Net.InfluxDb.Models.Responses
@@ -26,11 +27,11 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
         /// <summary>
         /// List of serie fields.
         /// </summary>
-        public string[] Columns { get; set; }
+        public IList<string> Columns { get; set; }
 
         /// <summary>
         /// Serie values.
         /// </summary>
-        public object[][] Values { get; set; }
+        public IList<IList<object>> Values { get; set; }
     }
 }

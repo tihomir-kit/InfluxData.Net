@@ -8,7 +8,7 @@ using InfluxData.Net.InfluxDb.Models.Responses;
 
 namespace InfluxData.Net.InfluxDb.Formatters
 {
-    public class Formatter : IInfluxDbFormatter
+    public class PointFormatter : IPointFormatter
     {
         private static readonly string _queryTemplate = "{0} {1} {2}"; // [key] [fields] [time]
 
@@ -30,9 +30,9 @@ namespace InfluxData.Net.InfluxDb.Formatters
         /// </remarks>
         public virtual string PointToString(Point point)
         {
-            Validate.NotNullOrEmpty(point.Name, "measurement");
-            Validate.NotNull(point.Tags, "tags");
-            Validate.NotNull(point.Fields, "fields");
+            Validate.IsNotNullOrEmpty(point.Name, "measurement");
+            Validate.IsNotNull(point.Tags, "tags");
+            Validate.IsNotNull(point.Fields, "fields");
 
             var tags = FormatPointTags(point.Tags);
             var fields = FormatPointFields(point.Fields);
@@ -51,7 +51,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
                 Name = point.Name
             };
 
-            foreach (var key in point.Tags.Keys.ToList())
+            foreach (var key in point.Tags.Keys)
             {
                 serie.Tags.Add(key, point.Tags[key].ToString());
             }
@@ -71,7 +71,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
         protected virtual string FormatPointTags(IDictionary<string, object> tags)
         {
             // NOTE: from InfluxDB documentation - "Tags should be sorted by key before being sent for best performance."
-            return String.Join(",", tags.OrderBy(p => p.Key).Select(p => FormatPointTag(p.Key, p.Value)));
+            return tags.OrderBy(p => p.Key).Select(p => FormatPointTag(p.Key, p.Value)).ToCommaSeparatedString();
         }
 
         protected virtual string FormatPointTag(string key, object value)
@@ -81,13 +81,13 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string FormatPointFields(IDictionary<string, object> fields)
         {
-            return String.Join(",", fields.Select(p => FormatPointField(p.Key, p.Value)));
+            return fields.Select(p => FormatPointField(p.Key, p.Value)).ToCommaSeparatedString();
         }
 
         protected virtual string FormatPointField(string key, object value)
         {
-            Validate.NotNullOrEmpty(key, "key");
-            Validate.NotNull(value, "value");
+            Validate.IsNotNullOrEmpty(key, "key");
+            Validate.IsNotNull(value, "value");
 
             var result = value.ToString();
 
@@ -146,7 +146,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string EscapeNonTagValue(string value)
         {
-            Validate.NotNull(value, "value");
+            Validate.IsNotNull(value, "value");
 
             var result = value
                 // literal backslash escaping is broken
@@ -162,7 +162,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string EscapeTagValue(string value)
         {
-            Validate.NotNull(value, "value");
+            Validate.IsNotNull(value, "value");
 
             var result = value
                 .Replace(@" ", @"\ ")
@@ -174,7 +174,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string QuoteValue(string value)
         {
-            Validate.NotNull(value, "value");
+            Validate.IsNotNull(value, "value");
 
             return "\"" + value + "\"";
         }

@@ -11,6 +11,7 @@ using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using System.Diagnostics;
+using InfluxData.Net.InfluxDb.Models;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
@@ -25,20 +26,47 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             _configuration = configuration;
         }
 
-        /// <summary>Pings the server.</summary>
-        /// <param name="errorHandlers">The error handlers.</param>
-        /// <returns></returns>
-        public async Task<IInfluxDbApiResponse> PingAsync()
+        public virtual IPointFormatter GetPointFormatter()
+        {
+            return new PointFormatter();
+        }
+
+        #region Basic Actions
+
+        public virtual async Task<IInfluxDbApiResponse> WriteAsync(WriteRequest writeRequest)
+        {
+            var requestContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
+            var requestParams = RequestParamsBuilder.BuildRequestParams(writeRequest.DbName, QueryParams.Precision, writeRequest.Precision);
+            var result = await PostDataAsync(requestParams: requestParams, content: requestContent);
+
+            return new InfluxDbApiWriteResponse(result.StatusCode, result.Body);
+        }
+
+        public virtual async Task<IInfluxDbApiResponse> QueryAsync(string query)
+        {
+            return await GetQueryAsync(requestParams: RequestParamsBuilder.BuildQueryRequestParams(query));
+        }
+
+        public virtual async Task<IInfluxDbApiResponse> QueryAsync(string dbName, string query)
+        {
+            return await GetQueryAsync(requestParams: RequestParamsBuilder.BuildQueryRequestParams(dbName, query));
+        }
+
+        public virtual async Task<IInfluxDbApiResponse> PingAsync()
         {
             return await RequestAsync(HttpMethod.Get, RequestPaths.Ping, includeAuthToQuery: false, headerIsBody: true);
         }
 
-        public async Task<IInfluxDbApiResponse> GetQueryAsync(IDictionary<string, string> requestParams)
+        #endregion Basic Actions
+
+        #region Requests
+
+        public virtual async Task<IInfluxDbApiResponse> GetQueryAsync(IDictionary<string, string> requestParams)
         {
             return await GetQueryAsync(null, requestParams);
         }
 
-        public async Task<IInfluxDbApiResponse> GetQueryAsync(
+        public virtual async Task<IInfluxDbApiResponse> GetQueryAsync(
             HttpContent content = null,
             IDictionary<string, string> requestParams = null,
             bool includeAuthToQuery = true,
@@ -47,12 +75,12 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await RequestAsync(HttpMethod.Get, RequestPaths.Query, content, requestParams, includeAuthToQuery, headerIsBody);
         }
 
-        public async Task<IInfluxDbApiResponse> PostDataAsync(IDictionary<string, string> requestParams)
+        public virtual async Task<IInfluxDbApiResponse> PostDataAsync(IDictionary<string, string> requestParams)
         {
             return await PostDataAsync(null, requestParams);
         }
 
-        public async Task<IInfluxDbApiResponse> PostDataAsync(
+        public virtual async Task<IInfluxDbApiResponse> PostDataAsync(
             HttpContent content = null,
             IDictionary<string, string> requestParams = null,
             bool includeAuthToQuery = true,
@@ -61,15 +89,9 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await RequestAsync(HttpMethod.Post, RequestPaths.Write, content, requestParams, includeAuthToQuery, headerIsBody);
         }
 
-        public virtual IInfluxDbFormatter GetFormatter()
-        {
-            return new Formatter();
-        }
+        #endregion Requests
 
-        private HttpClient GetHttpClient()
-        {
-            return new HttpClient();
-        }
+        #region Request Base
 
         private async Task<IInfluxDbApiResponse> RequestAsync(
             HttpMethod method,
@@ -124,15 +146,15 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             IDictionary<string, string> extraParams = null,
             bool includeAuthToQuery = true)
         {
-            HttpClient client = GetHttpClient();
+            var client = new HttpClient();
 
             if (requestTimeout.HasValue)
             {
                 client.Timeout = requestTimeout.Value;
             }
 
-            StringBuilder uri = BuildUri(path, extraParams, includeAuthToQuery);
-            HttpRequestMessage request = BuildRequest(method, content, uri);
+            var uri = BuildUri(path, extraParams, includeAuthToQuery);
+            var request = BuildRequest(method, content, uri);
 
 #if DEBUG
             Debug.WriteLine("[Request] {0}", request.ToJson());
@@ -144,6 +166,10 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 
             return await client.SendAsync(request, completionOption, cancellationToken);
         }
+
+        #endregion Request Base
+
+        #region Helpers
 
         private StringBuilder BuildUri(string path, IDictionary<string, string> requestParams, bool includeAuthToQuery)
         {
@@ -186,5 +212,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
                 throw new InfluxDbApiException(statusCode, responseBody);
             }
         }
+
+        #endregion Helpers
     }
 }

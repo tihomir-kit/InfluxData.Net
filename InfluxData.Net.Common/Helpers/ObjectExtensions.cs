@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace InfluxData.Net.Common.Helpers
@@ -54,6 +55,46 @@ namespace InfluxData.Net.Common.Helpers
         public static DateTime FromUnixTime(this long unixTimeInMillis)
         {
             return _epoch.AddMilliseconds(unixTimeInMillis);
+        }
+
+        /// <summary>
+        /// Joins items separating them with "," (comma).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>Comma separated collection as a string.</returns>
+        public static string ToCommaSeparatedString(this IEnumerable<string> items)
+        {
+            return String.Join(",", items);
+        }
+
+        /// <summary>
+        /// Joins items separating them with ", " (comma and one whitespace).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>Comma-space separated collection as a string.</returns>
+        public static string ToCommaSpaceSeparatedString(this IEnumerable<string> items)
+        {
+            return String.Join(", ", items);
+        }
+
+        /// <summary>
+        /// Joins items separating them with "AND " ('AND' and one whitespace).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>AND-space separated collection as a string.</returns>
+        public static string ToAndSpaceSeparatedString(this IEnumerable<string> items)
+        {
+            return String.Join("AND ", items);
+        }
+
+        /// <summary>
+        /// Joins items separating them with "; " (';' and one whitespace).
+        /// </summary>
+        /// <param name="items">Items to join.</param>
+        /// <returns>Semicolon-space separated collection as a string.</returns>
+        public static string ToSemicolonSpaceSeparatedString(this IEnumerable<string> items)
+        {
+            return String.Join("; ", items);
         }
     }
 }

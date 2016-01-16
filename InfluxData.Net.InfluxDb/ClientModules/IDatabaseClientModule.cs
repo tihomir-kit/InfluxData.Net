@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
+using System;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -17,8 +18,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <summary>
         /// Gets all available databases.
         /// </summary>
-        /// <returns>A list of all databases.</returns>
-        Task<IList<DatabaseResponse>> GetDatabasesAsync();
+        /// <returns>A collection of all databases.</returns>
+        Task<IEnumerable<Database>> GetDatabasesAsync();
 
         /// <summary>
         /// Drops a database.
@@ -26,13 +27,5 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">The name of the database to delete.</param>
         /// <returns></returns>
         Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName);
-
-        /// <summary>
-        /// Deletes all data points from a serie.
-        /// </summary>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="serieName">Serie name.</param>
-        /// <returns></returns>
-        Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string serieName);
     }
 }
