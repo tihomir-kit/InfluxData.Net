@@ -26,9 +26,9 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             _configuration = configuration;
         }
 
-        public virtual IInfluxDbFormatter GetFormatter()
+        public virtual IPointFormatter GetPointFormatter()
         {
-            return new Formatter();
+            return new PointFormatter();
         }
 
         #region Basic Actions

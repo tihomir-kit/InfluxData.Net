@@ -33,7 +33,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         public async Task<IInfluxDbApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
-            var request = new WriteRequest(this.RequestClient.GetFormatter())
+            var request = new WriteRequest(this.RequestClient.GetPointFormatter())
             {
                 DbName = dbName,
                 Points = points,

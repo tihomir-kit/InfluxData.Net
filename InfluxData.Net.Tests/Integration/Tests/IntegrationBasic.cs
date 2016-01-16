@@ -53,7 +53,7 @@ namespace InfluxData.Net.Integration.Tests
                 Timestamp = dt
             };
 
-            var formatter = _fixture.Sut.GetFormatter();
+            var formatter = _fixture.Sut.GetPointFormatter();
             var expected = String.Format(formatter.GetLineTemplate(),
                 /* key */ seriesName + "," + tagName + "=" + escapedTagValue,
                 /* fields */ fieldName + "=" + "\"" + escapedFieldValue + "\"",
@@ -231,7 +231,7 @@ namespace InfluxData.Net.Integration.Tests
         public void WriteRequest_OnGetLines_ShouldReturnNewLineSeparatedPoints()
         {
             var points = _fixture.MockPoints(2);
-            var formatter = _fixture.Sut.GetFormatter();
+            var formatter = _fixture.Sut.GetPointFormatter();
             var request = new WriteRequest(formatter)
             {
                 Points = points

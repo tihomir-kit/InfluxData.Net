@@ -19,6 +19,6 @@ namespace InfluxData.Net.InfluxDb
 
         IDiagnosticsClientModule Diagnostics { get; }
 
-        IInfluxDbFormatter GetFormatter();
+        IPointFormatter GetPointFormatter();
     }
 }

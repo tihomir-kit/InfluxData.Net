@@ -145,7 +145,7 @@ namespace InfluxData.Net.Integration
         /// <param name="expectedPoint">Expected point.</param>
         public async Task EnsurePointExists(Point expectedPoint)
         {
-            var expectedSerie = this.Sut.GetFormatter().PointToSerie(expectedPoint);
+            var expectedSerie = this.Sut.GetPointFormatter().PointToSerie(expectedPoint);
 
             var response = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by * order by time desc", expectedPoint.Name));
             response.Should().NotBeNull();

@@ -8,7 +8,7 @@ using InfluxData.Net.InfluxDb.Models.Responses;
 
 namespace InfluxData.Net.InfluxDb.Formatters
 {
-    public class Formatter : IInfluxDbFormatter
+    public class PointFormatter : IPointFormatter
     {
         private static readonly string _queryTemplate = "{0} {1} {2}"; // [key] [fields] [time]
 

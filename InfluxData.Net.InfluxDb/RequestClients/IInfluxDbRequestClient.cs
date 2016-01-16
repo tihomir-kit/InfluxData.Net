@@ -9,7 +9,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 {
     public interface IInfluxDbRequestClient
     {
-        IInfluxDbFormatter GetFormatter();
+        IPointFormatter GetPointFormatter();
 
         /// <summary>Pings the server.</summary>
         /// <param name="errorHandlers">The error handlers.</param>

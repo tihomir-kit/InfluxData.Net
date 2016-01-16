@@ -96,9 +96,9 @@ namespace InfluxData.Net.InfluxDb
             _diagnosticsClientModule = new Lazy<IDiagnosticsClientModule>(() => new DiagnosticsClientModule(_requestClient, _diagnosticsQueryBuilder.Value, _diagnosticsResponseParser.Value));
         }
 
-        public IInfluxDbFormatter GetFormatter()
+        public IPointFormatter GetPointFormatter()
         {
-            return _requestClient.GetFormatter();
+            return _requestClient.GetPointFormatter();
         }
     }
 }

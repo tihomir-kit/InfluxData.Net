@@ -89,9 +89,9 @@
     <Compile Include="QueryBuilders\CqQueryBuilder.cs" />
     <Compile Include="QueryBuilders\DatabaseQueryBuilder.cs" />
     <Compile Include="Infrastructure\InfluxDbClientConfiguration.cs" />
-    <Compile Include="Formatters\IInfluxDbFormatter.cs" />
-    <Compile Include="Formatters\Formatter_v_0_9_2.cs" />
-    <Compile Include="Formatters\Formatter.cs" />
+    <Compile Include="Formatters\IPointFormatter.cs" />
+    <Compile Include="Formatters\PointFormatter_v_0_9_2.cs" />
+    <Compile Include="Formatters\PointFormatter.cs" />
     <Compile Include="Infrastructure\InfluxDbException.cs" />
     <Compile Include="Infrastructure\InfluxDbApiResponse.cs" />
     <Compile Include="Helpers\ResponseExtensions.cs" />
