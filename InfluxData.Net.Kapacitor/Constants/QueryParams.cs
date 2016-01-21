@@ -5,9 +5,9 @@
         public const string Username = "u";
         public const string Password = "p";
         public const string Db = "db";
-        public const string Query = "q";
-        public const string Id = "id";
         public const string Name = "name";
-        public const string Precision = "precision";
+        public const string Type = "type";
+        public const string Dbrps = "dbrps";
+        public const string RetentionPolicy = "rp";
     }
 }

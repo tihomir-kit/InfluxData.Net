@@ -15,16 +15,13 @@ namespace InfluxData.Net.Kapacitor.RequestClients
 
         public IKapacitorRequestClient GetRequestClient()
         {
-            switch (_configuration.InfluxVersion)
+            switch (_configuration.KapacitorVersion)
             {
-                case InfluxDbVersion.Latest:
-                case InfluxDbVersion.v_0_9_6:
-                case InfluxDbVersion.v_0_9_5:
+                case KapacitorVersion.Latest:
+                case KapacitorVersion.v_0_2_4:
                     return new RequestClient(_configuration);
-                case InfluxDbVersion.v_0_8_x:
-                    throw new NotImplementedException("InfluxDB v0.8.x is not supported by InfluxData.Net library.");
                 default:
-                    throw new ArgumentOutOfRangeException("influxDbClientConfiguration", String.Format("Unknown version {0}.", _configuration.InfluxVersion));
+                    throw new ArgumentOutOfRangeException("kapacitorClientConfiguration", String.Format("Unknown version {0}.", _configuration.KapacitorVersion));
             }
         }
     }

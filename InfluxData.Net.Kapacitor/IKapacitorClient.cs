@@ -4,6 +4,6 @@ namespace InfluxData.Net.Kapacitor
 {
     public interface IKapacitorClient
     {
-
+        ITaskClientModule Task { get; }
     }
 }

@@ -41,13 +41,5 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
         /// <returns></returns>
         Task<IInfluxDbApiResponse> QueryAsync(string dbName, string query);
-
-        Task<IInfluxDbApiResponse> GetQueryAsync(IDictionary<string, string> requestParams);
-
-        Task<IInfluxDbApiResponse> GetQueryAsync(HttpContent content = null, IDictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
-
-        Task<IInfluxDbApiResponse> PostDataAsync(IDictionary<string, string> requestParams);
-
-        Task<IInfluxDbApiResponse> PostDataAsync(HttpContent content = null, IDictionary<string, string> requestParams = null, bool includeAuthToQuery = true, bool headerIsBody = false);
     }
 }

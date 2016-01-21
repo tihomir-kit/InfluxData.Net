@@ -13,10 +13,8 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InfluxData.Net.Integration
+namespace InfluxData.Net.Integration.InfluxDb
 {
-    // NOTE: http://stackoverflow.com/questions/106907/making-code-internal-but-available-for-unit-testing-from-other-projects
-
     public class IntegrationFixture : IDisposable
     {
         public static readonly string _fakeDbPrefix = "FakeDb";
@@ -39,10 +37,10 @@ namespace InfluxData.Net.Integration
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out influxVersion))
                 influxVersion = InfluxDbVersion.v_0_9_6;
 
-            this.Sut = new InfluxDb.InfluxDbClient(
-                ConfigurationManager.AppSettings.Get("endpointUri"),
-                ConfigurationManager.AppSettings.Get("username"),
-                ConfigurationManager.AppSettings.Get("password"),
+            this.Sut = new InfluxDbClient(
+                ConfigurationManager.AppSettings.Get("influxDbEndpointUri"),
+                ConfigurationManager.AppSettings.Get("influxDbUsername"),
+                ConfigurationManager.AppSettings.Get("influxDbPassword"),
                 influxVersion);
 
             this.Sut.Should().NotBeNull();

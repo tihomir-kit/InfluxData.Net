@@ -7,10 +7,10 @@ using InfluxData.Net.InfluxDb.Models;
 using System.Linq;
 using InfluxData.Net.InfluxDb.Infrastructure;
 
-namespace InfluxData.Net.Integration.Tests
+namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    [Collection("Integration")]
-    [Trait("Integration", "Continuous Queries")]
+    [Collection("InfluxDb Integration")]
+    [Trait("InfluxDb Integration", "Continuous Queries")]
     public class IntegrationContinuousQueries : IDisposable
     {
         private readonly IntegrationFixture _fixture;

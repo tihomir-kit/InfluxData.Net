@@ -11,6 +11,6 @@ namespace InfluxData.Net.Kapacitor.Infrastructure
 
         string Password { get; }
 
-        InfluxDbVersion InfluxVersion { get; }
+        KapacitorVersion KapacitorVersion { get; }
     }
 }

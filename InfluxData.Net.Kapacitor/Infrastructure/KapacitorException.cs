@@ -16,10 +16,10 @@ namespace InfluxData.Net.Kapacitor.Infrastructure
         }
     }
 
-    public class InfluxDbApiException : KapacitorException
+    public class KapacitorApiException : KapacitorException
     {
-        public InfluxDbApiException(HttpStatusCode statusCode, string responseBody)
-             : base(String.Format("InfluxDb API responded with status code={0}, response={1}", statusCode, responseBody))
+        public KapacitorApiException(HttpStatusCode statusCode, string responseBody)
+             : base(String.Format("Kapacitor API responded with status code={0}, response={1}", statusCode, responseBody))
         {
             StatusCode = statusCode;
             ResponseBody = responseBody;

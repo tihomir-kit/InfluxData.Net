@@ -16,6 +16,7 @@ namespace InfluxData.Net.Kapacitor.RequestClients
     public class RequestClient : IKapacitorRequestClient
     {
         private const string UserAgent = "InfluxData.Net.Kapacitor";
+        private const string BasePath = "api/v1/";
 
         private readonly IKapacitorClientConfiguration _configuration;
 
@@ -26,32 +27,21 @@ namespace InfluxData.Net.Kapacitor.RequestClients
 
         #region Requests
 
-        public virtual async Task<IKapacitorApiResponse> GetQueryAsync(IDictionary<string, string> requestParams)
+        public virtual async Task<IKapacitorApiResponse> GetDataAsync(
+            string path,
+            IDictionary<string, string> requestParams = null)
         {
-            return await GetQueryAsync(null, requestParams);
-        }
-
-        public virtual async Task<IKapacitorApiResponse> GetQueryAsync(
-            HttpContent content = null,
-            IDictionary<string, string> requestParams = null,
-            bool includeAuthToQuery = true,
-            bool headerIsBody = false)
-        {
-            return await RequestAsync(HttpMethod.Get, RequestPaths.Query, content, requestParams, includeAuthToQuery, headerIsBody);
-        }
-
-        public virtual async Task<IKapacitorApiResponse> PostDataAsync(IDictionary<string, string> requestParams)
-        {
-            return await PostDataAsync(null, requestParams);
+            var apiPath = String.Format("{0}{1}", BasePath, path);
+            return await RequestAsync(HttpMethod.Get, apiPath, requestParams: requestParams, includeAuthToQuery: false);
         }
 
         public virtual async Task<IKapacitorApiResponse> PostDataAsync(
-            HttpContent content = null,
+            string path,
             IDictionary<string, string> requestParams = null,
-            bool includeAuthToQuery = true,
-            bool headerIsBody = false)
+            HttpContent content = null)
         {
-            return await RequestAsync(HttpMethod.Post, RequestPaths.Write, content, requestParams, includeAuthToQuery, headerIsBody);
+            var apiPath = String.Format("{0}{1}", BasePath, path);
+            return await RequestAsync(HttpMethod.Post, apiPath, content, requestParams, false);
         }
 
         #endregion Requests
@@ -174,7 +164,7 @@ namespace InfluxData.Net.Kapacitor.RequestClients
 #if DEBUG
                 Debug.WriteLine(String.Format("[Error] {0} {1}", statusCode, responseBody));
 #endif
-                throw new InfluxDbApiException(statusCode, responseBody);
+                throw new KapacitorApiException(statusCode, responseBody);
             }
         }
 

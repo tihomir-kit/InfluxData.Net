@@ -9,10 +9,10 @@ using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Infrastructure;
 
-namespace InfluxData.Net.Integration.Tests
+namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    [Collection("Integration")]
-    [Trait("Integration", "Basic")]
+    [Collection("InfluxDb Integration")]
+    [Trait("InfluxDb Integration", "Basic")]
     public class IntegrationBasic : IDisposable
     {
         private readonly IntegrationFixture _fixture;

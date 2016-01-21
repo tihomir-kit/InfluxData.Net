@@ -17,7 +17,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 {
     public class RequestClient : IInfluxDbRequestClient
     {
-        private const string UserAgent = "InfluxData.Net";
+        private const string UserAgent = "InfluxData.Net.InfluxDb";
 
         private readonly IInfluxDbClientConfiguration _configuration;
 
@@ -37,19 +37,22 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         {
             var requestContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
             var requestParams = RequestParamsBuilder.BuildRequestParams(writeRequest.DbName, QueryParams.Precision, writeRequest.Precision);
-            var result = await PostDataAsync(requestParams: requestParams, content: requestContent);
+            var result = await RequestAsync(HttpMethod.Post, RequestPaths.Write, requestParams: requestParams, content: requestContent);
 
             return new InfluxDbApiWriteResponse(result.StatusCode, result.Body);
         }
 
         public virtual async Task<IInfluxDbApiResponse> QueryAsync(string query)
         {
-            return await GetQueryAsync(requestParams: RequestParamsBuilder.BuildQueryRequestParams(query));
+            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(query);
+            return await RequestAsync(HttpMethod.Get, RequestPaths.Query, requestParams: requestParams);
+
         }
 
         public virtual async Task<IInfluxDbApiResponse> QueryAsync(string dbName, string query)
         {
-            return await GetQueryAsync(requestParams: RequestParamsBuilder.BuildQueryRequestParams(dbName, query));
+            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
+            return await RequestAsync(HttpMethod.Get, RequestPaths.Query, requestParams: requestParams);
         }
 
         public virtual async Task<IInfluxDbApiResponse> PingAsync()
@@ -58,38 +61,6 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         }
 
         #endregion Basic Actions
-
-        #region Requests
-
-        public virtual async Task<IInfluxDbApiResponse> GetQueryAsync(IDictionary<string, string> requestParams)
-        {
-            return await GetQueryAsync(null, requestParams);
-        }
-
-        public virtual async Task<IInfluxDbApiResponse> GetQueryAsync(
-            HttpContent content = null,
-            IDictionary<string, string> requestParams = null,
-            bool includeAuthToQuery = true,
-            bool headerIsBody = false)
-        {
-            return await RequestAsync(HttpMethod.Get, RequestPaths.Query, content, requestParams, includeAuthToQuery, headerIsBody);
-        }
-
-        public virtual async Task<IInfluxDbApiResponse> PostDataAsync(IDictionary<string, string> requestParams)
-        {
-            return await PostDataAsync(null, requestParams);
-        }
-
-        public virtual async Task<IInfluxDbApiResponse> PostDataAsync(
-            HttpContent content = null,
-            IDictionary<string, string> requestParams = null,
-            bool includeAuthToQuery = true,
-            bool headerIsBody = false)
-        {
-            return await RequestAsync(HttpMethod.Post, RequestPaths.Write, content, requestParams, includeAuthToQuery, headerIsBody);
-        }
-
-        #endregion Requests
 
         #region Request Base
 

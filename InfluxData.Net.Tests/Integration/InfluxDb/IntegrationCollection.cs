@@ -1,8 +1,8 @@
 ﻿using Xunit;
 
-namespace InfluxData.Net.Integration
+namespace InfluxData.Net.Integration.InfluxDb
 {
-    [CollectionDefinition("Integration")]
+    [CollectionDefinition("InfluxDb Integration")]
     public class IntegrationCollection : ICollectionFixture<IntegrationFixture>
     {
     }

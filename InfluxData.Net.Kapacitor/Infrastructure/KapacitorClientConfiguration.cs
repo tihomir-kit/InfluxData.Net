@@ -12,18 +12,18 @@ namespace InfluxData.Net.Kapacitor.Infrastructure
 
         public string Password { get; private set; }
 
-        public InfluxDbVersion InfluxVersion { get; private set; }
+        public KapacitorVersion KapacitorVersion { get; private set; }
 
-        public KapacitorClientConfiguration(Uri endpointUri, string username, string password, InfluxDbVersion influxVersion)
+        public KapacitorClientConfiguration(Uri endpointUri, string username, string password, KapacitorVersion kapacitorVersion)
         {
             Validate.IsNotNull(endpointUri, "Endpoint may not be null or empty.");
-            Validate.IsNotNullOrEmpty(password, "Password may not be null or empty.");
-            Validate.IsNotNullOrEmpty(username, "Username may not be null or empty.");
+            //Validate.IsNotNullOrEmpty(password, "Password may not be null or empty.");
+            //Validate.IsNotNullOrEmpty(username, "Username may not be null or empty.");
 
             EndpointUri = SanitizeEndpoint(endpointUri, false);
             Username = username;
             Password = password;
-            InfluxVersion = influxVersion;
+            KapacitorVersion = kapacitorVersion;
         }
 
         private static Uri SanitizeEndpoint(Uri endpointUri, bool isTls)

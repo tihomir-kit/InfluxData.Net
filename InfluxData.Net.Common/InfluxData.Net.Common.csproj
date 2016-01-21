@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Enums\KapacitorVersion.cs" />
     <Compile Include="Enums\InfluxDbVersion.cs" />
     <Compile Include="Enums\TimeUnit.cs" />
     <Compile Include="Helpers\EnumDescriptionAttribute.cs" />
