@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
@@ -30,12 +31,12 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return serieSets;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string measurementName, IEnumerable<string> filters = null)
+        public virtual async Task<IInfluxDataApiResponse> DropSeriesAsync(string dbName, string measurementName, IEnumerable<string> filters = null)
         {
             return await DropSeriesAsync(dbName, new List<string>() { measurementName }, filters);
         }
 
-        public virtual async Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, IEnumerable<string> measurementNames, IEnumerable<string> filters = null)
+        public virtual async Task<IInfluxDataApiResponse> DropSeriesAsync(string dbName, IEnumerable<string> measurementNames, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.DropSeries(dbName, measurementNames, filters);
             var response = await base.GetAndValidateQueryAsync(dbName, query);
@@ -52,7 +53,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return measurements;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> DropMeasurementAsync(string dbName, string measurementName)
+        public virtual async Task<IInfluxDataApiResponse> DropMeasurementAsync(string dbName, string measurementName)
         {
             var query = _serieQueryBuilder.DropMeasurement(dbName, measurementName);
             var response = await base.GetAndValidateQueryAsync(dbName, query);

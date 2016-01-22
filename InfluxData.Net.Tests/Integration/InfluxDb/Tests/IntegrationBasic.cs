@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xunit;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Common.Helpers;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Infrastructure;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
@@ -85,7 +86,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
 
             Func<Task> act = async () => { await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points); };
 
-            act.ShouldThrow<InfluxDbApiException>();
+            act.ShouldThrow<InfluxDataApiException>();
         }
 
         [Fact]
@@ -93,7 +94,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         {
             Func<Task> act = async () => { await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "blah"); };
 
-            act.ShouldThrow<InfluxDbApiException>();
+            act.ShouldThrow<InfluxDataApiException>();
         }
 
         [Fact]

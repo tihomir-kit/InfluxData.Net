@@ -58,16 +58,9 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
                 TickScript = "stream\r\n" +
                              "    .from().measurement('reading')\r\n" +
                              "    .alert()\r\n" +
-                             "        .crit(lambda: \"Humidity\" < 33)\r\n" +
+                             "        .crit(lambda: \"Humidity\" < 36)\r\n" +
                              "        .log('/tmp/alerts.log')\r\n"
             };
-
-            var dbrps = String.Format("[{{\"db\":\"{0}\", \"rp\":\"default\"}}]", dbName);
-            var tickScript = "stream\r\n" +
-                "    .from().measurement('reading')\r\n" +
-                "    .alert()\r\n" +
-                "        .crit(lambda: \"Humidity\" < 33)\r\n" +
-                "        .log('/tmp/alerts.log')\r\n";
 
             var response = await _fixture.Sut.Task.DefineTask(defineTaskParams);
             response.Success.Should().BeTrue();

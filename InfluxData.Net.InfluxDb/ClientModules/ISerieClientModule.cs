@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
 
@@ -23,7 +24,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="measurementName">Measurement name.</param>
         /// <param name="filters">A collection of "WHERE" clause filters (optional).</param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, string measurementName, IEnumerable<string> filters = null);
+        Task<IInfluxDataApiResponse> DropSeriesAsync(string dbName, string measurementName, IEnumerable<string> filters = null);
 
         /// <summary>
         /// Deletes all data points from multiple series.
@@ -32,7 +33,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="measurementName">A list of measurement names.</param>
         /// <param name="filters">A collection of "WHERE" clause filters (optional).</param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> DropSeriesAsync(string dbName, IEnumerable<string> measurementNames, IEnumerable<string> filters = null);
+        Task<IInfluxDataApiResponse> DropSeriesAsync(string dbName, IEnumerable<string> measurementNames, IEnumerable<string> filters = null);
 
         /// <summary>
         /// Gets distinct measurements.
@@ -49,6 +50,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="measurementName">Measurement name.</param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> DropMeasurementAsync(string dbName, string measurementName);
+        Task<IInfluxDataApiResponse> DropMeasurementAsync(string dbName, string measurementName);
     }
 }

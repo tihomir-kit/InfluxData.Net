@@ -2,73 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using InfluxData.Net.Common.Helpers;
-using InfluxData.Net.InfluxDb.Constants;
-using InfluxData.Net.InfluxDb.Formatters;
-using InfluxData.Net.InfluxDb.Infrastructure;
 using System.Diagnostics;
-using InfluxData.Net.InfluxDb.Models;
+using System.Net.Http;
+using InfluxData.Net.Common.Constants;
+using InfluxData.Net.Common.Infrastructure;
 
-namespace InfluxData.Net.InfluxDb.RequestClients
+namespace InfluxData.Net.Common.RequestClients
 {
-    public class RequestClient : IInfluxDbRequestClient
+    public abstract class RequestClientBase
     {
-        private const string UserAgent = "InfluxData.Net.InfluxDb";
+        private readonly string _endpointUri;
+        private readonly string _userName;
+        private readonly string _password;
+        private readonly string _userAgent;
 
-        private readonly IInfluxDbClientConfiguration _configuration;
-
-        public RequestClient(IInfluxDbClientConfiguration configuration)
+        protected RequestClientBase(string endpointUri, string userName, string password, string userAgent)
         {
-            _configuration = configuration;
+            _endpointUri = endpointUri;
+            _userName = userName;
+            _password = password;
+            _userAgent = userAgent;
         }
-
-        public virtual IPointFormatter GetPointFormatter()
-        {
-            return new PointFormatter();
-        }
-
-        #region Basic Actions
-
-        public virtual async Task<IInfluxDbApiResponse> WriteAsync(WriteRequest writeRequest)
-        {
-            var requestContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
-            var requestParams = RequestParamsBuilder.BuildRequestParams(writeRequest.DbName, QueryParams.Precision, writeRequest.Precision);
-            var result = await RequestAsync(HttpMethod.Post, RequestPaths.Write, requestParams: requestParams, content: requestContent);
-
-            return new InfluxDbApiWriteResponse(result.StatusCode, result.Body);
-        }
-
-        public virtual async Task<IInfluxDbApiResponse> QueryAsync(string query)
-        {
-            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(query);
-            return await RequestAsync(HttpMethod.Get, RequestPaths.Query, requestParams: requestParams);
-
-        }
-
-        public virtual async Task<IInfluxDbApiResponse> QueryAsync(string dbName, string query)
-        {
-            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
-            return await RequestAsync(HttpMethod.Get, RequestPaths.Query, requestParams: requestParams);
-        }
-
-        public virtual async Task<IInfluxDbApiResponse> PingAsync()
-        {
-            return await RequestAsync(HttpMethod.Get, RequestPaths.Ping, includeAuthToQuery: false, headerIsBody: true);
-        }
-
-        #endregion Basic Actions
 
         #region Request Base
 
-        private async Task<IInfluxDbApiResponse> RequestAsync(
+        public async Task<IInfluxDataApiResponse> RequestAsync(
             HttpMethod method,
             string path,
-            HttpContent content = null,
             IDictionary<string, string> requestParams = null,
+            HttpContent content = null,
             bool includeAuthToQuery = true,
             bool headerIsBody = false)
         {
@@ -77,8 +43,8 @@ namespace InfluxData.Net.InfluxDb.RequestClients
                 CancellationToken.None,
                 method,
                 path,
-                content,
                 requestParams,
+                content,
                 includeAuthToQuery);
 
             string responseContent = String.Empty;
@@ -95,6 +61,10 @@ namespace InfluxData.Net.InfluxDb.RequestClients
                 {
                     responseContent = values.First();
                 }
+                else if (response.Headers.TryGetValues("X-Kapacitor-Version", out values))
+                {
+                    responseContent = values.First();
+                }
             }
 
             HandleIfErrorResponse(response.StatusCode, responseContent);
@@ -104,7 +74,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             Debug.WriteLine("[ResponseData] {0}", responseContent);
 #endif
 
-            return new InfluxDbApiResponse(response.StatusCode, responseContent);
+            return new InfluxDataApiResponse(response.StatusCode, responseContent);
         }
 
         private async Task<HttpResponseMessage> RequestInnerAsync(
@@ -113,8 +83,8 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             CancellationToken cancellationToken,
             HttpMethod method,
             string path,
-            HttpContent content = null,
             IDictionary<string, string> extraParams = null,
+            HttpContent content = null,
             bool includeAuthToQuery = true)
         {
             var client = new HttpClient();
@@ -145,11 +115,11 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         private StringBuilder BuildUri(string path, IDictionary<string, string> requestParams, bool includeAuthToQuery)
         {
             var urlBuilder = new StringBuilder();
-            urlBuilder.AppendFormat("{0}{1}", _configuration.EndpointUri, path);
+            urlBuilder.AppendFormat("{0}{1}", _endpointUri, path);
 
             if (includeAuthToQuery)
             {
-                urlBuilder.AppendFormat("?{0}={1}&{2}={3}", QueryParams.Username, HttpUtility.UrlEncode(_configuration.Username), QueryParams.Password, HttpUtility.UrlEncode(_configuration.Password));
+                urlBuilder.AppendFormat("?{0}={1}&{2}={3}", QueryParams.Username, HttpUtility.UrlEncode(_userName), QueryParams.Password, HttpUtility.UrlEncode(_password));
             }
 
             if (requestParams != null && requestParams.Count > 0)
@@ -162,10 +132,10 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return urlBuilder;
         }
 
-        private static HttpRequestMessage BuildRequest(HttpMethod method, HttpContent content, StringBuilder urlBuilder)
+        private HttpRequestMessage BuildRequest(HttpMethod method, HttpContent content, StringBuilder urlBuilder)
         {
             var request = new HttpRequestMessage(method, urlBuilder.ToString());
-            request.Headers.Add("User-Agent", UserAgent);
+            request.Headers.Add("User-Agent", _userAgent);
             request.Headers.Add("Accept", "application/json");
 
             request.Content = content;
@@ -180,7 +150,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 #if DEBUG
                 Debug.WriteLine(String.Format("[Error] {0} {1}", statusCode, responseBody));
 #endif
-                throw new InfluxDbApiException(statusCode, responseBody);
+                throw new InfluxDataApiException(statusCode, responseBody);
             }
         }
 

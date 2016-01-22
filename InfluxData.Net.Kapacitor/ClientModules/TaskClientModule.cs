@@ -7,6 +7,7 @@ using System;
 using System.Net.Http;
 using System.Text;
 using InfluxData.Net.Common.Helpers;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.Kapacitor.Constants;
 using InfluxData.Net.Kapacitor.Models;
@@ -20,7 +21,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
         {
         }
 
-        public virtual async Task<IKapacitorApiResponse> DefineTask(DefineTaskParams taskParams)
+        public virtual async Task<IInfluxDataApiResponse> DefineTask(DefineTaskParams taskParams)
         {
             var dbrps = String.Format("[{{\"{0}\":\"{1}\", \"{2}\":\"{3}\"}}]", 
                 QueryParams.Db, taskParams.DbrpsParams.DbName, QueryParams.RetentionPolicy, taskParams.DbrpsParams.RetentionPolicy);
@@ -32,7 +33,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             };
             var content = new StringContent(taskParams.TickScript, Encoding.UTF8, "text/plain");
 
-            return await base.RequestClient.PostDataAsync("task", requestParams, content);
+            return await base.RequestClient.PostAsync("task", requestParams, content);
         }
     }
 }

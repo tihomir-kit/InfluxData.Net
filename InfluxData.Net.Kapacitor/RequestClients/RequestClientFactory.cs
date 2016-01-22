@@ -19,7 +19,7 @@ namespace InfluxData.Net.Kapacitor.RequestClients
             {
                 case KapacitorVersion.Latest:
                 case KapacitorVersion.v_0_2_4:
-                    return new RequestClient(_configuration);
+                    return new KapacitorRequestClient(_configuration);
                 default:
                     throw new ArgumentOutOfRangeException("kapacitorClientConfiguration", String.Format("Unknown version {0}.", _configuration.KapacitorVersion));
             }

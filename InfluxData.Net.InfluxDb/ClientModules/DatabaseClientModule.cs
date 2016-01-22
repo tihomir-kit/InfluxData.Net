@@ -5,6 +5,7 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using System;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.QueryBuilders;
 using InfluxData.Net.InfluxDb.ResponseParsers;
 
@@ -22,7 +23,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _databaseResponseParser = databaseResponseParser;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> CreateDatabaseAsync(string dbName)
+        public virtual async Task<IInfluxDataApiResponse> CreateDatabaseAsync(string dbName)
         {
             var query = _databaseQueryBuilder.CreateDatabase(dbName);
             var response = await base.GetAndValidateQueryAsync(query);
@@ -39,7 +40,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return databases;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> DropDatabaseAsync(string dbName)
+        public virtual async Task<IInfluxDataApiResponse> DropDatabaseAsync(string dbName)
         {
             var query = _databaseQueryBuilder.DropDatabase(dbName);
             var response = await base.GetAndValidateQueryAsync(query);

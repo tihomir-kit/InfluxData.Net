@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 using InfluxData.Net.InfluxDb.Models;
 using System.Linq;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Infrastructure;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
@@ -65,7 +66,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
 
             Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq); };
 
-            act.ShouldThrow<InfluxDbApiException>();
+            act.ShouldThrow<InfluxDataApiException>();
         }
 
         [Fact]
@@ -110,7 +111,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         {
             Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "nonexistingcqname"); };
 
-            act.ShouldThrow<InfluxDbApiException>();
+            act.ShouldThrow<InfluxDataApiException>();
         }
 
         [Fact]

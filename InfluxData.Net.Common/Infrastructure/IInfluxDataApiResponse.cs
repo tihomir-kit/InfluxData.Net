@@ -1,8 +1,8 @@
 ﻿using System.Net;
 
-namespace InfluxData.Net.InfluxDb.Infrastructure
+namespace InfluxData.Net.Common.Infrastructure
 {
-    public interface IInfluxDbApiResponse
+    public interface IInfluxDataApiResponse
     {
         HttpStatusCode StatusCode { get; }
 
