@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using InfluxData.Net.Common.Infrastructure;
+using InfluxData.Net.Common.RequestClients;
 using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Infrastructure;
-using System.Diagnostics;
-using InfluxData.Net.Common.Infrastructure;
-using InfluxData.Net.Common.RequestClients;
 using InfluxData.Net.InfluxDb.Models;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
@@ -38,9 +32,9 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 
         public virtual async Task<IInfluxDataApiResponse> PostAsync(WriteRequest writeRequest)
         {
-            var requestContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
+            var httpContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
             var requestParams = RequestParamsBuilder.BuildRequestParams(writeRequest.DbName, QueryParams.Precision, writeRequest.Precision);
-            var result = await base.RequestAsync(HttpMethod.Post, RequestPaths.Write, requestParams, requestContent);
+            var result = await base.RequestAsync(HttpMethod.Post, RequestPaths.Write, requestParams, httpContent);
 
             return new InfluxDataApiWriteResponse(result.StatusCode, result.Body);
         }

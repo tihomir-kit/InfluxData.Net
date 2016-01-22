@@ -41,6 +41,7 @@
     <Compile Include="Helpers\EnumDescriptionAttribute.cs" />
     <Compile Include="Helpers\HttpUtility.cs" />
     <Compile Include="Helpers\ObjectExtensions.cs" />
+    <Compile Include="Helpers\ResponseExtensions.cs" />
     <Compile Include="Helpers\Stopwatch.cs" />
     <Compile Include="Helpers\Validate.cs" />
     <Compile Include="Infrastructure\IInfluxDataApiResponse.cs" />

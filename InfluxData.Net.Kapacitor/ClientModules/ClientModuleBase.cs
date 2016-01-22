@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using InfluxData.Net.Kapacitor.Infrastructure;
-using InfluxData.Net.Kapacitor.RequestClients;
-using System.Threading.Tasks;
-using InfluxData.Net.Common.Helpers;
+﻿using InfluxData.Net.Kapacitor.RequestClients;
 
 namespace InfluxData.Net.Kapacitor.ClientModules
 {

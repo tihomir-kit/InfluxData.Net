@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using InfluxData.Net.Common.Infrastructure;
-using InfluxData.Net.InfluxDb.Infrastructure;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {

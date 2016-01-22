@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using InfluxData.Net.InfluxDb.Enums;
+﻿using InfluxData.Net.InfluxDb.Enums;
 
 namespace InfluxData.Net.Kapacitor.Models
 {
@@ -12,12 +8,12 @@ namespace InfluxData.Net.Kapacitor.Models
 
         public TaskType TaskType { get; set; }
 
-        public DbrpsParams DbrpsParams { get; set; }
+        public DBRPsParams DBRPsParams { get; set; }
 
         public string TickScript { get; set; }
     }
 
-    public class DbrpsParams
+    public class DBRPsParams
     {
         public string DbName { get; set; }
 

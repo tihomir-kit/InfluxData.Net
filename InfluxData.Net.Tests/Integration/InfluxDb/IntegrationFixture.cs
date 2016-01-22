@@ -17,7 +17,7 @@ namespace InfluxData.Net.Integration.InfluxDb
 {
     public class IntegrationFixture : IDisposable
     {
-        public static readonly string _fakeDbPrefix = "FakeDb";
+        public static readonly string _fakeDbPrefix = "FakeInfluxDb";
         public static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
         public static readonly string _fakeCq = "FakeCq";
 

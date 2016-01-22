@@ -1,5 +1,3 @@
-using Newtonsoft.Json;
-
 namespace InfluxData.Net.InfluxDb.Models.Responses
 {
     /// <summary>

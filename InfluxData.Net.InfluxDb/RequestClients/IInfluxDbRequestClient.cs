@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Formatters;
-using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 
 namespace InfluxData.Net.InfluxDb.RequestClients

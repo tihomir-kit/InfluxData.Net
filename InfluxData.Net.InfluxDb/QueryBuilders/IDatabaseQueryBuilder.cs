@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using InfluxData.Net.InfluxDb.Infrastructure;
-using System;
-
-namespace InfluxData.Net.InfluxDb.QueryBuilders
+﻿namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
     public interface IDatabaseQueryBuilder
     {

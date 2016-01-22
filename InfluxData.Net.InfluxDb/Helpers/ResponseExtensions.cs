@@ -1,20 +1,13 @@
-﻿using InfluxData.Net.InfluxDb.Infrastructure;
-using InfluxData.Net.InfluxDb.Models.Responses;
-using Newtonsoft.Json;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using InfluxData.Net.Common.Infrastructure;
+using InfluxData.Net.InfluxData.Helpers;
+using InfluxData.Net.InfluxDb.Models.Responses;
 
 namespace InfluxData.Net.InfluxDb.Helpers
 {
     public static class ResponseExtensions
     {
-        public static T ReadAs<T>(this IInfluxDataApiResponse response)
-        {
-            return JsonConvert.DeserializeObject<T>(response.Body);
-        }
-
         public static IInfluxDataApiResponse ValidateQueryResponse(this IInfluxDataApiResponse response)
         {
             response.ReadAs<QueryResponse>().Validate();

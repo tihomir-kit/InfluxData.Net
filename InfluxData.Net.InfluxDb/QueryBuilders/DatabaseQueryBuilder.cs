@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using InfluxData.Net.InfluxDb.Constants;
-using InfluxData.Net.InfluxDb.Infrastructure;
 
 namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
