@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using FluentAssertions;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Xunit;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests

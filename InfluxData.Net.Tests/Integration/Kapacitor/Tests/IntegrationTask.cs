@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
 using System.Linq;
-using FluentAssertions;
 using System.Threading.Tasks;
-using InfluxData.Net.Common.Enums;
+using FluentAssertions;
 using Xunit;
-using InfluxData.Net.Common.Helpers;
-using InfluxData.Net.Kapacitor.Models;
 
 namespace InfluxData.Net.Integration.Kapacitor.Tests
 {
-    [Collection("Kapacitor Integration")]
-    [Trait("Kapacitor Integration", "Task")]
+    [Collection("Kapacitor Integration")] // for sharing of the fixture instance between multiple test classes
+    [Trait("Kapacitor Integration", "Task")] // for organization of tests; by category, subtype
     public class IntegrationTask : IDisposable
     {
         private readonly IntegrationFixture _fixture;
@@ -41,7 +35,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         [Fact]
         public async Task GetTask_OnExistingTask_ShouldReturnTask()
         {
-            var taskParams = await _fixture.MockAndPostTask();
+            var taskParams = await _fixture.MockAndSaveTask();
 
             var response = await _fixture.Sut.Task.GetTask(taskParams.TaskName);
             response.Should().NotBeNull();
@@ -52,7 +46,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         [Fact]
         public async Task GetTasks_OnExistingTask_ShouldReturnTaskCollection()
         {
-            var taskParams = await _fixture.MockAndPostTask();
+            var taskParams = await _fixture.MockAndSaveTask();
 
             var response = await _fixture.Sut.Task.GetTasks();
             response.Should().NotBeNull();
@@ -64,7 +58,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         [Fact]
         public async Task DeleteTask_OnExistingTask_ShouldDeleteSuccessfully()
         {
-            var taskParams = await _fixture.MockAndPostTask();
+            var taskParams = await _fixture.MockAndSaveTask();
 
             var response = await _fixture.Sut.Task.DeleteTask(taskParams.TaskName);
             response.Success.Should().BeTrue();

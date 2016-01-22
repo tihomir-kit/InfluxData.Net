@@ -98,6 +98,7 @@
     <Compile Include="Integration\InfluxDb\Tests\IntegrationContinuousQueries.cs" />
     <Compile Include="Integration\InfluxDb\Tests\IntegrationSerie.cs" />
     <Compile Include="Integration\InfluxDb\Tests\IntegrationDatabase.cs" />
+    <Compile Include="Integration\IntegrationFixtureBase.cs" />
     <Compile Include="Integration\Kapacitor\IntegrationCollection.cs" />
     <Compile Include="Integration\Kapacitor\IntegrationFixture.cs" />
     <Compile Include="Integration\Kapacitor\Tests\IntegrationTask.cs" />
