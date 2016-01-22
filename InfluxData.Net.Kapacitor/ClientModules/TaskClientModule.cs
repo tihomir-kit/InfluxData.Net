@@ -30,10 +30,23 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             return task;
         }
 
+        public virtual async Task<IEnumerable<KapacitorTask>> GetTasks()
+        {
+            var requestParams = new Dictionary<string, string>
+            {
+                { QueryParams.Tasks, String.Empty }
+            };
+            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks, requestParams);
+            var tasks = response.ReadAs<KapacitorTasks>();
+
+            return tasks.Tasks;
+        }
+
         public virtual async Task<IInfluxDataApiResponse> DefineTask(DefineTaskParams taskParams)
         {
             var dbrps = String.Format("[{{\"{0}\":\"{1}\", \"{2}\":\"{3}\"}}]", 
                 QueryParams.Db, taskParams.DBRPsParams.DbName, QueryParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy);
+
             var requestParams  = new Dictionary<string, string>
             {
                 { QueryParams.Name, HttpUtility.UrlEncode(taskParams.TaskName) },
@@ -42,6 +55,16 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             };
 
             return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> DeleteTask(string taskName)
+        {
+            var requestParams = new Dictionary<string, string>
+            {
+                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
+            };
+
+            return await base.RequestClient.DeleteAsync(RequestPaths.Task, requestParams);
         }
     }
 }

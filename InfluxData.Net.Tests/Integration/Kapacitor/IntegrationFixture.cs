@@ -118,7 +118,7 @@ namespace InfluxData.Net.Integration.Kapacitor
             }
         }
 
-        public async Task<DefineTaskParams> MockAndPostDefineTaskParams()
+        public async Task<DefineTaskParams> MockAndPostTask()
         {
             var task = MockDefineTaskParams();
 

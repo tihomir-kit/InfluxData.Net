@@ -11,6 +11,8 @@ namespace InfluxData.Net.Kapacitor.RequestClients
 
         Task<IInfluxDataApiResponse> PostAsync(string path, IDictionary<string, string> requestParams = null, string content = null);
 
+        Task<IInfluxDataApiResponse> DeleteAsync(string path, IDictionary<string, string> requestParams = null);
+
         Task<IInfluxDataApiResponse> RequestAsync(
             HttpMethod method,
             string path,

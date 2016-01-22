@@ -32,19 +32,45 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         [Fact]
         public async Task DefineTask_OnValidArguments_ShouldDefineSuccessfully()
         {
-            var defineTaskParams = _fixture.MockDefineTaskParams();
+            var taskParams = _fixture.MockDefineTaskParams();
 
-            var response = await _fixture.Sut.Task.DefineTask(defineTaskParams);
+            var response = await _fixture.Sut.Task.DefineTask(taskParams);
             response.Success.Should().BeTrue();
         }
 
         [Fact]
         public async Task GetTask_OnExistingTask_ShouldReturnTask()
         {
-            var defineTaskParams = await _fixture.MockAndPostDefineTaskParams();
+            var taskParams = await _fixture.MockAndPostTask();
 
-            var response = await _fixture.Sut.Task.GetTask(defineTaskParams.TaskName);
+            var response = await _fixture.Sut.Task.GetTask(taskParams.TaskName);
+            response.Should().NotBeNull();
+            response.Name.Should().Be(taskParams.TaskName);
 
+        }
+
+        [Fact]
+        public async Task GetTasks_OnExistingTask_ShouldReturnTaskCollection()
+        {
+            var taskParams = await _fixture.MockAndPostTask();
+
+            var response = await _fixture.Sut.Task.GetTasks();
+            response.Should().NotBeNull();
+            response.Count().Should().BeGreaterOrEqualTo(1);
+            var mockedTask = response.FirstOrDefault(p => p.Name == taskParams.TaskName);
+            mockedTask.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task DeleteTask_OnExistingTask_ShouldDeleteSuccessfully()
+        {
+            var taskParams = await _fixture.MockAndPostTask();
+
+            var response = await _fixture.Sut.Task.DeleteTask(taskParams.TaskName);
+            response.Success.Should().BeTrue();
+
+            var existingTasks = await _fixture.Sut.Task.GetTasks();
+            existingTasks.FirstOrDefault(p => p.Name == taskParams.TaskName).Should().BeNull();
         }
     }
 }

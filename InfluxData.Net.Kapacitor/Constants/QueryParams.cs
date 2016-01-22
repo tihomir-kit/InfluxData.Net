@@ -7,5 +7,6 @@
         public const string Type = "type";
         public const string Dbrps = "dbrps";
         public const string RetentionPolicy = "rp";
+        public const string Tasks = "tasks";
     }
 }

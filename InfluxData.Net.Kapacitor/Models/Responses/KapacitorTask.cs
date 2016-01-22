@@ -2,13 +2,18 @@
 
 namespace InfluxData.Net.Kapacitor.Models.Responses
 {
+    public class KapacitorTasks
+    {
+        public IEnumerable<KapacitorTask> Tasks { get; set; }
+    }
+
     public class KapacitorTask
     {
         public string Name { get; set; }
 
         public int Type { get; set; }
 
-        public IList<DBRPs> DBRPs { get; set; }
+        public IEnumerable<DBRPs> DBRPs { get; set; }
 
         public string TICKscript { get; set; }
 
