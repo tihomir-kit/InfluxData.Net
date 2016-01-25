@@ -353,7 +353,7 @@ var response = await kapacitorClient.Task.GetTasksAsync();
 To create/define a task, a `DefineTaskParams` object needs to be created first:
 
 ```cs
-var params = new DefineTaskParams()
+var taskParams = new DefineTaskParams()
 {
     TaskName = "someTaskName",
     TaskType = TaskType.Stream,
@@ -374,7 +374,7 @@ var params = new DefineTaskParams()
 After that simpyl call the `DefineTaskAsync` to create a new task:
 
 ```cs
-var response = await kapacitorClient.Task.DefineTaskAsync(params);
+var response = await kapacitorClient.Task.DefineTaskAsync(taskParams);
 
 ```
 
