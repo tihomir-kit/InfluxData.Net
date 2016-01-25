@@ -1,6 +1,6 @@
 InfluxData.Net
 ============
-**Compatible with InfluxDB 0.9.6 API**
+**Compatible with InfluxDB v0.9.6 and Kapacitor v0.10.0 API's**
 
 > InfluxData.Net is a portable .NET library to access the REST API of an [InfluxDB](https://influxdata.com/time-series-platform/influxdb/) database and [Kapacitor](https://influxdata.com/time-series-platform/kapacitor/) processing tool. 
 
