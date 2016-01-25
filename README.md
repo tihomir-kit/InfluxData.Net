@@ -340,12 +340,12 @@ To get a single Kapacitor task, execute the following:
 var response = await kapacitorClient.Task.GetTaskAsync("taskName");
 ```
 
-#### GetTaskAsync
+#### GetTasksAsync
 
 To get all Kapacitor tasks, execute the following:
 
 ```cs
-var response = await kapacitorClient.Task.GetTasksAsync("taskName");
+var response = await kapacitorClient.Task.GetTasksAsync();
 ```
 
 #### DefineTaskAsync
