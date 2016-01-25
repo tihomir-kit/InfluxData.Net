@@ -16,15 +16,21 @@ You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/Influ
 
 ## Usage
 
-To use InfluxData.Net you must first create an instance of `InfluxDbClient`:
+To use InfluxData.Net InfluxDbClient you must first create an instance of `InfluxDbClient`:
 
 ```cs
-var influxDbClient = new InfluxDbClient("http://yourinflux.com:8086/", "username", "password", InfluxDbVersion.v_0_9_6);
+var influxDbClient = new InfluxDbClient("http://yourinfluxdb.com:8086/", "username", "password", InfluxDbVersion.v_0_9_6);
 ```
 
-Clients modules (properties of `InfluxDbClient` object) can then be consumed and methods for communicating with InfluxDb can be consumed. 
+To use InfluxData.Net KapacitorClient you must first create an instance of `KapacitorClient` (Kapacitor doesn't support authentication yet, so use this overload for now):
 
-**Supported modules and API calls**
+```cs
+var kapacitorClient = new KapacitorClient("http://yourkapacitor.com:9092/", KapacitorVersion.v_0_10_0);
+```
+
+Clients modules (properties of *Client* object) can then be consumed and methods for communicating with InfluxDb/Kapacitor can be consumed. 
+
+**Supported InfluxDbClient modules and API calls**
 
 - [Client](#client-module)
  - _[WriteAsync()](#writeasync)_
@@ -50,6 +56,18 @@ Clients modules (properties of `InfluxDbClient` object) can then be consumed and
  - _[PingAsync()](#pingasync)_
  - _[GetStatsAsync()](#getstatsasync)_
  - _[GetDiagnosticsAsync()](#getdiagnosticsasync)_
+
+**Supported KapacitorClient modules and API calls**
+
+- [Task](#task-module)
+ - _[GetTaskAsync()](#gettaskasync)_
+ - _[GetTasksAsync()](#gettasksasync)_
+ - _[DefineTaskAsync()](#definetaskasync)_
+ - _[DeleteTaskAsync()](#deletetaskasync)_
+ - _[EnableTaskAsync()](#enabletaskasync)_
+ - _[DisableTaskAsync()](#disabletaskasync)_
+
+## InfluxDbClient
 
 ### Client Module
 
@@ -305,6 +323,84 @@ var response = await influxDbClient.Client.GetStatsAsync();
 ```cs
 var response = await influxDbClient.Client.GetDiagnosticsAsync();
 ```
+
+## KapacitorClient
+
+### Task Module
+
+Can be used to do work with tasks (creation, deletion, listing, enablin, disabling..).
+
+#### GetTaskAsync
+
+To get a single Kapacitor task, execute the following:
+
+```cs
+var response = await kapacitorClient.Task.GetTaskAsync("taskName");
+```
+
+#### GetTaskAsync
+
+To get all Kapacitor tasks, execute the following:
+
+```cs
+var response = await kapacitorClient.Task.GetTasksAsync("taskName");
+```
+
+#### DefineTaskAsync
+
+To create/define a task, a `DefineTaskParams` object needs to be created first:
+
+```cs
+var params = new DefineTaskParams()
+{
+    TaskName = "someTaskName",
+    TaskType = TaskType.Stream,
+    DBRPsParams = new DBRPsParams()
+    {
+        DbName = "yourInfluxDbName",
+        RetentionPolicy = "default"
+    },
+    TickScript = "stream\r\n" +
+                 "    .from().measurement('reading')\r\n" +
+                 "    .alert()\r\n" +
+                 "        .crit(lambda: \"Temperature\" > 36)\r\n" +
+                 "        .log('/tmp/alerts.log')\r\n"
+};
+
+```
+
+After that simpyl call the `DefineTaskAsync` to create a new task:
+
+```cs
+var response = await kapacitorClient.Task.DefineTaskAsync(params);
+
+```
+
+#### DeleteTaskAsync
+
+To delete a Kapacitor task, execute the following:
+
+```cs
+var response = await kapacitorClient.Task.DeleteTaskAsync("taskName");
+```
+
+#### EnableTaskAsync
+
+To enable a Kapacitor task, execute the following:
+
+```cs
+var response = await kapacitorClient.Task.EnableTaskAsync("taskName");
+```
+
+#### DisableTaskAsync
+
+To disable a Kapacitor task, execute the following:
+
+```cs
+var response = await kapacitorClient.Task.DisableTaskAsync("taskName");
+```
+
+
 
 ## Bugs & feature requests
 
