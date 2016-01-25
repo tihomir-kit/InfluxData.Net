@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using InfluxData.Net.InfluxDb.Infrastructure;
-using InfluxData.Net.InfluxDb.RequestClients;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.QueryBuilders;
+using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
@@ -18,7 +18,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _retentionResponseParser = retentionResponseParser;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> AlterRetentionPolicyAsync(string dbName, string policyName, string duration, int replicationCopies)
+        public virtual async Task<IInfluxDataApiResponse> AlterRetentionPolicyAsync(string dbName, string policyName, string duration, int replicationCopies)
         {
             var query = _retentionQueryBuilder.AlterRetentionPolicy(dbName, policyName, duration, replicationCopies);
             var response = await base.GetAndValidateQueryAsync(query);

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Helpers;
-using InfluxData.Net.InfluxDb.Infrastructure;
+using InfluxData.Net.Common.Infrastructure;
+using InfluxData.Net.InfluxData.Helpers;
+using InfluxData.Net.InfluxDb.Helpers;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
-using InfluxData.Net.InfluxDb.Helpers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -24,14 +22,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _basicResponseParser = basicResponseParser;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
             var response = await WriteAsync(dbName, new [] { point }, retenionPolicy, precision);
 
             return response;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
             var request = new WriteRequest(this.RequestClient.GetPointFormatter())
             {
@@ -41,7 +39,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
                 Precision = precision.GetParamValue()
             };
 
-            var response = await this.RequestClient.WriteAsync(request);
+            var response = await this.RequestClient.PostAsync(request);
 
             return response;
         }

@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using InfluxData.Net.InfluxDb.Infrastructure;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace InfluxData.Net.InfluxDb.QueryBuilders
 {

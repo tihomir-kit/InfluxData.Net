@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using InfluxData.Net.InfluxDb.Infrastructure;
-using InfluxData.Net.InfluxDb.RequestClients;
 using System.Threading.Tasks;
 using InfluxData.Net.Common.Helpers;
-using InfluxData.Net.InfluxDb.Models.Responses;
+using InfluxData.Net.Common.Infrastructure;
+using InfluxData.Net.InfluxData.Helpers;
 using InfluxData.Net.InfluxDb.Helpers;
+using InfluxData.Net.InfluxDb.Models.Responses;
+using InfluxData.Net.InfluxDb.RequestClients;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -20,7 +19,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             this.RequestClient = requestClient;
         }
 
-        protected virtual async Task<IInfluxDbApiResponse> GetAndValidateQueryAsync(string query)
+        protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string query)
         {
             var response = await this.RequestClient.QueryAsync(query);
             response.ValidateQueryResponse();
@@ -28,7 +27,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        protected virtual async Task<IInfluxDbApiResponse> GetAndValidateQueryAsync(string dbName, string query)
+        protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string dbName, string query)
         {
             var response = await this.RequestClient.QueryAsync(dbName, query);
             response.ValidateQueryResponse();
@@ -52,7 +51,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series;
         }
 
-        protected virtual IEnumerable<Serie> ResolveSingleGetSeriesResult(IInfluxDbApiResponse response)
+        protected virtual IEnumerable<Serie> ResolveSingleGetSeriesResult(IInfluxDataApiResponse response)
         {
             var queryResponse = response.ReadAs<QueryResponse>().Validate();
             var result = queryResponse.Results.Single();

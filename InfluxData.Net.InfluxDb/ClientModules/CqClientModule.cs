@@ -1,15 +1,10 @@
-﻿using System.Linq;
-using System.Net;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using InfluxData.Net.Common.Helpers;
-using InfluxData.Net.InfluxDb.Infrastructure;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
-using InfluxData.Net.InfluxDb.RequestClients;
-using System;
-using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.QueryBuilders;
-using System.Collections.Generic;
+using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
@@ -26,7 +21,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _cqResponseParser = cqResponseParser;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(CqParams cqParams)
+        public virtual async Task<IInfluxDataApiResponse> CreateContinuousQueryAsync(CqParams cqParams)
         {
             var query = _cqQueryBuilder.CreateContinuousQuery(cqParams);
             var response = await base.GetAndValidateQueryAsync(cqParams.DbName, query);
@@ -43,7 +38,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return cqs;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
+        public virtual async Task<IInfluxDataApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
         {
             var query = _cqQueryBuilder.DeleteContinuousQuery(dbName, cqName);
             var response = await base.GetAndValidateQueryAsync(dbName, query);
@@ -51,7 +46,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public virtual async Task<IInfluxDbApiResponse> BackfillAsync(string dbName, BackfillParams backfillParams)
+        public virtual async Task<IInfluxDataApiResponse> BackfillAsync(string dbName, BackfillParams backfillParams)
         {
             var query = _cqQueryBuilder.Backfill(dbName, backfillParams);
             var response = await base.GetAndValidateQueryAsync(dbName, query);

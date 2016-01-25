@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
-using FluentAssertions;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Xunit;
 
-namespace InfluxData.Net.Integration.Tests
+namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    [Collection("Integration")]
-    [Trait("Integration", "Database")]
+    [Collection("InfluxDb Integration")]
+    [Trait("InfluxDb Integration", "Database")]
     public class IntegrationDatabase : IDisposable
     {
         private readonly IntegrationFixture _fixture;

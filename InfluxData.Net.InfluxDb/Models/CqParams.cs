@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using InfluxData.Net.InfluxDb.Enums;
-using System;
 
 namespace InfluxData.Net.InfluxDb.Models
 {

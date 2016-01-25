@@ -55,7 +55,6 @@
     <Compile Include="IInfluxDbClient.cs" />
     <Compile Include="InfluxDbClient.cs" />
     <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
-    <Compile Include="Infrastructure\IInfluxDbApiResponse.cs" />
     <Compile Include="Models\Responses\ContinuousQuery.cs" />
     <Compile Include="Models\Responses\Measurement.cs" />
     <Compile Include="Models\Responses\Diagnostics.cs" />
@@ -82,8 +81,8 @@
     <Compile Include="QueryBuilders\IRetentionQueryBuilder.cs" />
     <Compile Include="RequestClients\RequestClientFactory.cs" />
     <Compile Include="Infrastructure\RequestParamsBuilder.cs" />
-    <Compile Include="RequestClients\RequestClient_v_0_9_2.cs" />
-    <Compile Include="RequestClients\RequestClient.cs" />
+    <Compile Include="RequestClients\InfluxDbRequestClient_v_0_9_2.cs" />
+    <Compile Include="RequestClients\InfluxDbRequestClient.cs" />
     <Compile Include="QueryBuilders\ICqQueryBuilder.cs" />
     <Compile Include="QueryBuilders\IDatabaseQueryBuilder.cs" />
     <Compile Include="QueryBuilders\CqQueryBuilder.cs" />
@@ -92,8 +91,6 @@
     <Compile Include="Formatters\IPointFormatter.cs" />
     <Compile Include="Formatters\PointFormatter_v_0_9_2.cs" />
     <Compile Include="Formatters\PointFormatter.cs" />
-    <Compile Include="Infrastructure\InfluxDbException.cs" />
-    <Compile Include="Infrastructure\InfluxDbApiResponse.cs" />
     <Compile Include="Helpers\ResponseExtensions.cs" />
     <Compile Include="Models\BackfillParams.cs" />
     <Compile Include="Models\CqParams.cs" />

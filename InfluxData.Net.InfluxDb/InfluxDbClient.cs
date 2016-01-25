@@ -3,8 +3,8 @@ using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.ClientModules;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Infrastructure;
-using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.QueryBuilders;
+using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb
