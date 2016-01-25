@@ -45,7 +45,7 @@ namespace InfluxData.Net.Integration.Kapacitor
         {
             var task = MockDefineTaskParams();
 
-            var defineResponse = await this.Sut.Task.DefineTask(task);
+            var defineResponse = await this.Sut.Task.DefineTaskAsync(task);
             defineResponse.Success.Should().BeTrue();
 
             return task;
