@@ -66,5 +66,25 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
             return await base.RequestClient.DeleteAsync(RequestPaths.Task, requestParams);
         }
+
+        public virtual async Task<IInfluxDataApiResponse> EnableTask(string taskName)
+        {
+            var requestParams = new Dictionary<string, string>
+            {
+                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
+            };
+
+            return await base.RequestClient.PostAsync(RequestPaths.Enable, requestParams, String.Empty);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> DisableTask(string taskName)
+        {
+            var requestParams = new Dictionary<string, string>
+            {
+                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
+            };
+
+            return await base.RequestClient.PostAsync(RequestPaths.Disable, requestParams, String.Empty);
+        }
     }
 }

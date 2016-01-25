@@ -15,5 +15,9 @@ namespace InfluxData.Net.Kapacitor.ClientModules
         Task<IInfluxDataApiResponse> DefineTask(DefineTaskParams taskParams);
 
         Task<IInfluxDataApiResponse> DeleteTask(string taskName);
+
+        Task<IInfluxDataApiResponse> EnableTask(string taskName);
+
+        Task<IInfluxDataApiResponse> DisableTask(string taskName);
     }
 }

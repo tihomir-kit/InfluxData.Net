@@ -11,7 +11,7 @@ namespace InfluxData.Net.Integration.Kapacitor
 {
     public abstract class IntegrationFixtureBase : IDisposable
     {
-        public static string _fakeDbPrefix;
+        public string _fakeDbPrefix;
 
         private static readonly Random _random = new Random();
         private static readonly object _syncLock = new object();
