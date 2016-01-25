@@ -3,9 +3,9 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
-    public class RequestClient_v_0_9_2 : RequestClient
+    public class InfluxDbRequestClient_v_0_9_2 : InfluxDbRequestClient
     {
-        public RequestClient_v_0_9_2(IInfluxDbClientConfiguration configuration) 
+        public InfluxDbRequestClient_v_0_9_2(IInfluxDbClientConfiguration configuration) 
             : base(configuration)
         {
         }

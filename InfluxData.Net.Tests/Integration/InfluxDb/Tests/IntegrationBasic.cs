@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using FluentAssertions;
 using System.Threading.Tasks;
-using Xunit;
-using InfluxData.Net.InfluxDb.Models;
+using FluentAssertions;
 using InfluxData.Net.Common.Helpers;
-using InfluxData.Net.InfluxDb.Infrastructure;
+using InfluxData.Net.Common.Infrastructure;
+using InfluxData.Net.InfluxDb.Models;
+using Xunit;
 
-namespace InfluxData.Net.Integration.Tests
+namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    [Collection("Integration")]
-    [Trait("Integration", "Basic")]
+    [Collection("InfluxDb Integration")]
+    [Trait("InfluxDb Integration", "Basic")]
     public class IntegrationBasic : IDisposable
     {
         private readonly IntegrationFixture _fixture;
@@ -85,7 +84,7 @@ namespace InfluxData.Net.Integration.Tests
 
             Func<Task> act = async () => { await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points); };
 
-            act.ShouldThrow<InfluxDbApiException>();
+            act.ShouldThrow<InfluxDataApiException>();
         }
 
         [Fact]
@@ -93,7 +92,7 @@ namespace InfluxData.Net.Integration.Tests
         {
             Func<Task> act = async () => { await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "blah"); };
 
-            act.ShouldThrow<InfluxDbApiException>();
+            act.ShouldThrow<InfluxDataApiException>();
         }
 
         [Fact]

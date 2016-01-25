@@ -1,10 +1,5 @@
 ﻿using FluentAssertions;
 using InfluxData.Net.InfluxDb.QueryBuilders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace InfluxData.Net.Tests.QueryBuilders

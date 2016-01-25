@@ -1,20 +1,14 @@
-﻿using InfluxData.Net.InfluxDb.Infrastructure;
-using InfluxData.Net.InfluxDb.Models.Responses;
-using Newtonsoft.Json;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
+using InfluxData.Net.Common.Infrastructure;
+using InfluxData.Net.InfluxData.Helpers;
+using InfluxData.Net.InfluxDb.Models.Responses;
 
 namespace InfluxData.Net.InfluxDb.Helpers
 {
     public static class ResponseExtensions
     {
-        public static T ReadAs<T>(this IInfluxDbApiResponse response)
-        {
-            return JsonConvert.DeserializeObject<T>(response.Body);
-        }
-
-        public static IInfluxDbApiResponse ValidateQueryResponse(this IInfluxDbApiResponse response)
+        public static IInfluxDataApiResponse ValidateQueryResponse(this IInfluxDataApiResponse response)
         {
             response.ReadAs<QueryResponse>().Validate();
             return response;
@@ -27,7 +21,7 @@ namespace InfluxData.Net.InfluxDb.Helpers
 
             if (queryResponse.Error != null)
             {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, queryResponse.Error);
+                throw new InfluxDataApiException(HttpStatusCode.BadRequest, queryResponse.Error);
             }
 
             // Apparently a 200 OK can return an error in the results
@@ -35,7 +29,7 @@ namespace InfluxData.Net.InfluxDb.Helpers
             var erroredResults = queryResponse.Results.Where(result => result.Error != null);
             foreach (var erroredResult in erroredResults)
             {
-                throw new InfluxDbApiException(HttpStatusCode.BadRequest, erroredResult.Error);
+                throw new InfluxDataApiException(HttpStatusCode.BadRequest, erroredResult.Error);
             }
 
             return queryResponse;

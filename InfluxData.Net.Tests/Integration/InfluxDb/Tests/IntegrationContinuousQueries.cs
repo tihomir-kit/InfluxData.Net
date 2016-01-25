@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
-using System.Threading.Tasks;
-using Xunit;
-using InfluxData.Net.InfluxDb.Models;
 using System.Linq;
-using InfluxData.Net.InfluxDb.Infrastructure;
+using System.Threading.Tasks;
+using FluentAssertions;
+using InfluxData.Net.Common.Infrastructure;
+using Xunit;
 
-namespace InfluxData.Net.Integration.Tests
+namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    [Collection("Integration")]
-    [Trait("Integration", "Continuous Queries")]
+    [Collection("InfluxDb Integration")]
+    [Trait("InfluxDb Integration", "Continuous Queries")]
     public class IntegrationContinuousQueries : IDisposable
     {
         private readonly IntegrationFixture _fixture;
@@ -65,7 +63,7 @@ namespace InfluxData.Net.Integration.Tests
 
             Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq); };
 
-            act.ShouldThrow<InfluxDbApiException>();
+            act.ShouldThrow<InfluxDataApiException>();
         }
 
         [Fact]
@@ -110,7 +108,7 @@ namespace InfluxData.Net.Integration.Tests
         {
             Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "nonexistingcqname"); };
 
-            act.ShouldThrow<InfluxDbApiException>();
+            act.ShouldThrow<InfluxDataApiException>();
         }
 
         [Fact]

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
-using FluentAssertions;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Xunit;
 
-namespace InfluxData.Net.Integration.Tests
+namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    [Collection("Integration")]
-    [Trait("Integration", "Serie")]
+    [Collection("InfluxDb Integration")]
+    [Trait("InfluxDb Integration", "Serie")]
     public class IntegrationSerie : IDisposable
     {
         private readonly IntegrationFixture _fixture;

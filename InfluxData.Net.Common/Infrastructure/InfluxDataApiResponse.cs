@@ -1,10 +1,10 @@
 ﻿using System.Net;
 
-namespace InfluxData.Net.InfluxDb.Infrastructure
+namespace InfluxData.Net.Common.Infrastructure
 {
-    public class InfluxDbApiResponse : IInfluxDbApiResponse
+    public class InfluxDataApiResponse : IInfluxDataApiResponse
     {
-        public InfluxDbApiResponse(HttpStatusCode statusCode, string body)
+        public InfluxDataApiResponse(HttpStatusCode statusCode, string body)
         {
             StatusCode = statusCode;
             Body = body;
@@ -20,9 +20,9 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
         }
     }
 
-    public class InfluxDbApiWriteResponse : InfluxDbApiResponse
+    public class InfluxDataApiWriteResponse : InfluxDataApiResponse
     {
-        public InfluxDbApiWriteResponse(HttpStatusCode statusCode, string body)
+        public InfluxDataApiWriteResponse(HttpStatusCode statusCode, string body)
              : base(statusCode, body)
         {
         }
@@ -33,9 +33,9 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
         }
     }
 
-    public class InfluxDbApiDeleteResponse : InfluxDbApiResponse
+    public class InfluxDataApiDeleteResponse : InfluxDataApiResponse
     {
-        public InfluxDbApiDeleteResponse(HttpStatusCode statusCode, string body)
+        public InfluxDataApiDeleteResponse(HttpStatusCode statusCode, string body)
              : base(statusCode, body)
         {
         }

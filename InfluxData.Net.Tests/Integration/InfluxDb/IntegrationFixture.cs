@@ -1,131 +1,38 @@
-﻿using FluentAssertions;
-using InfluxData.Net.Common.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentAssertions;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb;
 using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.InfluxDb.Models;
-using InfluxData.Net.InfluxDb.Models.Responses;
-using Moq;
+using InfluxData.Net.Integration.Kapacitor;
 using Ploeh.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace InfluxData.Net.Integration
+namespace InfluxData.Net.Integration.InfluxDb
 {
-    // NOTE: http://stackoverflow.com/questions/106907/making-code-internal-but-available-for-unit-testing-from-other-projects
-
-    public class IntegrationFixture : IDisposable
+    public class IntegrationFixture : IntegrationFixtureBase, IDisposable
     {
-        public static readonly string _fakeDbPrefix = "FakeDb";
         public static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
         public static readonly string _fakeCq = "FakeCq";
 
-        private static readonly Random _random = new Random();
-        private static readonly object _syncLock = new object();
-        private MockRepository _mockRepository;
-
         public IInfluxDbClient Sut { get; set; }
 
-        public string DbName { get; set; }
-
-        public bool VerifyAll { get; set; }
-
-        public IntegrationFixture()
+        public IntegrationFixture() : base("FakeInfluxDb")
         {
-            InfluxDbVersion influxVersion;
-            if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out influxVersion))
-                influxVersion = InfluxDbVersion.v_0_9_6;
-
-            this.Sut = new InfluxDb.InfluxDbClient(
-                ConfigurationManager.AppSettings.Get("endpointUri"),
-                ConfigurationManager.AppSettings.Get("username"),
-                ConfigurationManager.AppSettings.Get("password"),
-                influxVersion);
-
+            this.Sut = base.InfluxDbClient;
             this.Sut.Should().NotBeNull();
-
-            this.DbName = CreateRandomDbName();
-
-            Task.Run(() => this.PurgeFakeDatabases()).Wait();
-            Task.Run(() => this.CreateEmptyDatabase()).Wait();
         }
 
         public void Dispose()
         {
-            var deleteResponse = this.Sut.Database.DropDatabaseAsync(this.DbName).Result;
-
-            deleteResponse.Success.Should().BeTrue();
         }
 
-        // Per-test
-        public void TestSetup()
-        {
-            _mockRepository = new MockRepository(MockBehavior.Strict);
-            VerifyAll = true;
-        }
-
-        // Per-test
-        public void TestTearDown()
-        {
-            if (VerifyAll)
-            {
-                _mockRepository.VerifyAll();
-            }
-            else
-            {
-                _mockRepository.Verify();
-            }
-        }
-
-
-        public async Task CreateEmptyDatabase(string dbName = null)
-        {
-            var createResponse = await this.Sut.Database.CreateDatabaseAsync(dbName ?? this.DbName);
-            createResponse.Success.Should().BeTrue();
-        }
-
-        private async Task PurgeFakeDatabases()
-        {
-            var dbs = await this.Sut.Database.GetDatabasesAsync();
-
-            foreach (var db in dbs)
-            {
-                if (db.Name.StartsWith(_fakeDbPrefix))
-                    await this.Sut.Database.DropDatabaseAsync(db.Name);
-            }
-        }
-
-        public string CreateRandomDbName()
-        {
-            return String.Format("{0}{1}", _fakeDbPrefix, CreateRandomSuffix());
-        }
-
-        public string CreateRandomMeasurementName()
-        {
-            return String.Format("{0}{1}", _fakeMeasurementPrefix, CreateRandomSuffix());
-        }
-
-        public string CreateRandomCqName()
-        {
-            return String.Format("{0}{1}", _fakeCq, CreateRandomSuffix());
-        }
-
-        /// <see cref="http://stackoverflow.com/a/768001/413785"/>
-        public static string CreateRandomSuffix()
-        {
-            var timestamp = DateTime.UtcNow.ToUnixTime();
-            lock (_syncLock)
-            {
-                var randomInt = _random.Next(Int32.MaxValue);
-                return String.Format("{0}{1}", timestamp, randomInt);
-            }
-        }
+        #region Validation
 
         /// <summary>
-        /// Checks if the serie has expected point count.
+        /// Checks if the serie has expected point count in the database.
         /// </summary>
         /// <param name="serieName">Serie name to check.</param>
         /// <param name="countField">Point field to be used in 'count()' portion of the query.</param>
@@ -159,6 +66,20 @@ namespace InfluxData.Net.Integration
             serie.Columns.ShouldAllBeEquivalentTo(expectedSerie.Columns);
             serie.Columns.Count().Should().Be(expectedSerie.Columns.Count());
             serie.Values[0].Count().Should().Be(expectedSerie.Values[0].Count());
+        }
+
+        #endregion Validation
+
+        #region Data Mocks
+
+        public string CreateRandomMeasurementName()
+        {
+            return CreateRandomName(_fakeMeasurementPrefix);
+        }
+
+        public string CreateRandomCqName()
+        {
+            return CreateRandomName(_fakeCq);
         }
 
         /// <summary>
@@ -280,5 +201,7 @@ namespace InfluxData.Net.Integration
                 FillType = FillType.None
             };
         }
+
+        #endregion Data Mocks
     }
 }

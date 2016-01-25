@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-using InfluxData.Net.InfluxDb.Infrastructure;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
-using System;
-using System.Collections.Generic;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -14,7 +13,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// </summary>
         /// <param name="cqParams">Cq request object which describes the Cq that wants to be created.</param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> CreateContinuousQueryAsync(CqParams cqParams);
+        Task<IInfluxDataApiResponse> CreateContinuousQueryAsync(CqParams cqParams);
 
         /// <summary>
         /// Gets all contious queries from the database.
@@ -29,7 +28,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="cqName">The id of the query.</param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName);
+        Task<IInfluxDataApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName);
 
         /// <summary>
         /// Backfills the database based on the <see cref="{Backfill}"/> configuration object.
@@ -38,6 +37,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="backfillParams"></param>
         /// <returns></returns>
-        Task<IInfluxDbApiResponse> BackfillAsync(string dbName, BackfillParams backfillParams);
+        Task<IInfluxDataApiResponse> BackfillAsync(string dbName, BackfillParams backfillParams);
     }
 }
