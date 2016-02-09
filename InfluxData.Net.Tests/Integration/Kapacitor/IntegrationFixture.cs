@@ -19,7 +19,7 @@ namespace InfluxData.Net.Integration.Kapacitor
         {
             KapacitorVersion kapacitorVersion;
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out kapacitorVersion))
-                kapacitorVersion = KapacitorVersion.Latest;
+                kapacitorVersion = KapacitorVersion.v_0_10_1;
 
             this.Sut = new KapacitorClient(
                 ConfigurationManager.AppSettings.Get("kapacitorEndpointUri"),
