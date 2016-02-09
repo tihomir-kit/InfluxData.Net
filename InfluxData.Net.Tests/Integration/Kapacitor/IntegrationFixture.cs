@@ -19,24 +19,34 @@ namespace InfluxData.Net.Integration.Kapacitor
         {
             KapacitorVersion kapacitorVersion;
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out kapacitorVersion))
-                kapacitorVersion = KapacitorVersion.Latest;
+                kapacitorVersion = KapacitorVersion.v_0_10_1;
 
             this.Sut = new KapacitorClient(
                 ConfigurationManager.AppSettings.Get("kapacitorEndpointUri"),
                 kapacitorVersion);
 
             this.Sut.Should().NotBeNull();
-
-            // TODO: implement tasks purging
         }
 
         public void Dispose()
         {
+            Task.Run(() => this.PurgeFakeTasks()).Wait();
         }
 
         public string CreateRandomTaskName()
         {
             return base.CreateRandomName(_fakeTaskPrefix);
+        }
+
+        private async Task PurgeFakeTasks()
+        {
+            var tasks = await this.Sut.Task.GetTasksAsync();
+
+            foreach (var task in tasks)
+            {
+                if (task.Name.StartsWith(_fakeTaskPrefix))
+                    await this.Sut.Task.DeleteTaskAsync(task.Name);
+            }
         }
 
         #region Data Mocks

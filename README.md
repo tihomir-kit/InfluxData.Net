@@ -1,6 +1,6 @@
 InfluxData.Net
 ============
-**Compatible with InfluxDB v0.9.6 and Kapacitor v0.10.0 API's**
+**Compatible with InfluxDB v0.9.6 and Kapacitor v0.10.1 API's**
 
 > InfluxData.Net is a portable .NET library to access the REST API of an [InfluxDB](https://influxdata.com/time-series-platform/influxdb/) database and [Kapacitor](https://influxdata.com/time-series-platform/kapacitor/) processing tool. 
 
@@ -27,7 +27,7 @@ var influxDbClient = new InfluxDbClient("http://yourinfluxdb.com:8086/", "userna
 To use InfluxData.Net KapacitorClient you must first create an instance of `KapacitorClient` (Kapacitor doesn't support authentication yet, so use this overload for now):
 
 ```cs
-var kapacitorClient = new KapacitorClient("http://yourkapacitor.com:9092/", KapacitorVersion.v_0_10_0);
+var kapacitorClient = new KapacitorClient("http://yourkapacitor.com:9092/", KapacitorVersion.v_0_10_1);
 ```
 
 Clients modules (properties of *Client* object) can then be consumed and methods for communicating with InfluxDb/Kapacitor can be consumed. 

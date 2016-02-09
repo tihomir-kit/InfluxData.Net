@@ -7,6 +7,7 @@ namespace InfluxData.Net.Common.Enums
     public enum KapacitorVersion
     {
         Latest,
+        v_0_10_1,
         v_0_10_0
     }
 }
