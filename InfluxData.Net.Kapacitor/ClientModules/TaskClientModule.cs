@@ -24,7 +24,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             {
                 { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
             };
-            var response = await base.RequestClient.GetAsync(RequestPaths.Task, requestParams);
+            var response = await base.RequestClient.GetAsync(RequestPaths.Task, requestParams).ConfigureAwait(false);
             var task = response.ReadAs<KapacitorTask>();
 
             return task;
@@ -36,7 +36,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             {
                 { QueryParams.Tasks, String.Empty }
             };
-            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks, requestParams);
+            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks, requestParams).ConfigureAwait(false);
             var tasks = response.ReadAs<KapacitorTasks>();
 
             return tasks.Tasks;
@@ -54,7 +54,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                 { QueryParams.Dbrps, HttpUtility.UrlEncode(dbrps) }
             };
 
-            return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript);
+            return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskName)
@@ -64,7 +64,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                 { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
             };
 
-            return await base.RequestClient.DeleteAsync(RequestPaths.Task, requestParams);
+            return await base.RequestClient.DeleteAsync(RequestPaths.Task, requestParams).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> EnableTaskAsync(string taskName)
@@ -74,7 +74,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                 { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
             };
 
-            return await base.RequestClient.PostAsync(RequestPaths.Enable, requestParams, String.Empty);
+            return await base.RequestClient.PostAsync(RequestPaths.Enable, requestParams, String.Empty).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> DisableTaskAsync(string taskName)
@@ -84,7 +84,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                 { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
             };
 
-            return await base.RequestClient.PostAsync(RequestPaths.Disable, requestParams, String.Empty);
+            return await base.RequestClient.PostAsync(RequestPaths.Disable, requestParams, String.Empty).ConfigureAwait(false);
         }
     }
 }

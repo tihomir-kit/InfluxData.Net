@@ -24,7 +24,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<Pong> PingAsync()
         {
             var watch = Stopwatch.StartNew();
-            var response = await RequestClient.RequestAsync(HttpMethod.Get, RequestPaths.Ping, includeAuthToQuery: false, headerIsBody: true).ConfigureAwait(false);
+            var response = await base.RequestClient.RequestAsync(HttpMethod.Get, RequestPaths.Ping, includeAuthToQuery: false, headerIsBody: true).ConfigureAwait(false);
 
             watch.Stop();
 
@@ -41,7 +41,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<Stats> GetStatsAsync()
         {
             var query = _diagnosticsQueryBuilder.GetStats();
-            var series = await ResolveSingleGetSeriesResultAsync(query);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query).ConfigureAwait(false);
             var stats = _diagnosticsResponseParser.GetStats(series);
 
             return stats;
@@ -50,7 +50,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<Diagnostics> GetDiagnosticsAsync()
         {
             var query = _diagnosticsQueryBuilder.GetDiagnostics();
-            var series = await ResolveSingleGetSeriesResultAsync(query);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query).ConfigureAwait(false);
             var diagnostics = _diagnosticsResponseParser.GetDiagnostics(series);
 
             return diagnostics;
