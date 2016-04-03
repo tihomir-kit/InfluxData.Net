@@ -24,14 +24,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
-            var response = await WriteAsync(dbName, new [] { point }, retenionPolicy, precision);
+            var response = await WriteAsync(dbName, new [] { point }, retenionPolicy, precision).ConfigureAwait(false);
 
             return response;
         }
 
         public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
-            var request = new WriteRequest(this.RequestClient.GetPointFormatter())
+            var request = new WriteRequest(RequestClient.GetPointFormatter())
             {
                 DbName = dbName,
                 Points = points,
@@ -39,31 +39,29 @@ namespace InfluxData.Net.InfluxDb.ClientModules
                 Precision = precision.GetParamValue()
             };
 
-            var response = await this.RequestClient.PostAsync(request);
+            var response = await RequestClient.PostAsync(request).ConfigureAwait(false);
 
             return response;
         }
 
         public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query)
         {
-            var response = await base.RequestClient.QueryAsync(dbName, query);
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
-
+            var response = await RequestClient.QueryAsync(dbName, query).ConfigureAwait(false);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
             return series;
         }
 
         public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries)
         {
-            var response = await base.RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString());
+            var response = await RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
             var results = response.ReadAs<QueryResponse>().Validate().Results;
             var series = _basicResponseParser.FlattenResultsSeries(results);
-
             return series;
         }
 
         public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries)
         {
-            var response = await base.RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString());
+            var response = await RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
             var results = response.ReadAs<QueryResponse>().Validate().Results;
             var resultSeries = _basicResponseParser.MapResultsSeries(results);
 

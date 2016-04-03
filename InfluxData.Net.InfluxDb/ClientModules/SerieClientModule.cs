@@ -23,7 +23,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<SerieSet>> GetSeriesAsync(string dbName, string measurementName = null, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetSeries(dbName, measurementName, filters);
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
             var serieSets = _serieResponseParser.GetSerieSets(series);
 
             return serieSets;
@@ -31,13 +31,13 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         public virtual async Task<IInfluxDataApiResponse> DropSeriesAsync(string dbName, string measurementName, IEnumerable<string> filters = null)
         {
-            return await DropSeriesAsync(dbName, new List<string>() { measurementName }, filters);
+            return await DropSeriesAsync(dbName, new List<string>() { measurementName }, filters).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> DropSeriesAsync(string dbName, IEnumerable<string> measurementNames, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.DropSeries(dbName, measurementNames, filters);
-            var response = await base.GetAndValidateQueryAsync(dbName, query);
+            var response = await base.GetAndValidateQueryAsync(dbName, query).ConfigureAwait(false);
 
             return response;
         }
@@ -45,7 +45,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<Measurement>> GetMeasurementsAsync(string dbName, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetMeasurements(dbName, filters);
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
             var measurements = _serieResponseParser.GetMeasurements(series);
 
             return measurements;
@@ -54,7 +54,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IInfluxDataApiResponse> DropMeasurementAsync(string dbName, string measurementName)
         {
             var query = _serieQueryBuilder.DropMeasurement(dbName, measurementName);
-            var response = await base.GetAndValidateQueryAsync(dbName, query);
+            var response = await base.GetAndValidateQueryAsync(dbName, query).ConfigureAwait(false);
 
             return response;
         }

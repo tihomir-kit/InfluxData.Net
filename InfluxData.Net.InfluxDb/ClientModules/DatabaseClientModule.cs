@@ -23,7 +23,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IInfluxDataApiResponse> CreateDatabaseAsync(string dbName)
         {
             var query = _databaseQueryBuilder.CreateDatabase(dbName);
-            var response = await base.GetAndValidateQueryAsync(query);
+            var response = await base.GetAndValidateQueryAsync(query).ConfigureAwait(false);
 
             return response;
         }
@@ -31,7 +31,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<Database>> GetDatabasesAsync()
         {
             var query = _databaseQueryBuilder.GetDatabases();
-            var series = await base.ResolveSingleGetSeriesResultAsync(query);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query).ConfigureAwait(false);
             var databases = _databaseResponseParser.GetDatabases(series);
 
             return databases;
@@ -40,7 +40,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IInfluxDataApiResponse> DropDatabaseAsync(string dbName)
         {
             var query = _databaseQueryBuilder.DropDatabase(dbName);
-            var response = await base.GetAndValidateQueryAsync(query);
+            var response = await base.GetAndValidateQueryAsync(query).ConfigureAwait(false);
 
             return response;
         }

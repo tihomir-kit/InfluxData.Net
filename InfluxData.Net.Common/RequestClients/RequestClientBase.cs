@@ -45,13 +45,13 @@ namespace InfluxData.Net.Common.RequestClients
                 path,
                 requestParams,
                 content,
-                includeAuthToQuery);
+                includeAuthToQuery).ConfigureAwait(false);
 
             string responseContent = String.Empty;
 
             if (!headerIsBody)
             {
-                responseContent = await response.Content.ReadAsStringAsync();
+                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
             else
             {
@@ -105,7 +105,7 @@ namespace InfluxData.Net.Common.RequestClients
             }
 #endif
 
-            return await client.SendAsync(request, completionOption, cancellationToken);
+            return await client.SendAsync(request, completionOption, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion Request Base

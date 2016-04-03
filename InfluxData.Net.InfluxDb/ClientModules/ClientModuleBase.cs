@@ -16,12 +16,12 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         public ClientModuleBase(IInfluxDbRequestClient requestClient)
         {
-            this.RequestClient = requestClient;
+            RequestClient = requestClient;
         }
 
         protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string query)
         {
-            var response = await this.RequestClient.QueryAsync(query);
+            var response = await RequestClient.QueryAsync(query).ConfigureAwait(false);
             response.ValidateQueryResponse();
 
             return response;
@@ -29,7 +29,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string dbName, string query)
         {
-            var response = await this.RequestClient.QueryAsync(dbName, query);
+            var response = await RequestClient.QueryAsync(dbName, query).ConfigureAwait(false);
             response.ValidateQueryResponse();
 
             return response;
@@ -37,7 +37,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string query)
         {
-            var response = await this.RequestClient.QueryAsync(query);
+            var response = await RequestClient.QueryAsync(query).ConfigureAwait(false);
             var series = ResolveSingleGetSeriesResult(response);
 
             return series;
@@ -45,7 +45,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string dbName, string query)
         {
-            var response = await this.RequestClient.QueryAsync(dbName, query);
+            var response = await RequestClient.QueryAsync(dbName, query).ConfigureAwait(false);
             var series = ResolveSingleGetSeriesResult(response);
 
             return series;
