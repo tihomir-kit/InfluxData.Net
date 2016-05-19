@@ -56,6 +56,24 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
+        public async Task CreateContinuousQuery_WithResampleStatement_ShouldCreateContinuousQuery()
+        {
+            var points = await _fixture.MockAndWritePoints(1);
+            var mockedCq = _fixture.MockContinuousQuery(points.First().Name);
+            mockedCq.Resample.For = "120m";
+            mockedCq.Resample.Every = "60m";
+
+            var result = await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(mockedCq);
+
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
+            var cqs = await _fixture.Sut.ContinuousQuery.GetContinuousQueriesAsync(_fixture.DbName);
+            var cq = cqs.FirstOrDefault(p => p.Name == mockedCq.CqName);
+            cq.Should().NotBeNull();
+            cq.Name.Should().Be(mockedCq.CqName);
+        }
+
+        [Fact]
         public async Task CreateContinuousQuery_OnExistingCqName_ShouldThrow()
         {
             var points = await _fixture.MockAndWritePoints(1);
