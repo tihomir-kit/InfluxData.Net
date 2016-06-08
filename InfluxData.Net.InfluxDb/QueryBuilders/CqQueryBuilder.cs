@@ -14,11 +14,12 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
             var downsamplers = cqParams.Downsamplers.ToCommaSpaceSeparatedString();
             var tags = BuildTags(cqParams.Tags);
             var fillType = BuildFillType(cqParams.FillType);
+            var resample = BuildResample(cqParams.Resample);
 
             var subQuery = String.Format(QueryStatements.CreateContinuousQuerySubQuery,
                 downsamplers, cqParams.DsSerieName, cqParams.SourceSerieName, cqParams.Interval, tags, fillType);
 
-            var query = String.Format(QueryStatements.CreateContinuousQuery, cqParams.CqName, cqParams.DbName, subQuery);
+            var query = String.Format(QueryStatements.CreateContinuousQuery, cqParams.CqName, cqParams.DbName, resample, subQuery);
 
             return query;
         }
@@ -63,6 +64,13 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
         protected virtual string BuildFillType(FillType fillType)
         {
             return fillType == FillType.Null ? String.Empty : String.Format(QueryStatements.Fill, fillType.ToString().ToLower());
+        }
+
+        protected virtual string BuildResample(CqResampleParam resampleParam)
+        {
+            return string.IsNullOrEmpty(resampleParam.For) && string.IsNullOrEmpty(resampleParam.Every) ? "" :
+                "RESAMPLE" + (!string.IsNullOrEmpty(resampleParam.Every) ? " EVERY " + resampleParam.Every : "") +
+                             (!string.IsNullOrEmpty(resampleParam.For) ? " FOR " + resampleParam.For : "") + " ";
         }
     }
 }

@@ -4,6 +4,21 @@ using InfluxData.Net.InfluxDb.Enums;
 namespace InfluxData.Net.InfluxDb.Models
 {
     /// <summary>
+    /// Contains two properties: For and Every
+    /// </summary>
+    public struct CqResampleParam
+    {
+        /// <summary>
+        /// Resample range (for example: FOR 60m ... GROUP BY TIME(15m) will also resample the past 60 minutes in windows of 15 minutes).
+        /// </summary>
+        public string For { get; set; }
+        /// <summary>
+        /// By default Influx will run the query with the GROUP BY interval. Use this to override the CQ interval.
+        /// </summary>
+        public string Every { get; set; }
+    }
+
+    /// <summary>
     /// Represents a continuous query object that describes a CQ to create.
     /// </summary>
     public class CqParams
@@ -48,5 +63,10 @@ namespace InfluxData.Net.InfluxDb.Models
         /// <see cref="https://docs.influxdata.com/influxdb/v0.9/query_language/data_exploration/#the-group-by-clause-and-fill"/>
         /// </summary>
         public FillType FillType { get; set; }
+
+        /// <summary>
+        /// <see cref="{CqResampleParam}"/> 
+        /// </summary>
+        public CqResampleParam Resample;
     }
 }

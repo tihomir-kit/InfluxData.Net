@@ -15,7 +15,7 @@
 
         public const string AlterRetentionPolicy = "ALTER RETENTION POLICY {0} ON {1} DURATION {2} REPLICATION {3}";
 
-        public const string CreateContinuousQuery = "CREATE CONTINUOUS QUERY {0} ON {1} BEGIN {2} END;";
+        public const string CreateContinuousQuery = "CREATE CONTINUOUS QUERY {0} ON {1} {2}BEGIN {3} END;";
         public const string CreateContinuousQuerySubQuery = "SELECT {0} INTO \"{1}\" FROM {2} GROUP BY time({3}) {4} {5}";
         public const string GetContinuousQueries = "SHOW CONTINUOUS QUERIES";
         public const string DropContinuousQuery = "DROP CONTINUOUS QUERY {0} ON {1}";
