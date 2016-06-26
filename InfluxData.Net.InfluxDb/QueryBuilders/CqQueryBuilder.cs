@@ -7,6 +7,9 @@ using InfluxData.Net.InfluxDb.Models;
 
 namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
+    /// <summary>
+    /// CqQueryBuilder for the latest supported version. All other CqQueryBuilders are supposed to inherit this class.
+    /// </summary>
     internal class CqQueryBuilder : ICqQueryBuilder
     {
         public virtual string CreateContinuousQuery(CqParams cqParams)
@@ -68,9 +71,13 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
 
         protected virtual string BuildResample(CqResampleParam resampleParam)
         {
-            return string.IsNullOrEmpty(resampleParam.For) && string.IsNullOrEmpty(resampleParam.Every) ? "" :
-                "RESAMPLE" + (!string.IsNullOrEmpty(resampleParam.Every) ? " EVERY " + resampleParam.Every : "") +
-                             (!string.IsNullOrEmpty(resampleParam.For) ? " FOR " + resampleParam.For : "") + " ";
+            if (String.IsNullOrEmpty(resampleParam.For) && String.IsNullOrEmpty(resampleParam.Every))
+                return String.Empty;
+
+            var everyParam = !String.IsNullOrEmpty(resampleParam.Every) ? "EVERY " + resampleParam.Every : String.Empty;
+            var forParam = !String.IsNullOrEmpty(resampleParam.For) ? "FOR " + resampleParam.For : String.Empty;
+
+            return String.Format("RESAMPLE {0} {1} ", everyParam, forParam);
         }
     }
 }
