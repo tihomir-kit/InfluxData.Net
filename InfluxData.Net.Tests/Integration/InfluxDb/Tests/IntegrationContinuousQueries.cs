@@ -7,13 +7,11 @@ using Xunit;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    [Collection("InfluxDb Integration")]
-    [Trait("InfluxDb Integration", "Continuous Queries")]
     public class IntegrationContinuousQueries : IDisposable
     {
-        private readonly IntegrationFixture _fixture;
+        private readonly IIntegrationFixture _fixture;
 
-        public IntegrationContinuousQueries(IntegrationFixture fixture)
+        public IntegrationContinuousQueries(IIntegrationFixture fixture)
         {
             _fixture = fixture;
             _fixture.TestSetup();
@@ -56,7 +54,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task CreateContinuousQuery_WithResampleStatement_ShouldCreateContinuousQuery()
+        public virtual async Task CreateContinuousQuery_WithResampleStatement_ShouldCreateContinuousQuery()
         {
             var points = await _fixture.MockAndWritePoints(1);
             var mockedCq = _fixture.MockContinuousQuery(points.First().Name);

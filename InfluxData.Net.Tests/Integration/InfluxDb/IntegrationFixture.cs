@@ -9,17 +9,19 @@ using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Integration.Kapacitor;
 using Ploeh.AutoFixture;
+using InfluxData.Net.Common.Enums;
 
 namespace InfluxData.Net.Integration.InfluxDb
 {
-    public class IntegrationFixture : IntegrationFixtureBase, IDisposable
+    public class IntegrationFixture : IntegrationFixtureBase, IIntegrationFixture
     {
         public static readonly string _fakeMeasurementPrefix = "FakeMeasurement";
         public static readonly string _fakeCq = "FakeCq";
 
         public IInfluxDbClient Sut { get; set; }
 
-        public IntegrationFixture() : base("FakeInfluxDb")
+        public IntegrationFixture(string dbName, string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion) 
+            : base(dbName, influxDbEndpointUriKey, influxDbVersion)
         {
             this.Sut = base.InfluxDbClient;
             this.Sut.Should().NotBeNull();

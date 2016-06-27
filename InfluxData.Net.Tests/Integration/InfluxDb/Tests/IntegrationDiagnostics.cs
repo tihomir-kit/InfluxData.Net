@@ -6,13 +6,11 @@ using Xunit;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    [Collection("InfluxDb Integration")]
-    [Trait("InfluxDb Integration", "Diagnostics")]
     public class IntegrationDiagnostics : IDisposable
     {
-        private readonly IntegrationFixture _fixture;
+        private readonly IIntegrationFixture _fixture;
 
-        public IntegrationDiagnostics(IntegrationFixture fixture)
+        public IntegrationDiagnostics(IIntegrationFixture fixture)
         {
             _fixture = fixture;
             _fixture.TestSetup();

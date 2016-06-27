@@ -15,7 +15,8 @@ namespace InfluxData.Net.Integration.Kapacitor
 
         public IKapacitorClient Sut { get; set; }
 
-        public IntegrationFixture() : base("FakeKapacitorDb")
+        public IntegrationFixture(string influxDbEndpointUriKey = "influxDbEndpointUri", InfluxDbVersion influxDbVersion = InfluxDbVersion.Latest) 
+            : base("FakeKapacitorDb", influxDbEndpointUriKey, influxDbVersion)
         {
             KapacitorVersion kapacitorVersion;
             if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out kapacitorVersion))
