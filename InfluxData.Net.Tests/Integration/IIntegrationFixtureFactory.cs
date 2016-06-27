@@ -9,7 +9,7 @@ using Moq;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {
-    public interface IIntegrationFixtureBase : IDisposable
+    public interface IIntegrationFixtureFactory : IDisposable
     {
         IInfluxDbClient InfluxDbClient { get; set; }
 

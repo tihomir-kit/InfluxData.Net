@@ -7,7 +7,7 @@ using Xunit;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    public class IntegrationContinuousQueries : IDisposable
+    public abstract class IntegrationContinuousQueries : IDisposable
     {
         private readonly IIntegrationFixture _fixture;
 

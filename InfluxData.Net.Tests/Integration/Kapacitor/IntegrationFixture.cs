@@ -9,7 +9,7 @@ using InfluxData.Net.Kapacitor.Models;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {
-    public class IntegrationFixture : IntegrationFixtureBase, IDisposable
+    public class IntegrationFixture : IntegrationFixtureFactory, IDisposable
     {
         public static readonly string _fakeTaskPrefix = "FakeTask";
 

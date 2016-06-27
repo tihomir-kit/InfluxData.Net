@@ -9,7 +9,7 @@ using Moq;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {
-    public abstract class IntegrationFixtureBase : IIntegrationFixtureBase
+    public abstract class IntegrationFixtureFactory : IDisposable
     {
         public string _fakeDbPrefix;
 
@@ -23,7 +23,7 @@ namespace InfluxData.Net.Integration.Kapacitor
 
         public bool VerifyAll { get; set; }
 
-        protected IntegrationFixtureBase(string fakeDbPrefix, string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion)
+        protected IntegrationFixtureFactory(string fakeDbPrefix, string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion)
         {
             _fakeDbPrefix = fakeDbPrefix;
 

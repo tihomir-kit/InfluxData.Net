@@ -6,7 +6,7 @@ using Xunit;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    public class IntegrationSerie : IDisposable
+    public abstract class IntegrationSerie : IDisposable
     {
         private readonly IIntegrationFixture _fixture;
 
