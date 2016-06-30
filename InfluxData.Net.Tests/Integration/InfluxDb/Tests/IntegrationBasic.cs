@@ -12,7 +12,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
     public abstract class IntegrationBasic : IDisposable
     {
-        private readonly IIntegrationFixture _fixture;
+        protected readonly IIntegrationFixture _fixture;
 
         public IntegrationBasic(IIntegrationFixture fixture)
         {

@@ -9,7 +9,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
     public abstract class IntegrationContinuousQueries : IDisposable
     {
-        private readonly IIntegrationFixture _fixture;
+        protected readonly IIntegrationFixture _fixture;
 
         public IntegrationContinuousQueries(IIntegrationFixture fixture)
         {
@@ -72,14 +72,17 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task CreateContinuousQuery_OnExistingCqName_ShouldThrow()
+        public virtual async Task CreateContinuousQuery_OnExistingCqName_NotCreateDuplicateContinuousQuery()
         {
             var points = await _fixture.MockAndWritePoints(1);
             var cq = await _fixture.MockAndWriteCq(points.First().Name);
 
-            Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq); };
+            var result = await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq);
 
-            act.ShouldThrow<InfluxDataApiException>();
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
+            var cqs = await _fixture.Sut.ContinuousQuery.GetContinuousQueriesAsync(_fixture.DbName);
+            cqs.Where(p => p.Name == cq.CqName).Count().Should().Be(1);
         }
 
         [Fact]
@@ -120,11 +123,12 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public void DeleteContinuousQuery_OnNonExistingCq_ShouldThrow()
+        public virtual async Task DeleteContinuousQuery_OnNonExistingCq_ShouldNotThrow()
         {
-            Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "nonexistingcqname"); };
+            var result = await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "nonexistingcqname");
 
-            act.ShouldThrow<InfluxDataApiException>();
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
         }
 
         [Fact]

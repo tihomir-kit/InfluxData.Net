@@ -65,6 +65,7 @@
     <Compile Include="RequestClients\InfluxDbRequestClient_v_0_9_6.cs" />
     <Compile Include="ResponseParsers\ISerieResponseParser.cs" />
     <Compile Include="ResponseParsers\IRetentionResponseParser.cs" />
+    <Compile Include="ResponseParsers\SerieResponseParser_v_0_9_6.cs" />
     <Compile Include="ResponseParsers\SerieResponseParser.cs" />
     <Compile Include="ResponseParsers\RetentionResponseParser.cs" />
     <Compile Include="ResponseParsers\DatabaseResponseParser.cs" />

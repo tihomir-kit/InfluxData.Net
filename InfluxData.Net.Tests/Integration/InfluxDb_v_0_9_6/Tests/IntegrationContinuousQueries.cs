@@ -15,10 +15,41 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         {
         }
 
+        [Fact(Skip = "Test not applicable for this InfluxDB version")]
         public override Task CreateContinuousQuery_WithResampleStatement_ShouldCreateContinuousQuery()
         {
-            // NOTE: test not applicable for this InfluxDB version
             return null;
+        }
+
+        [Fact(Skip = "Test not applicable for this InfluxDB version")]
+        public override async Task CreateContinuousQuery_OnExistingCqName_NotCreateDuplicateContinuousQuery()
+        {
+            return;
+        }
+
+        [Fact]
+        public async Task CreateContinuousQuery_OnExistingCqName_ShouldThrow()
+        {
+            var points = await _fixture.MockAndWritePoints(1);
+            var cq = await _fixture.MockAndWriteCq(points.First().Name);
+
+            Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.CreateContinuousQueryAsync(cq); };
+
+            act.ShouldThrow<InfluxDataApiException>();
+        }
+
+        [Fact]
+        public void DeleteContinuousQuery_OnNonExistingCq_ShouldThrow()
+        {
+            Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "nonexistingcqname"); };
+
+            act.ShouldThrow<InfluxDataApiException>();
+        }
+
+        [Fact(Skip = "Test not applicable for this InfluxDB version")]
+        public override async Task DeleteContinuousQuery_OnNonExistingCq_ShouldNotThrow()
+        {
+            return;
         }
     }
 }

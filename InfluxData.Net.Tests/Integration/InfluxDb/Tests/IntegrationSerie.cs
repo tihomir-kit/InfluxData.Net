@@ -8,7 +8,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
     public abstract class IntegrationSerie : IDisposable
     {
-        private readonly IIntegrationFixture _fixture;
+        protected readonly IIntegrationFixture _fixture;
 
         public IntegrationSerie(IIntegrationFixture fixture)
         {

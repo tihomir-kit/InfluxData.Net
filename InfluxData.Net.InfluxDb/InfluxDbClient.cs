@@ -82,7 +82,7 @@ namespace InfluxData.Net.InfluxDb
 
             // NOTE: once a breaking change occures, Parsers will need to be resolved with factories
             _basicResponseParser = new Lazy<IBasicResponseParser>(() => new BasicResponseParser(), true);
-            _serieResponseParser = new Lazy<ISerieResponseParser>(() => new SerieResponseParser(), true);
+            _serieResponseParser = new Lazy<ISerieResponseParser>(() => dependencies.SerieResponseParser, true);
             _databaseResponseParser = new Lazy<IDatabaseResponseParser>(() => new DatabaseResponseParser(), true);
             _retentionResponseParser = new Lazy<IRetentionResponseParser>(() => new RetentionResponseParser(), true);
             _cqResponseParser = new Lazy<ICqResponseParser>(() => new CqResponseParser(), true);

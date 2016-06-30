@@ -2,6 +2,7 @@
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.QueryBuilders;
+using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
@@ -41,7 +42,8 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return new InfluxDbClientDependencies()
             {
                 RequestClient = new InfluxDbRequestClient(_configuration),
-                CqQueryBuilder = new CqQueryBuilder()
+                CqQueryBuilder = new CqQueryBuilder(),
+                SerieResponseParser = new SerieResponseParser()
             };
         }
 
@@ -50,7 +52,8 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return new InfluxDbClientDependencies()
             {
                 RequestClient = new InfluxDbRequestClient_v_0_9_6(_configuration),
-                CqQueryBuilder = new CqQueryBuilder_v_0_9_6()
+                CqQueryBuilder = new CqQueryBuilder_v_0_9_6(),
+                SerieResponseParser = new SerieResponseParser_v_0_9_6()
             };
         }
 
@@ -59,7 +62,8 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return new InfluxDbClientDependencies()
             {
                 RequestClient = new InfluxDbRequestClient_v_0_9_2(_configuration),
-                CqQueryBuilder = new CqQueryBuilder_v_0_9_6()
+                CqQueryBuilder = new CqQueryBuilder_v_0_9_6(),
+                SerieResponseParser = new SerieResponseParser_v_0_9_6()
             };
         }
     }

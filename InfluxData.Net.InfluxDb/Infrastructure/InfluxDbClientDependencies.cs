@@ -1,5 +1,6 @@
 ﻿using InfluxData.Net.InfluxDb.QueryBuilders;
 using InfluxData.Net.InfluxDb.RequestClients;
+using InfluxData.Net.InfluxDb.ResponseParsers;
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
 {
@@ -11,5 +12,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
         public IInfluxDbRequestClient RequestClient { get; set; }
 
         public ICqQueryBuilder CqQueryBuilder { get; set; }
+
+        public ISerieResponseParser SerieResponseParser { get; set; }
     }
 }

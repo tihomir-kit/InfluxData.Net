@@ -6,6 +6,11 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
     internal class SerieResponseParser : ISerieResponseParser
     {
+        protected virtual string KeyColumnName
+        {
+            get { return "key"; }
+        }
+
         public virtual IEnumerable<SerieSet> GetSerieSets(IEnumerable<Serie> series)
         {
             var serieSets = new List<SerieSet>();
@@ -25,7 +30,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
         protected virtual SerieSet GetSerieSet(Serie serie)
         {
             var serieSet = new SerieSet() { Name = serie.Name };
-            var keyIndex = serie.Columns.IndexOf("_key");
+            var keyIndex = serie.Columns.IndexOf(KeyColumnName);
             var indexedKeyColumns = Enumerable.Range(0, serie.Columns.Count).ToDictionary(p => serie.Columns[p], p => p);
 
             foreach (var serieValues in serie.Values)
@@ -43,7 +48,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
 
             foreach (var tag in indexedKeyColumns)
             {
-                if (tag.Key != "_key")
+                if (tag.Key != KeyColumnName)
                     serieSetItemTags.Add(tag.Key, (string)serieValues[tag.Value]);
             }
 
