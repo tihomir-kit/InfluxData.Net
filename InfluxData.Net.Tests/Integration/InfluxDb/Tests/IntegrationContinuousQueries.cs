@@ -23,7 +23,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task CreateContinuousQuery_OnExistingMeasurement_ShouldCreateContinuousQuery()
+        public virtual async Task CreateContinuousQuery_OnExistingMeasurement_ShouldCreateContinuousQuery()
         {
             var points = await _fixture.MockAndWritePoints(1);
             var mockedCq = _fixture.MockContinuousQuery(points.First().Name);
@@ -39,7 +39,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task CreateContinuousQuery_OnNonExistingMeasurement_ShouldCreateContinuousQuery()
+        public virtual async Task CreateContinuousQuery_OnNonExistingMeasurement_ShouldCreateContinuousQuery()
         {
             var mockedCq = _fixture.MockContinuousQuery("nonexistingseriename");
 
@@ -86,7 +86,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task GetContinuousQueries_OnExistingCq_ShouldReturnCqs()
+        public virtual async Task GetContinuousQueries_OnExistingCq_ShouldReturnCqs()
         {
             var points = await _fixture.MockAndWritePoints(1);
             var cq = await _fixture.MockAndWriteCq(points.First().Name);
@@ -99,7 +99,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task GetContinuousQueries_OnNonExistingCq_ShouldReturnEmptyCqCollection()
+        public virtual async Task GetContinuousQueries_OnNonExistingCq_ShouldReturnEmptyCqCollection()
         {
             var dbName = _fixture.CreateRandomDbName();
             await _fixture.CreateEmptyDatabase(dbName);
@@ -111,7 +111,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task DeleteContinuousQuery_OnExistingCq_ShouldReturnSuccess()
+        public virtual async Task DeleteContinuousQuery_OnExistingCq_ShouldReturnSuccess()
         {
             var points = await _fixture.MockAndWritePoints(1);
             var cq = await _fixture.MockAndWriteCq(points.First().Name);
@@ -132,7 +132,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task Backfill_OnValidBackfillObject_ShouldReturnSuccess()
+        public virtual async Task Backfill_OnValidBackfillObject_ShouldReturnSuccess()
         {
             var backfill = _fixture.MockBackfill();
 

@@ -22,7 +22,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task GetSeries_OnNoSeries_ShouldReturnEmptyCollection()
+        public virtual async Task GetSeries_OnNoSeries_ShouldReturnEmptyCollection()
         {
             var dbName = _fixture.CreateRandomDbName();
             await _fixture.CreateEmptyDatabase(dbName);
@@ -75,7 +75,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         //}
 
         [Fact]
-        public async Task GetMeasurements_OnNoSeries_ShouldReturnEmptyCollection()
+        public virtual async Task GetMeasurements_OnNoSeries_ShouldReturnEmptyCollection()
         {
             var dbName = _fixture.CreateRandomDbName();
             await _fixture.CreateEmptyDatabase(dbName);
@@ -85,7 +85,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task GetMeasurements_OnExistingSeries_ShouldReturnMeasurementCollection()
+        public virtual async Task GetMeasurements_OnExistingSeries_ShouldReturnMeasurementCollection()
         {
             var dbName = _fixture.CreateRandomDbName();
             await _fixture.CreateEmptyDatabase(dbName);

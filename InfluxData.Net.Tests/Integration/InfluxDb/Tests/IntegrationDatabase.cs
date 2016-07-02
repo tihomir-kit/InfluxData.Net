@@ -22,7 +22,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task Database_OnCreateAndDrop_ShouldReturnSuccess()
+        public virtual async Task Database_OnCreateAndDrop_ShouldReturnSuccess()
         {
             var dbName = _fixture.CreateRandomDbName();
 
@@ -34,7 +34,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
         
         [Fact]
-        public async Task GetDatabase_OnDatabaseExists_ShouldReturnDatabaseCollection()
+        public virtual async Task GetDatabase_OnDatabaseExists_ShouldReturnDatabaseCollection()
         {
             var dbName = _fixture.CreateRandomDbName();
             var createResponse = await _fixture.Sut.Database.CreateDatabaseAsync(dbName);

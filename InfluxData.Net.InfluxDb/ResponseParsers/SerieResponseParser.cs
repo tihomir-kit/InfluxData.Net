@@ -32,24 +32,6 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             return serieSets;
         }
 
-        protected virtual void BindSerieSets(List<SerieSet> serieSets, SerieSetItem serieSetItem)
-        {
-            var serieKeyValues = serieSetItem.Key.Split(',');
-            var serieName = serieKeyValues.FirstOrDefault();
-
-            if (!String.IsNullOrEmpty(serieName) && !serieSets.Any(p => p.Name == serieName))
-            {
-                var serieSet = new SerieSet() { Name = serieName };
-                serieSet.Series.Add(serieSetItem);
-                serieSets.Add(serieSet);
-            }
-            else
-            {
-                var serieSet = serieSets.FirstOrDefault(p => p.Name == serieName);
-                serieSet.Series.Add(serieSetItem);
-            }
-        }
-
         protected virtual IList<SerieSetItem> GetSerieSetItems(Serie serie)
         {
             IList<SerieSetItem> series = new List<SerieSetItem>();
@@ -82,6 +64,24 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             };
 
             return serieSetItem;
+        }
+
+        protected virtual void BindSerieSets(List<SerieSet> serieSets, SerieSetItem serieSetItem)
+        {
+            var serieKeyValues = serieSetItem.Key.Split(',');
+            var serieName = serieKeyValues.FirstOrDefault();
+
+            if (!String.IsNullOrEmpty(serieName) && !serieSets.Any(p => p.Name == serieName))
+            {
+                var serieSet = new SerieSet() { Name = serieName };
+                serieSet.Series.Add(serieSetItem);
+                serieSets.Add(serieSet);
+            }
+            else
+            {
+                var serieSet = serieSets.FirstOrDefault(p => p.Name == serieName);
+                serieSet.Series.Add(serieSetItem);
+            }
         }
 
         public virtual IEnumerable<Measurement> GetMeasurements(IEnumerable<Serie> series)

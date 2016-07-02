@@ -26,7 +26,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public void Formatter_OnGetLineTemplate_ShouldFormatPoint()
+        public virtual void Formatter_OnGetLineTemplate_ShouldFormatPoint()
         {
             const string value = @"\=&,""*"" -";
             const string escapedFieldValue = @"\\=&\,\""*\""\ -";
@@ -62,7 +62,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task ClientWrite_OnValidPointsToSave_ShouldWriteSuccessfully()
+        public virtual async Task ClientWrite_OnValidPointsToSave_ShouldWriteSuccessfully()
         {
             var points = _fixture.MockPoints(5);
 
@@ -74,7 +74,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public void ClientWrite_OnPointsWithMissingFields_ShouldThrowException()
+        public virtual void ClientWrite_OnPointsWithMissingFields_ShouldThrowException()
         {
             var points = _fixture.MockPoints(1);
             points.Single().Timestamp = null;
@@ -86,7 +86,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public void ClientQuery_OnInvalidQuery_ShouldThrowException()
+        public virtual void ClientQuery_OnInvalidQuery_ShouldThrowException()
         {
             Func<Task> act = async () => { await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "blah"); };
 
@@ -94,7 +94,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task ClientQuery_OnNonExistantSeries_ShouldReturnEmptySerieCollection()
+        public virtual async Task ClientQuery_OnNonExistantSeries_ShouldReturnEmptySerieCollection()
         {
             var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "select * from nonexistingseries");
 
@@ -103,7 +103,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task ClientQuery_OnExistingPoints_ShouldReturnSerieCollection()
+        public virtual async Task ClientQuery_OnExistingPoints_ShouldReturnSerieCollection()
         {
             var points = await _fixture.MockAndWritePoints(3);
 
@@ -117,7 +117,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task ClientQueryMultiple_OnExistingPoints_ShouldReturnSerieCollection()
+        public virtual async Task ClientQueryMultiple_OnExistingPoints_ShouldReturnSerieCollection()
         {
             var points = await _fixture.MockAndWritePoints(5, 2);
 
@@ -140,7 +140,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task ClientQueryMultiple_WithOneExistantSeriesQuery_ShouldReturnSingleSerie()
+        public virtual async Task ClientQueryMultiple_WithOneExistantSeriesQuery_ShouldReturnSingleSerie()
         {
             var points = await _fixture.MockAndWritePoints(6);
 
@@ -158,7 +158,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task ClientMultiQuery_OnExistingPoints_ShouldReturnSerieResultCollection()
+        public virtual async Task ClientMultiQuery_OnExistingPoints_ShouldReturnSerieResultCollection()
         {
             var points = await _fixture.MockAndWritePoints(4, 2);
 
@@ -181,7 +181,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task ClientMultiQuery_WithOneExistantSeriesQuery_ShouldReturnEmptyAndPopulatedSeries()
+        public virtual async Task ClientMultiQuery_WithOneExistantSeriesQuery_ShouldReturnEmptyAndPopulatedSeries()
         {
             var points = await _fixture.MockAndWritePoints(4);
 
@@ -200,7 +200,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task ClientQuery_OnNonExistantFields_ShouldReturnEmptySerieCollection()
+        public virtual async Task ClientQuery_OnNonExistantFields_ShouldReturnEmptySerieCollection()
         {
             var points = await _fixture.MockAndWritePoints(1);
 
@@ -212,7 +212,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task ClientQuery_OnWhereClauseNotMet_ShouldReturnEmptySerieCollection()
+        public virtual async Task ClientQuery_OnWhereClauseNotMet_ShouldReturnEmptySerieCollection()
         {
             var points = await _fixture.MockAndWritePoints(1);
 
@@ -225,7 +225,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
 
         // TODO: move to unit tests
         [Fact]
-        public void WriteRequest_OnGetLines_ShouldReturnNewLineSeparatedPoints()
+        public virtual void WriteRequest_OnGetLines_ShouldReturnNewLineSeparatedPoints()
         {
             var points = _fixture.MockPoints(2);
             var formatter = _fixture.Sut.GetPointFormatter();

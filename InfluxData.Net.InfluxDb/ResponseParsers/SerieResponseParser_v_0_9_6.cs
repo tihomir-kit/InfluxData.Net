@@ -48,7 +48,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             throw new InvalidOperationException("Method not applicable to this version of InfluxDB");
         }
 
-        protected override SerieSetItem GetSerieSetItem(int keyIndex, Dictionary<string, int> indexedKeyColumns, IList<object> serieValues)
+        protected override IList<SerieSetItem> GetSerieSetItems(Serie serie)
         {
             throw new InvalidOperationException("Method not applicable to this version of InfluxDB");
         }
