@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using InfluxData.Net.InfluxDb.Models.Responses;
+using System;
 
 namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
@@ -20,26 +21,48 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
 
             foreach (var serie in series)
             {
-                var serieSet = GetSerieSet(serie);
-                serieSets.Add(serieSet);
+                var serieSetItems = GetSerieSetItems(serie);
+
+                foreach (var serieSetItem in serieSetItems)
+                {
+                    BindSerieSets(serieSets, serieSetItem);
+                }
             }
 
             return serieSets;
         }
 
-        protected virtual SerieSet GetSerieSet(Serie serie)
+        protected virtual void BindSerieSets(List<SerieSet> serieSets, SerieSetItem serieSetItem)
         {
-            var serieSet = new SerieSet() { Name = serie.Name };
+            var serieKeyValues = serieSetItem.Key.Split(',');
+            var serieName = serieKeyValues.FirstOrDefault();
+
+            if (!String.IsNullOrEmpty(serieName) && !serieSets.Any(p => p.Name == serieName))
+            {
+                var serieSet = new SerieSet() { Name = serieName };
+                serieSet.Series.Add(serieSetItem);
+                serieSets.Add(serieSet);
+            }
+            else
+            {
+                var serieSet = serieSets.FirstOrDefault(p => p.Name == serieName);
+                serieSet.Series.Add(serieSetItem);
+            }
+        }
+
+        protected virtual IList<SerieSetItem> GetSerieSetItems(Serie serie)
+        {
+            IList<SerieSetItem> series = new List<SerieSetItem>();
             var keyIndex = serie.Columns.IndexOf(KeyColumnName);
             var indexedKeyColumns = Enumerable.Range(0, serie.Columns.Count).ToDictionary(p => serie.Columns[p], p => p);
 
             foreach (var serieValues in serie.Values)
             {
                 var serieSetItem = GetSerieSetItem(keyIndex, indexedKeyColumns, serieValues);
-                serieSet.Series.Add(serieSetItem);
+                series.Add(serieSetItem);
             }
 
-            return serieSet;
+            return series;
         }
 
         protected virtual SerieSetItem GetSerieSetItem(int keyIndex, Dictionary<string, int> indexedKeyColumns, IList<object> serieValues)
