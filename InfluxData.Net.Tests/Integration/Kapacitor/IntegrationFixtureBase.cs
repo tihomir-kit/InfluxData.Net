@@ -9,21 +9,21 @@ using InfluxData.Net.Kapacitor.Models;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {
-    public class IntegrationFixture : IntegrationFixtureFactory, IDisposable
+    public abstract class IntegrationFixtureBase : IntegrationFixtureFactory, IIntegrationFixture
     {
         public static readonly string _fakeTaskPrefix = "FakeTask";
 
         public IKapacitorClient Sut { get; set; }
 
-        public IntegrationFixture(string influxDbEndpointUriKey = "influxDbEndpointUri", InfluxDbVersion influxDbVersion = InfluxDbVersion.Latest) 
+        protected IntegrationFixtureBase(
+            string influxDbEndpointUriKey, 
+            InfluxDbVersion influxDbVersion, 
+            string kapacitorEndpointUriKey, 
+            KapacitorVersion kapacitorVersion) 
             : base("FakeKapacitorDb", influxDbEndpointUriKey, influxDbVersion)
         {
-            KapacitorVersion kapacitorVersion;
-            if (!Enum.TryParse(ConfigurationManager.AppSettings.Get("version"), out kapacitorVersion))
-                kapacitorVersion = KapacitorVersion.v_0_10_1;
-
             this.Sut = new KapacitorClient(
-                ConfigurationManager.AppSettings.Get("kapacitorEndpointUri"),
+                ConfigurationManager.AppSettings.Get(kapacitorEndpointUriKey),
                 kapacitorVersion);
 
             this.Sut.Should().NotBeNull();

@@ -9,14 +9,14 @@ using InfluxData.Net.Kapacitor.Infrastructure;
 
 namespace InfluxData.Net.Kapacitor.RequestClients
 {
-    public class KapacitorRequestClient_v_0_10_0 : KapacitorRequestClient, IKapacitorRequestClient
+    public class KapacitorRequestClient_v_0_10_1 : KapacitorRequestClient, IKapacitorRequestClient
     {
         protected override string BasePath
         {
-            get { return "api/v1/"; }
+            get { return String.Empty; }
         }
 
-        public KapacitorRequestClient_v_0_10_0(IKapacitorClientConfiguration configuration)
+        public KapacitorRequestClient_v_0_10_1(IKapacitorClientConfiguration configuration)
             : base(configuration)
         {
         }

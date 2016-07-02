@@ -11,9 +11,9 @@ using InfluxData.Net.Kapacitor.RequestClients;
 
 namespace InfluxData.Net.Kapacitor.ClientModules
 {
-    public class TaskClientModule : ClientModuleBase, ITaskClientModule
+    public class TaskClientModule_v_1_0_0 : ClientModuleBase, ITaskClientModule
     {
-        public TaskClientModule(IKapacitorRequestClient requestClient)
+        public TaskClientModule_v_1_0_0(IKapacitorRequestClient requestClient)
             : base(requestClient)
         {
         }
@@ -54,7 +54,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                 { QueryParams.Dbrps, HttpUtility.UrlEncode(dbrps) }
             };
 
-            return await base.RequestClient.PostAsync(RequestPaths.Tasks, requestParams, taskParams.TickScript); //.ConfigureAwait(false);
+            return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript); //.ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskName)

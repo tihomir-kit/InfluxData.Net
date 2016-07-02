@@ -18,6 +18,7 @@ namespace InfluxData.Net.Kapacitor.RequestClients
             switch (_configuration.KapacitorVersion)
             {
                 case KapacitorVersion.Latest:
+                case KapacitorVersion.v_1_0_0:
                 case KapacitorVersion.v_0_10_1:
                     return new KapacitorRequestClient(_configuration);
                 case KapacitorVersion.v_0_10_0:

@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientModules\ClientModuleBase.cs" />
+    <Compile Include="ClientModules\TaskClientModule_v_1_0_0.cs" />
     <Compile Include="ClientModules\TaskClientModule.cs" />
     <Compile Include="ClientModules\ITaskClientModule.cs" />
     <Compile Include="Constants\QueryParams.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Models\Responses\KapacitorTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestClients\IKapacitorRequestClient.cs" />
+    <Compile Include="RequestClients\KapacitorRequestClient_v_0_10_1.cs" />
     <Compile Include="RequestClients\KapacitorRequestClient_v_0_10_0.cs" />
     <Compile Include="RequestClients\KapacitorRequestClient.cs" />
     <Compile Include="RequestClients\RequestClientFactory.cs" />

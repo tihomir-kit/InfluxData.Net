@@ -4,16 +4,15 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using InfluxData.Net.Common.Infrastructure;
 using Xunit;
+using InfluxData.Net.Integration.Kapacitor;
 
 namespace InfluxData.Net.Integration.Kapacitor.Tests
 {
-    [Collection("Kapacitor Integration")] // for sharing of the fixture instance between multiple test classes
-    [Trait("Kapacitor Integration", "Task")] // for organization of tests; by category, subtype
-    public class IntegrationTask : IDisposable
+    public abstract class IntegrationTask : IDisposable
     {
-        private readonly IntegrationFixture _fixture;
+        protected readonly IIntegrationFixture _fixture;
 
-        public IntegrationTask(IntegrationFixture fixture)
+        public IntegrationTask(IIntegrationFixture fixture)
         {
             _fixture = fixture;
             _fixture.TestSetup();
@@ -25,7 +24,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task DefineTask_OnValidArguments_ShouldDefineSuccessfully()
+        public virtual async Task DefineTask_OnValidArguments_ShouldDefineSuccessfully()
         {
             var taskParams = _fixture.MockDefineTaskParams();
 
@@ -34,7 +33,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task DefineTask_OnNoTaskNameSpecified_ShouldThrowException()
+        public virtual async Task DefineTask_OnNoTaskNameSpecified_ShouldThrowException()
         {
             var taskParams = _fixture.MockDefineTaskParams();
             taskParams.TaskName = String.Empty;
@@ -46,7 +45,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task DefineTask_OnNoTickScriptSpecified_ShouldThrowException()
+        public virtual async Task DefineTask_OnNoTickScriptSpecified_ShouldThrowException()
         {
             var taskParams = _fixture.MockDefineTaskParams();
             taskParams.TickScript = String.Empty;
@@ -58,7 +57,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task DefineTask_OnInvalidTickScriptSpecified_ShouldThrowException()
+        public virtual async Task DefineTask_OnInvalidTickScriptSpecified_ShouldThrowException()
         {
             var taskParams = _fixture.MockDefineTaskParams();
             taskParams.TickScript = "invalidScript(); // '' borken[[|}";
@@ -70,7 +69,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task GetTask_OnExistingTask_ShouldReturnTask()
+        public virtual async Task GetTask_OnExistingTask_ShouldReturnTask()
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
@@ -81,7 +80,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task GetTask_OnNonExistingTask_ShouldThrowException()
+        public virtual async Task GetTask_OnNonExistingTask_ShouldThrowException()
         {
             Func<Task> act = async () => { await _fixture.Sut.Task.GetTaskAsync("nonexistingtask"); };
 
@@ -90,7 +89,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task GetTasks_OnExistingTask_ShouldReturnTaskCollection()
+        public virtual async Task GetTasks_OnExistingTask_ShouldReturnTaskCollection()
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
@@ -102,7 +101,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task DeleteTask_OnExistingTask_ShouldDeleteSuccessfully()
+        public virtual async Task DeleteTask_OnExistingTask_ShouldDeleteSuccessfully()
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
@@ -114,7 +113,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task EnableTask_OnExistingTask_ShouldEnableSuccessfully()
+        public virtual async Task EnableTask_OnExistingTask_ShouldEnableSuccessfully()
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
@@ -131,7 +130,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task EnableTask_OnNonExistingTask_ShouldThrowException()
+        public virtual async Task EnableTask_OnNonExistingTask_ShouldThrowException()
         {
             Func<Task> act = async () => { await _fixture.Sut.Task.EnableTaskAsync("nonexistingtask"); };
 
@@ -140,7 +139,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task DisableTask_OnExistingTask_ShouldDisableSuccessfully()
+        public virtual async Task DisableTask_OnExistingTask_ShouldDisableSuccessfully()
         {
             var taskParams = await _fixture.MockAndSaveTask();
             var enableResponse = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskName);

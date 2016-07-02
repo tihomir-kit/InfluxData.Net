@@ -11,6 +11,11 @@ namespace InfluxData.Net.Kapacitor.RequestClients
 {
     public class KapacitorRequestClient : RequestClientBase, IKapacitorRequestClient
     {
+        protected virtual string BasePath
+        {
+            get { return "kapacitor/v1/"; }
+        }
+
         public KapacitorRequestClient(IKapacitorClientConfiguration configuration)
             : base(configuration.EndpointUri.AbsoluteUri, configuration.Username, configuration.Password, "InfluxData.Net.Kapacitor")
         {
@@ -34,10 +39,10 @@ namespace InfluxData.Net.Kapacitor.RequestClients
         {
             return await base.RequestAsync(HttpMethod.Delete, ResolveFullPath(path), requestParams, includeAuthToQuery: false).ConfigureAwait(false);
         }
-
+        
         protected virtual string ResolveFullPath(string path)
         {
-            return path; // v_0_10_0 uses different base path
+            return String.Format("{0}{1}", this.BasePath, path);
         }
     }
 }

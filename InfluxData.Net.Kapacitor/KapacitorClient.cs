@@ -21,7 +21,6 @@ namespace InfluxData.Net.Kapacitor
         {
         }
 
-
         //public KapacitorClient(string uri, string username, string password, KapacitorVersion kapacitorVersion)
         //     : this(new KapacitorClientConfiguration(new Uri(uri), username, password, kapacitorVersion))
         //{
