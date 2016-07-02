@@ -1,10 +1,27 @@
 ﻿using InfluxData.Net.InfluxDb.Enums;
+using System;
 
 namespace InfluxData.Net.Kapacitor.Models
 {
     public class DefineTaskParams
     {
-        public string TaskName { get; set; }
+        /// <summary>
+        /// Task Id (Name in older versions).
+        /// </summary>
+        public string TaskId { get; set; }
+
+        [Obsolete("Please use TaskId property instead")]
+        public string TaskName
+        {
+            get
+            {
+                return this.TaskId;
+            }
+            set
+            {
+                this.TaskId = value;
+            }
+        }
 
         public TaskType TaskType { get; set; }
 

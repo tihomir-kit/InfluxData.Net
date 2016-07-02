@@ -15,5 +15,24 @@ namespace InfluxData.Net.Integration.Kapacitor
             :base ("influxDbEndpointUri_v_0_9_6", InfluxDbVersion.v_0_9_6, "kapacitorEndpointUri_v_0_10_1", KapacitorVersion.v_0_10_1)
         {
         }
+
+        public override DefineTaskParams MockDefineTaskParams()
+        {
+            return new DefineTaskParams()
+            {
+                TaskId = CreateRandomTaskId(),
+                TaskType = TaskType.Stream,
+                DBRPsParams = new DBRPsParams()
+                {
+                    DbName = this.DbName,
+                    RetentionPolicy = "default"
+                },
+                TickScript = "stream\r\n" +
+                             "    .from().measurement('reading')\r\n" +
+                             "    .alert()\r\n" +
+                             "        .crit(lambda: \"Humidity\" < 36)\r\n" +
+                             "        .log('/tmp/alerts.log')\r\n"
+            };
+        }
     }
 }

@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientModules\ClientModuleBase.cs" />
-    <Compile Include="ClientModules\TaskClientModule_v_1_0_0.cs" />
+    <Compile Include="ClientModules\TaskClientModule_v_0_10_1.cs" />
     <Compile Include="ClientModules\TaskClientModule.cs" />
     <Compile Include="ClientModules\ITaskClientModule.cs" />
     <Compile Include="Constants\QueryParams.cs" />

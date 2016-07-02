@@ -36,7 +36,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         public virtual async Task DefineTask_OnNoTaskNameSpecified_ShouldThrowException()
         {
             var taskParams = _fixture.MockDefineTaskParams();
-            taskParams.TaskName = String.Empty;
+            taskParams.TaskId = String.Empty;
 
             Func<Task> act = async () => { await _fixture.Sut.Task.DefineTaskAsync(taskParams); };
 
@@ -73,9 +73,9 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
-            var response = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
+            var response = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
             response.Should().NotBeNull();
-            response.Name.Should().Be(taskParams.TaskName);
+            response.Id.Should().Be(taskParams.TaskId);
 
         }
 
@@ -96,7 +96,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             var response = await _fixture.Sut.Task.GetTasksAsync();
             response.Should().NotBeNull();
             response.Count().Should().BeGreaterOrEqualTo(1);
-            var mockedTask = response.FirstOrDefault(p => p.Name == taskParams.TaskName);
+            var mockedTask = response.FirstOrDefault(p => p.Id == taskParams.TaskId);
             mockedTask.Should().NotBeNull();
         }
 
@@ -105,11 +105,11 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
-            var response = await _fixture.Sut.Task.DeleteTaskAsync(taskParams.TaskName);
+            var response = await _fixture.Sut.Task.DeleteTaskAsync(taskParams.TaskId);
             response.Success.Should().BeTrue();
 
             var existingTasks = await _fixture.Sut.Task.GetTasksAsync();
-            existingTasks.FirstOrDefault(p => p.Name == taskParams.TaskName).Should().BeNull();
+            existingTasks.FirstOrDefault(p => p.Id == taskParams.TaskId).Should().BeNull();
         }
 
         [Fact]
@@ -117,14 +117,14 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
-            var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
+            var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
             disabledTask.Enabled.Should().BeFalse();
             disabledTask.Executing.Should().BeFalse();
 
-            var response = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskName);
+            var response = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskId);
             response.Success.Should().BeTrue();
 
-            var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
+            var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
             enabledTask.Enabled.Should().BeTrue();
             enabledTask.Executing.Should().BeTrue();
         }
@@ -142,17 +142,17 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         public virtual async Task DisableTask_OnExistingTask_ShouldDisableSuccessfully()
         {
             var taskParams = await _fixture.MockAndSaveTask();
-            var enableResponse = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskName);
+            var enableResponse = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskId);
             enableResponse.Success.Should().BeTrue();
 
-            var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
+            var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
             enabledTask.Enabled.Should().BeTrue();
             enabledTask.Executing.Should().BeTrue();
 
-            var disableResponse = await _fixture.Sut.Task.DisableTaskAsync(taskParams.TaskName);
+            var disableResponse = await _fixture.Sut.Task.DisableTaskAsync(taskParams.TaskId);
             disableResponse.Success.Should().BeTrue();
 
-            var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
+            var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
             disabledTask.Enabled.Should().BeFalse();
             disabledTask.Executing.Should().BeFalse();
         }

@@ -8,16 +8,16 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 {
     public interface ITaskClientModule
     {
-        Task<KapacitorTask> GetTaskAsync(string taskName);
+        Task<KapacitorTask> GetTaskAsync(string taskId);
 
         Task<IEnumerable<KapacitorTask>> GetTasksAsync();
 
         Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTaskParams taskParams);
 
-        Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskName);
+        Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskId);
 
-        Task<IInfluxDataApiResponse> EnableTaskAsync(string taskName);
+        Task<IInfluxDataApiResponse> EnableTaskAsync(string taskId);
 
-        Task<IInfluxDataApiResponse> DisableTaskAsync(string taskName);
+        Task<IInfluxDataApiResponse> DisableTaskAsync(string taskId);
     }
 }

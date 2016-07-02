@@ -13,7 +13,7 @@ namespace InfluxData.Net.Kapacitor.RequestClients
     {
         protected virtual string BasePath
         {
-            get { return "kapacitor/v1/"; }
+            get { return "kapacitor/v1"; }
         }
 
         public KapacitorRequestClient(IKapacitorClientConfiguration configuration)
@@ -35,14 +35,23 @@ namespace InfluxData.Net.Kapacitor.RequestClients
             return await base.RequestAsync(HttpMethod.Post, ResolveFullPath(path), requestParams, httpContent, false).ConfigureAwait(false);
         }
 
+        public virtual async Task<IInfluxDataApiResponse> DeleteAsync(string path, string taskId)
+        {
+            return await base.RequestAsync(HttpMethod.Delete, ResolveFullPath(path, taskId), includeAuthToQuery: false).ConfigureAwait(false);
+        }
+
         public virtual async Task<IInfluxDataApiResponse> DeleteAsync(string path, IDictionary<string, string> requestParams = null)
         {
             return await base.RequestAsync(HttpMethod.Delete, ResolveFullPath(path), requestParams, includeAuthToQuery: false).ConfigureAwait(false);
         }
-        
+        protected virtual string ResolveFullPath(string path, string taskId)
+        {
+            return String.Format("{0}/{1}", ResolveFullPath(path), taskId);
+        }
+
         protected virtual string ResolveFullPath(string path)
         {
-            return String.Format("{0}{1}", this.BasePath, path);
+            return String.Format("{0}/{1}", this.BasePath, path);
         }
     }
 }

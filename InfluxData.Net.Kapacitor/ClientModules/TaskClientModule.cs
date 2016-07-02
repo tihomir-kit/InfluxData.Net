@@ -8,6 +8,7 @@ using InfluxData.Net.Kapacitor.Constants;
 using InfluxData.Net.Kapacitor.Models;
 using InfluxData.Net.Kapacitor.Models.Responses;
 using InfluxData.Net.Kapacitor.RequestClients;
+using Newtonsoft.Json;
 
 namespace InfluxData.Net.Kapacitor.ClientModules
 {
@@ -44,44 +45,56 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
         public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTaskParams taskParams)
         {
-            var dbrps = String.Format("[{{\"{0}\":\"{1}\", \"{2}\":\"{3}\"}}]", 
-                QueryParams.Db, taskParams.DBRPsParams.DbName, QueryParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy);
-
-            var requestParams  = new Dictionary<string, string>
+            var content = JsonConvert.SerializeObject(new Dictionary <string, object>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskParams.TaskName) },
+                { QueryParams.Id, taskParams.TaskId },
                 { QueryParams.Type, taskParams.TaskType.ToString().ToLower() },
-                { QueryParams.Dbrps, HttpUtility.UrlEncode(dbrps) }
-            };
+                { QueryParams.Dbrps, new List<IDictionary<string, string>>
+                {
+                    new Dictionary<string, string>()
+                    {
+                        { QueryParams.Db, taskParams.DBRPsParams.DbName },
+                        { QueryParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy }
+                    }
+                }},
+                { QueryParams.Script, taskParams.TickScript }
+            });
 
-            return await base.RequestClient.PostAsync(RequestPaths.Tasks, requestParams, taskParams.TickScript); //.ConfigureAwait(false);
+            return await base.RequestClient.PostAsync(RequestPaths.Tasks, content: content).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskName)
+        protected virtual string SerializeContent(IDictionary<string, string> properties)
+        {
+            string serializedProperties = String.Empty;
+
+            foreach (var property in properties)
+            {
+                serializedProperties += String.Format("\"{0}\": \"{1}\",", property.Key, property.Value);
+            }
+
+            return String.Format("{{{0}}}", serializedProperties);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskId)
+        {
+            return await base.RequestClient.DeleteAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId)).ConfigureAwait(false);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> EnableTaskAsync(string taskId)
         {
             var requestParams = new Dictionary<string, string>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
-            };
-
-            return await base.RequestClient.DeleteAsync(RequestPaths.Task, requestParams).ConfigureAwait(false);
-        }
-
-        public virtual async Task<IInfluxDataApiResponse> EnableTaskAsync(string taskName)
-        {
-            var requestParams = new Dictionary<string, string>
-            {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
+                { QueryParams.Name, HttpUtility.UrlEncode(taskId) }
             };
 
             return await base.RequestClient.PostAsync(RequestPaths.Enable, requestParams, String.Empty).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> DisableTaskAsync(string taskName)
+        public virtual async Task<IInfluxDataApiResponse> DisableTaskAsync(string taskId)
         {
             var requestParams = new Dictionary<string, string>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
+                { QueryParams.Name, HttpUtility.UrlEncode(taskId) }
             };
 
             return await base.RequestClient.PostAsync(RequestPaths.Disable, requestParams, String.Empty).ConfigureAwait(false);

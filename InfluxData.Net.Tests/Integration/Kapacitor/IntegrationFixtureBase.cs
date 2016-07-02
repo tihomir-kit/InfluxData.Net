@@ -34,7 +34,7 @@ namespace InfluxData.Net.Integration.Kapacitor
             Task.Run(() => this.PurgeFakeTasks()).Wait();
         }
 
-        public string CreateRandomTaskName()
+        public string CreateRandomTaskId()
         {
             return base.CreateRandomName(_fakeTaskPrefix);
         }
@@ -45,8 +45,8 @@ namespace InfluxData.Net.Integration.Kapacitor
 
             foreach (var task in tasks)
             {
-                if (task.Name.StartsWith(_fakeTaskPrefix))
-                    await this.Sut.Task.DeleteTaskAsync(task.Name);
+                if (task.Id.StartsWith(_fakeTaskPrefix))
+                    await this.Sut.Task.DeleteTaskAsync(task.Id);
             }
         }
 
@@ -62,11 +62,11 @@ namespace InfluxData.Net.Integration.Kapacitor
             return task;
         }
 
-        public DefineTaskParams MockDefineTaskParams()
+        public virtual DefineTaskParams MockDefineTaskParams()
         {
             return new DefineTaskParams()
             {
-                TaskName = CreateRandomTaskName(),
+                TaskId = CreateRandomTaskId(),
                 TaskType = TaskType.Stream,
                 DBRPsParams = new DBRPsParams()
                 {
@@ -74,8 +74,8 @@ namespace InfluxData.Net.Integration.Kapacitor
                     RetentionPolicy = "default"
                 },
                 TickScript = "stream\r\n" +
-                             "    .from().measurement('reading')\r\n" +
-                             "    .alert()\r\n" +
+                             "    |from().measurement('reading')\r\n" +
+                             "    |alert()\r\n" +
                              "        .crit(lambda: \"Humidity\" < 36)\r\n" +
                              "        .log('/tmp/alerts.log')\r\n"
             };

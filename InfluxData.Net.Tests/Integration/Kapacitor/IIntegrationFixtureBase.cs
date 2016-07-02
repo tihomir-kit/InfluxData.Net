@@ -15,7 +15,7 @@ namespace InfluxData.Net.Integration.Kapacitor
 
         void Dispose();
 
-        string CreateRandomTaskName();
+        string CreateRandomTaskId();
 
         #region Data Mocks
 

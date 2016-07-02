@@ -11,9 +11,9 @@ using InfluxData.Net.Kapacitor.RequestClients;
 
 namespace InfluxData.Net.Kapacitor.ClientModules
 {
-    public class TaskClientModule_v_1_0_0 : ClientModuleBase, ITaskClientModule
+    public class TaskClientModule_v_0_10_1 : ClientModuleBase, ITaskClientModule
     {
-        public TaskClientModule_v_1_0_0(IKapacitorRequestClient requestClient)
+        public TaskClientModule_v_0_10_1(IKapacitorRequestClient requestClient)
             : base(requestClient)
         {
         }
@@ -49,7 +49,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
             var requestParams  = new Dictionary<string, string>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskParams.TaskName) },
+                { QueryParams.Name, HttpUtility.UrlEncode(taskParams.TaskId) },
                 { QueryParams.Type, taskParams.TaskType.ToString().ToLower() },
                 { QueryParams.Dbrps, HttpUtility.UrlEncode(dbrps) }
             };
