@@ -48,8 +48,13 @@ namespace InfluxData.Net.Kapacitor.Models.Responses
             }
         }
 
+        // TODO: add "Stats" (new property that came with v1)
+
         public string Dot { get; set; }
 
+        public string Status { get; set; }
+
+        [Obsolete("The 'Enabled' property is only used by older versions of Kapacitor, please use 'Status' instead")]
         public bool Enabled { get; set; }
 
         public bool Executing { get; set; }

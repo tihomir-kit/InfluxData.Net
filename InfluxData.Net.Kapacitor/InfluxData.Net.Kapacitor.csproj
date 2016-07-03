@@ -45,6 +45,7 @@
     <Compile Include="ClientModules\TaskClientModule_v_0_10_1.cs" />
     <Compile Include="ClientModules\TaskClientModule.cs" />
     <Compile Include="ClientModules\ITaskClientModule.cs" />
+    <Compile Include="Constants\BodyParams.cs" />
     <Compile Include="Constants\QueryParams.cs" />
     <Compile Include="Constants\RequestPaths.cs" />
     <Compile Include="Enums\TaskType.cs" />

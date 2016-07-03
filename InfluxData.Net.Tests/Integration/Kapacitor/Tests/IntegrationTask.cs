@@ -33,18 +33,6 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public virtual async Task DefineTask_OnNoTaskNameSpecified_ShouldThrowException()
-        {
-            var taskParams = _fixture.MockDefineTaskParams();
-            taskParams.TaskId = String.Empty;
-
-            Func<Task> act = async () => { await _fixture.Sut.Task.DefineTaskAsync(taskParams); };
-
-            act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=InternalServerError, response={\n    \"Error\": \"key required\"\n}");
-        }
-
-        [Fact]
         public virtual async Task DefineTask_OnNoTickScriptSpecified_ShouldThrowException()
         {
             var taskParams = _fixture.MockDefineTaskParams();
@@ -53,7 +41,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             Func<Task> act = async () => { await _fixture.Sut.Task.DefineTaskAsync(taskParams); };
 
             act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=BadRequest, response={\n    \"Error\": \"must provide TICKscript via POST data.\"\n}");
+                .WithMessage("InfluxData API responded with status code=BadRequest, response={\n    \"error\": \"must provide TICKscript\"\n}");
         }
 
         [Fact]
@@ -65,7 +53,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             Func<Task> act = async () => { await _fixture.Sut.Task.DefineTaskAsync(taskParams); };
 
             act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=InternalServerError, response={\n    \"Error\": \"invalid task: parser: unexpected unknown state line 1 char 16 in \\\"idScript(); // '' bo\\\". expected: \\\"number\\\",\\\"string\\\",\\\"duration\\\",\\\"identifier\\\",\\\"TRUE\\\",\\\"FALSE\\\",\\\"==\\\",\\\"(\\\",\\\"-\\\",\\\"!\\\"\"\n}");
+                .WithMessage("InfluxData API responded with status code=BadRequest, response={\n    \"error\": \"invalid TICKscript: parser: unexpected unknown state line 1 char 16 in \\\"idScript(); // '' bo\\\". expected: \\\"number\\\",\\\"string\\\",\\\"duration\\\",\\\"identifier\\\",\\\"TRUE\\\",\\\"FALSE\\\",\\\"==\\\",\\\"(\\\",\\\"-\\\",\\\"!\\\"\"\n}");
         }
 
         [Fact]
@@ -85,7 +73,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             Func<Task> act = async () => { await _fixture.Sut.Task.GetTaskAsync("nonexistingtask"); };
 
             act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=NotFound, response={\n    \"Error\": \"unknown task nonexistingtask\"\n}");
+                .WithMessage("InfluxData API responded with status code=NotFound, response={\n    \"error\": \"no task exists\"\n}");
         }
 
         [Fact]
@@ -118,14 +106,14 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             var taskParams = await _fixture.MockAndSaveTask();
 
             var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
-            disabledTask.Enabled.Should().BeFalse();
+            disabledTask.Status.Should().Be("disabled");
             disabledTask.Executing.Should().BeFalse();
 
             var response = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskId);
             response.Success.Should().BeTrue();
 
             var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
-            enabledTask.Enabled.Should().BeTrue();
+            enabledTask.Status.Should().Be("enabled");
             enabledTask.Executing.Should().BeTrue();
         }
 
@@ -135,7 +123,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             Func<Task> act = async () => { await _fixture.Sut.Task.EnableTaskAsync("nonexistingtask"); };
 
             act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=InternalServerError, response={\n    \"Error\": \"unknown task nonexistingtask\"\n}");
+                .WithMessage("InfluxData API responded with status code=NotFound, response={\n    \"error\": \"task does not exist, cannot update\"\n}");
         }
 
         [Fact]
@@ -146,14 +134,14 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             enableResponse.Success.Should().BeTrue();
 
             var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
-            enabledTask.Enabled.Should().BeTrue();
+            enabledTask.Status.Should().Be("enabled");
             enabledTask.Executing.Should().BeTrue();
 
             var disableResponse = await _fixture.Sut.Task.DisableTaskAsync(taskParams.TaskId);
             disableResponse.Success.Should().BeTrue();
 
             var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
-            disabledTask.Enabled.Should().BeFalse();
+            disabledTask.Status.Should().Be("disabled");
             disabledTask.Executing.Should().BeFalse();
         }
     }

@@ -19,13 +19,9 @@ namespace InfluxData.Net.Kapacitor.ClientModules
         {
         }
 
-        public virtual async Task<KapacitorTask> GetTaskAsync(string taskName)
+        public virtual async Task<KapacitorTask> GetTaskAsync(string taskId)
         {
-            var requestParams = new Dictionary<string, string>
-            {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
-            };
-            var response = await base.RequestClient.GetAsync(RequestPaths.Task, requestParams).ConfigureAwait(false);
+            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId)).ConfigureAwait(false);
             var task = response.ReadAs<KapacitorTask>();
 
             return task;
@@ -82,22 +78,22 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
         public virtual async Task<IInfluxDataApiResponse> EnableTaskAsync(string taskId)
         {
-            var requestParams = new Dictionary<string, string>
+            var content = JsonConvert.SerializeObject(new Dictionary<string, object>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskId) }
-            };
+                { BodyParams.Status, "enabled" },
+            });
 
-            return await base.RequestClient.PostAsync(RequestPaths.Enable, requestParams, String.Empty).ConfigureAwait(false);
+            return await base.RequestClient.PatchAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId), content).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> DisableTaskAsync(string taskId)
         {
-            var requestParams = new Dictionary<string, string>
+            var content = JsonConvert.SerializeObject(new Dictionary<string, object>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskId) }
-            };
+                { BodyParams.Status, "disabled" },
+            });
 
-            return await base.RequestClient.PostAsync(RequestPaths.Disable, requestParams, String.Empty).ConfigureAwait(false);
+            return await base.RequestClient.PatchAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId), content).ConfigureAwait(false);
         }
     }
 }
