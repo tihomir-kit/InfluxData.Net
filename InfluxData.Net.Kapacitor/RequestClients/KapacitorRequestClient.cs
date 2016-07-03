@@ -13,7 +13,7 @@ namespace InfluxData.Net.Kapacitor.RequestClients
     {
         protected virtual string BasePath
         {
-            get { return "kapacitor/v1"; }
+            get { return "kapacitor/v1/"; }
         }
 
         public KapacitorRequestClient(IKapacitorClientConfiguration configuration)
@@ -68,7 +68,7 @@ namespace InfluxData.Net.Kapacitor.RequestClients
 
         protected virtual string ResolveFullPath(string path, string taskId = null)
         {
-            var basePath = String.Format("{0}/{1}", this.BasePath, path);
+            var basePath = String.Format("{0}{1}", this.BasePath, path);
 
             if (!String.IsNullOrEmpty(taskId))
                 return String.Format("{0}/{1}", basePath, taskId);

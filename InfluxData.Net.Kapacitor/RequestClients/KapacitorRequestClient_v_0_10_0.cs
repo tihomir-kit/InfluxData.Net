@@ -13,7 +13,7 @@ namespace InfluxData.Net.Kapacitor.RequestClients
     {
         protected override string BasePath
         {
-            get { return "api/v1"; }
+            get { return "api/v1/"; }
         }
 
         public KapacitorRequestClient_v_0_10_0(IKapacitorClientConfiguration configuration)
