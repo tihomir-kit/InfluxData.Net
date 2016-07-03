@@ -29,11 +29,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
         public virtual async Task<IEnumerable<KapacitorTask>> GetTasksAsync()
         {
-            var requestParams = new Dictionary<string, string>
-            {
-                { QueryParams.Tasks, String.Empty }
-            };
-            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks, requestParams).ConfigureAwait(false);
+            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks).ConfigureAwait(false);
             var tasks = response.ReadAs<KapacitorTasks>();
 
             return tasks.Tasks;
@@ -43,32 +39,20 @@ namespace InfluxData.Net.Kapacitor.ClientModules
         {
             var content = JsonConvert.SerializeObject(new Dictionary <string, object>
             {
-                { QueryParams.Id, taskParams.TaskId },
-                { QueryParams.Type, taskParams.TaskType.ToString().ToLower() },
-                { QueryParams.Dbrps, new List<IDictionary<string, string>>
+                { BodyParams.Id, taskParams.TaskId },
+                { BodyParams.Type, taskParams.TaskType.ToString().ToLower() },
+                { BodyParams.Dbrps, new List<IDictionary<string, string>>
                 {
                     new Dictionary<string, string>()
                     {
-                        { QueryParams.Db, taskParams.DBRPsParams.DbName },
-                        { QueryParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy }
+                        { BodyParams.Db, taskParams.DBRPsParams.DbName },
+                        { BodyParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy }
                     }
                 }},
-                { QueryParams.Script, taskParams.TickScript }
+                { BodyParams.Script, taskParams.TickScript }
             });
 
             return await base.RequestClient.PostAsync(RequestPaths.Tasks, content: content).ConfigureAwait(false);
-        }
-
-        protected virtual string SerializeContent(IDictionary<string, string> properties)
-        {
-            string serializedProperties = String.Empty;
-
-            foreach (var property in properties)
-            {
-                serializedProperties += String.Format("\"{0}\": \"{1}\",", property.Key, property.Value);
-            }
-
-            return String.Format("{{{0}}}", serializedProperties);
         }
 
         public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskId)

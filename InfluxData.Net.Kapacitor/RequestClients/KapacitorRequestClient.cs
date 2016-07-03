@@ -21,14 +21,19 @@ namespace InfluxData.Net.Kapacitor.RequestClients
         {
         }
 
-        public virtual async Task<IInfluxDataApiResponse> GetAsync(string path, string taskId = null)
+        public virtual async Task<IInfluxDataApiResponse> GetAsync(string path)
+        {
+            return await base.RequestAsync(HttpMethod.Get, ResolveFullPath(path), includeAuthToQuery: false).ConfigureAwait(false);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> GetAsync(string path, string taskId)
         {
             return await base.RequestAsync(HttpMethod.Get, ResolveFullPath(path, taskId), includeAuthToQuery: false).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> GetAsync(
             string path,
-            IDictionary<string, string> requestParams = null)
+            IDictionary<string, string> requestParams)
         {
             return await base.RequestAsync(HttpMethod.Get, ResolveFullPath(path), requestParams, includeAuthToQuery: false).ConfigureAwait(false);
         }

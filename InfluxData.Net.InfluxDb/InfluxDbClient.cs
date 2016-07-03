@@ -69,7 +69,7 @@ namespace InfluxData.Net.InfluxDb
 
         public InfluxDbClient(IInfluxDbClientConfiguration configuration)
         {
-            var requestClientFactory = new RequestClientFactory(configuration);
+            var requestClientFactory = new InfluxDbClientBootstrap(configuration);
             var dependencies = requestClientFactory.GetClientDependencies();
             _requestClient = dependencies.RequestClient;
 

@@ -83,7 +83,7 @@
     <Compile Include="QueryBuilders\ISerieQueryBuilder.cs" />
     <Compile Include="QueryBuilders\RetentionQueryBuilder.cs" />
     <Compile Include="QueryBuilders\IRetentionQueryBuilder.cs" />
-    <Compile Include="RequestClients\RequestClientFactory.cs" />
+    <Compile Include="InfluxDbClientBootstrap.cs" />
     <Compile Include="Infrastructure\RequestParamsBuilder.cs" />
     <Compile Include="RequestClients\InfluxDbRequestClient_v_0_9_2.cs" />
     <Compile Include="RequestClients\InfluxDbRequestClient.cs" />

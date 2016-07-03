@@ -3,14 +3,15 @@ using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.QueryBuilders;
 using InfluxData.Net.InfluxDb.ResponseParsers;
+using InfluxData.Net.InfluxDb.RequestClients;
 
-namespace InfluxData.Net.InfluxDb.RequestClients
+namespace InfluxData.Net.InfluxDb
 {
-    internal class RequestClientFactory
+    internal class InfluxDbClientBootstrap
     {
         private readonly IInfluxDbClientConfiguration _configuration;
 
-        public RequestClientFactory(IInfluxDbClientConfiguration configuration)
+        public InfluxDbClientBootstrap(IInfluxDbClientConfiguration configuration)
         {
             _configuration = configuration;
         }

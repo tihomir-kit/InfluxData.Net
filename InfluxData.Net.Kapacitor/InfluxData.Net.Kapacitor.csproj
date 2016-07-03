@@ -60,7 +60,7 @@
     <Compile Include="RequestClients\KapacitorRequestClient_v_0_10_1.cs" />
     <Compile Include="RequestClients\KapacitorRequestClient_v_0_10_0.cs" />
     <Compile Include="RequestClients\KapacitorRequestClient.cs" />
-    <Compile Include="RequestClients\RequestClientFactory.cs" />
+    <Compile Include="KapacitorClientBootstrap.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

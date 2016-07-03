@@ -1,14 +1,15 @@
 ﻿using System;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Kapacitor.Infrastructure;
+using InfluxData.Net.Kapacitor.RequestClients;
 
-namespace InfluxData.Net.Kapacitor.RequestClients
+namespace InfluxData.Net.Kapacitor
 {
-    internal class RequestClientFactory
+    internal class KapacitorClientBootstrap
     {
         private readonly IKapacitorClientConfiguration _configuration;
 
-        public RequestClientFactory(IKapacitorClientConfiguration configuration)
+        public KapacitorClientBootstrap(IKapacitorClientConfiguration configuration)
         {
             _configuration = configuration;
         }

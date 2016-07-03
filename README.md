@@ -337,7 +337,7 @@ Can be used to do work with tasks (creation, deletion, listing, enablin, disabli
 To get a single Kapacitor task, execute the following:
 
 ```cs
-var response = await kapacitorClient.Task.GetTaskAsync("taskName");
+var response = await kapacitorClient.Task.GetTaskAsync("taskId");
 ```
 
 #### GetTasksAsync
@@ -355,7 +355,7 @@ To create/define a task, a `DefineTaskParams` object needs to be created first:
 ```cs
 var taskParams = new DefineTaskParams()
 {
-    TaskName = "someTaskName",
+    TaskId = "someTaskId",
     TaskType = TaskType.Stream,
     DBRPsParams = new DBRPsParams()
     {
@@ -365,7 +365,7 @@ var taskParams = new DefineTaskParams()
     TickScript = "stream\r\n" +
                  "    .from().measurement('reading')\r\n" +
                  "    .alert()\r\n" +
-                 "        .crit(lambda: \"Temperature\" > 36)\r\n" +
+                 "        .crit(lambda: \"Humidity\" < 36)\r\n" +
                  "        .log('/tmp/alerts.log')\r\n"
 };
 
@@ -383,7 +383,7 @@ var response = await kapacitorClient.Task.DefineTaskAsync(taskParams);
 To delete a Kapacitor task, execute the following:
 
 ```cs
-var response = await kapacitorClient.Task.DeleteTaskAsync("taskName");
+var response = await kapacitorClient.Task.DeleteTaskAsync("taskId");
 ```
 
 #### EnableTaskAsync
@@ -391,7 +391,7 @@ var response = await kapacitorClient.Task.DeleteTaskAsync("taskName");
 To enable a Kapacitor task, execute the following:
 
 ```cs
-var response = await kapacitorClient.Task.EnableTaskAsync("taskName");
+var response = await kapacitorClient.Task.EnableTaskAsync("taskId");
 ```
 
 #### DisableTaskAsync
@@ -399,7 +399,7 @@ var response = await kapacitorClient.Task.EnableTaskAsync("taskName");
 To disable a Kapacitor task, execute the following:
 
 ```cs
-var response = await kapacitorClient.Task.DisableTaskAsync("taskName");
+var response = await kapacitorClient.Task.DisableTaskAsync("taskId");
 ```
 
 
