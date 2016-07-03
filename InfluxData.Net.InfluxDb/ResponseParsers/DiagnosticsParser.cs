@@ -18,7 +18,13 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
                 Httpd = series.Where(p => p.Name == "httpd"),
                 WAL = series.Where(p => p.Name == "wal"),
                 Write = series.Where(p => p.Name == "write"),
-                Runtime = series.Where(p => p.Name == "runtime")
+                Runtime = series.Where(p => p.Name == "runtime"),
+                Database = series.Where(p => p.Name == "database"),
+                QueryExecutor = series.Where(p => p.Name == "queryExecutor"),
+                Subscriber = series.Where(p => p.Name == "subscriber"),
+                Tsm1Cache = series.Where(p => p.Name == "tsm1_cache"),
+                Tsm1Filestore = series.Where(p => p.Name == "tsm1_filestore"),
+                Tsm1Wal = series.Where(p => p.Name == "tsm1_wal")
             };
 
             return stats;

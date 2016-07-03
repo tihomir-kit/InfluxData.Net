@@ -6,13 +6,11 @@ using Xunit;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
-    [Collection("InfluxDb Integration")]
-    [Trait("InfluxDb Integration", "Database")]
-    public class IntegrationDatabase : IDisposable
+    public abstract class IntegrationDatabase : IDisposable
     {
-        private readonly IntegrationFixture _fixture;
+        protected readonly IIntegrationFixture _fixture;
 
-        public IntegrationDatabase(IntegrationFixture fixture)
+        public IntegrationDatabase(IIntegrationFixture fixture)
         {
             _fixture = fixture;
             _fixture.TestSetup();
@@ -24,7 +22,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public async Task Database_OnCreateAndDrop_ShouldReturnSuccess()
+        public virtual async Task Database_OnCreateAndDrop_ShouldReturnSuccess()
         {
             var dbName = _fixture.CreateRandomDbName();
 
@@ -36,7 +34,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
         
         [Fact]
-        public async Task GetDatabase_OnDatabaseExists_ShouldReturnDatabaseCollection()
+        public virtual async Task GetDatabase_OnDatabaseExists_ShouldReturnDatabaseCollection()
         {
             var dbName = _fixture.CreateRandomDbName();
             var createResponse = await _fixture.Sut.Database.CreateDatabaseAsync(dbName);

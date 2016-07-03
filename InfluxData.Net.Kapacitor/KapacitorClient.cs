@@ -21,7 +21,6 @@ namespace InfluxData.Net.Kapacitor
         {
         }
 
-
         //public KapacitorClient(string uri, string username, string password, KapacitorVersion kapacitorVersion)
         //     : this(new KapacitorClientConfiguration(new Uri(uri), username, password, kapacitorVersion))
         //{
@@ -29,10 +28,11 @@ namespace InfluxData.Net.Kapacitor
 
         public KapacitorClient(KapacitorClientConfiguration configuration)
         {
-            var requestClientFactory = new RequestClientFactory(configuration);
-            _requestClient = requestClientFactory.GetRequestClient();
+            var requestClientFactory = new KapacitorClientBootstrap(configuration);
+            var dependencies = requestClientFactory.GetRequestClient();
+            _requestClient = dependencies.KapacitorRequestClient;
 
-            _taskClientModule = new Lazy<ITaskClientModule>(() => new TaskClientModule(_requestClient));
+            _taskClientModule = new Lazy<ITaskClientModule>(() => dependencies.TaskClientModule);
         }
     }
 }

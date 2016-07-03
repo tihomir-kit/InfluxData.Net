@@ -55,13 +55,17 @@
     <Compile Include="IInfluxDbClient.cs" />
     <Compile Include="InfluxDbClient.cs" />
     <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
+    <Compile Include="Infrastructure\InfluxDbClientDependencies.cs" />
     <Compile Include="Models\Responses\ContinuousQuery.cs" />
     <Compile Include="Models\Responses\Measurement.cs" />
     <Compile Include="Models\Responses\Diagnostics.cs" />
     <Compile Include="Models\Responses\SerieSet.cs" />
     <Compile Include="Models\Responses\Stats.cs" />
+    <Compile Include="QueryBuilders\CqQueryBuilder_v_0_9_6.cs" />
+    <Compile Include="RequestClients\InfluxDbRequestClient_v_0_9_6.cs" />
     <Compile Include="ResponseParsers\ISerieResponseParser.cs" />
     <Compile Include="ResponseParsers\IRetentionResponseParser.cs" />
+    <Compile Include="ResponseParsers\SerieResponseParser_v_0_9_6.cs" />
     <Compile Include="ResponseParsers\SerieResponseParser.cs" />
     <Compile Include="ResponseParsers\RetentionResponseParser.cs" />
     <Compile Include="ResponseParsers\DatabaseResponseParser.cs" />
@@ -79,7 +83,7 @@
     <Compile Include="QueryBuilders\ISerieQueryBuilder.cs" />
     <Compile Include="QueryBuilders\RetentionQueryBuilder.cs" />
     <Compile Include="QueryBuilders\IRetentionQueryBuilder.cs" />
-    <Compile Include="RequestClients\RequestClientFactory.cs" />
+    <Compile Include="InfluxDbClientBootstrap.cs" />
     <Compile Include="Infrastructure\RequestParamsBuilder.cs" />
     <Compile Include="RequestClients\InfluxDbRequestClient_v_0_9_2.cs" />
     <Compile Include="RequestClients\InfluxDbRequestClient.cs" />

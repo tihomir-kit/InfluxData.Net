@@ -69,19 +69,20 @@ namespace InfluxData.Net.InfluxDb
 
         public InfluxDbClient(IInfluxDbClientConfiguration configuration)
         {
-            var requestClientFactory = new RequestClientFactory(configuration);
-            _requestClient = requestClientFactory.GetRequestClient();
+            var requestClientFactory = new InfluxDbClientBootstrap(configuration);
+            var dependencies = requestClientFactory.GetClientDependencies();
+            _requestClient = dependencies.RequestClient;
 
             // NOTE: once a breaking change occures, QueryBuilders will need to be resolved with factories
             _serieQueryBuilder = new Lazy<ISerieQueryBuilder>(() => new SerieQueryBuilder(), true);
             _databaseQueryBuilder = new Lazy<IDatabaseQueryBuilder>(() => new DatabaseQueryBuilder(), true);
             _retentionQueryBuilder = new Lazy<IRetentionQueryBuilder>(() => new RetentionQueryBuilder(), true);
-            _cqQueryBuilder = new Lazy<ICqQueryBuilder>(() => new CqQueryBuilder(), true);
+            _cqQueryBuilder = new Lazy<ICqQueryBuilder>(() => dependencies.CqQueryBuilder, true);
             _diagnosticsQueryBuilder = new Lazy<IDiagnosticsQueryBuilder>(() => new DiagnosticsQueryBuilder(), true);
 
             // NOTE: once a breaking change occures, Parsers will need to be resolved with factories
             _basicResponseParser = new Lazy<IBasicResponseParser>(() => new BasicResponseParser(), true);
-            _serieResponseParser = new Lazy<ISerieResponseParser>(() => new SerieResponseParser(), true);
+            _serieResponseParser = new Lazy<ISerieResponseParser>(() => dependencies.SerieResponseParser, true);
             _databaseResponseParser = new Lazy<IDatabaseResponseParser>(() => new DatabaseResponseParser(), true);
             _retentionResponseParser = new Lazy<IRetentionResponseParser>(() => new RetentionResponseParser(), true);
             _cqResponseParser = new Lazy<ICqResponseParser>(() => new CqResponseParser(), true);

@@ -92,18 +92,39 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Integration\InfluxDb\IntegrationCollection.cs" />
+    <Compile Include="Integration\InfluxDb\IIntegrationFixture.cs" />
+    <Compile Include="Integration\InfluxDb\IntegrationFixtureBase.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_0_0\IntegrationCollection.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_0_0\IntegrationFixture.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_0_0\Tests\IntegrationBasic.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_0_0\Tests\IntegrationContinuousQueries.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_0_0\Tests\IntegrationDatabase.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_0_0\Tests\IntegrationDiagnostics.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_0_0\Tests\IntegrationSerie.cs" />
+    <Compile Include="Integration\InfluxDb_v_0_9_6\IntegrationCollection.cs" />
+    <Compile Include="Integration\InfluxDb_v_0_9_6\IntegrationFixture.cs" />
+    <Compile Include="Integration\InfluxDb_v_0_9_6\Tests\IntegrationBasic.cs" />
+    <Compile Include="Integration\InfluxDb_v_0_9_6\Tests\IntegrationContinuousQueries.cs" />
+    <Compile Include="Integration\InfluxDb_v_0_9_6\Tests\IntegrationDatabase.cs" />
+    <Compile Include="Integration\InfluxDb_v_0_9_6\Tests\IntegrationDiagnostics.cs" />
+    <Compile Include="Integration\InfluxDb_v_0_9_6\Tests\IntegrationSerie.cs" />
     <Compile Include="Integration\InfluxDb\Tests\IntegrationDiagnostics.cs" />
     <Compile Include="Integration\InfluxDb\Tests\IntegrationBasic.cs" />
     <Compile Include="Integration\InfluxDb\Tests\IntegrationContinuousQueries.cs" />
     <Compile Include="Integration\InfluxDb\Tests\IntegrationSerie.cs" />
     <Compile Include="Integration\InfluxDb\Tests\IntegrationDatabase.cs" />
-    <Compile Include="Integration\IntegrationFixtureBase.cs" />
-    <Compile Include="Integration\Kapacitor\IntegrationCollection.cs" />
-    <Compile Include="Integration\Kapacitor\IntegrationFixture.cs" />
+    <Compile Include="Integration\IIntegrationFixtureFactory.cs" />
+    <Compile Include="Integration\IntegrationFixtureFactory.cs" />
+    <Compile Include="Integration\Kapacitor\IIntegrationFixtureBase.cs" />
+    <Compile Include="Integration\Kapacitor_v_0_10_1\IntegrationCollection.cs" />
+    <Compile Include="Integration\Kapacitor_v_0_10_1\IntegrationFixture.cs" />
+    <Compile Include="Integration\Kapacitor_v_0_10_1\Tests\IntegrationTask.cs" />
+    <Compile Include="Integration\Kapacitor\IntegrationFixtureBase.cs" />
     <Compile Include="Integration\Kapacitor\Tests\IntegrationTask.cs" />
+    <Compile Include="Integration\Kapacitor_v_1_0_0\IntegrationCollection.cs" />
+    <Compile Include="Integration\Kapacitor_v_1_0_0\IntegrationFixture.cs" />
+    <Compile Include="Integration\Kapacitor_v_1_0_0\Tests\IntegrationTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Integration\InfluxDb\IntegrationFixture.cs" />
     <Compile Include="QueryBuilders\CqQueryBuildersTests.cs" />
   </ItemGroup>
   <ItemGroup>

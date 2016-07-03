@@ -1,8 +1,8 @@
 InfluxData.Net
 ============
-**Compatible with InfluxDB v0.9.6 and Kapacitor v0.10.1 API's**
+**Compatible with InfluxDB v1.0.0-beta and Kapacitor v1.0.0-beta API's**
 
-> InfluxData.Net is a portable .NET library to access the REST API of an [InfluxDB](https://influxdata.com/time-series-platform/influxdb/) database and [Kapacitor](https://influxdata.com/time-series-platform/kapacitor/) processing tool. 
+> InfluxData.Net is a portable .NET library to access the REST API of an [InfluxDB](https://influxdata.com/time-series-platform/influxdb/) database and [Kapacitor](https://influxdata.com/time-series-platform/kapacitor/) processing tool.
 
 InfluxDB is the data storage layer in [InfluxData](https://influxdata.com/)'s [TICK stack](https://influxdata.com/get-started/#whats-the-tick-stack) which is an open-source end-to-end platform for managing time-series data at scale.
 
@@ -10,10 +10,17 @@ Kapacitor is a data processing engine. It can process both stream (subscribe rea
 
 Support for other TICK stack layers is also planned and will be implemented in the future when they become stable from InfluxData side.
 
-**Original Lib**  
+**Original Lib**
 This is a fork of [InfluxDb.Net](https://github.com/pootzko/InfluxDB.Net/), (which is in turn a fork of [InfluxDb.Net](https://github.com/ziyasal/InfluxDb.Net/)). Those NuGet libraries are only suitable for InfluxDB versions lower than v0.9.5.
 
-**Installation**  
+**Support for older versions**
+
+Currently older supported versions:
+
+ - InfluxDB: v0.9.2, v0.9.6
+ - Kapacitor: v0.10.0, v0.10.1
+
+**Installation**
 You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) package to install the latest version of InfluxData.Net Lib.
 
 ## Usage
@@ -21,16 +28,16 @@ You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/Influ
 To use InfluxData.Net InfluxDbClient you must first create an instance of `InfluxDbClient`:
 
 ```cs
-var influxDbClient = new InfluxDbClient("http://yourinfluxdb.com:8086/", "username", "password", InfluxDbVersion.v_0_9_6);
+var influxDbClient = new InfluxDbClient("http://yourinfluxdb.com:8086/", "username", "password", InfluxDbVersion.v_1_0_0);
 ```
 
 To use InfluxData.Net KapacitorClient you must first create an instance of `KapacitorClient` (Kapacitor doesn't support authentication yet, so use this overload for now):
 
 ```cs
-var kapacitorClient = new KapacitorClient("http://yourkapacitor.com:9092/", KapacitorVersion.v_0_10_1);
+var kapacitorClient = new KapacitorClient("http://yourkapacitor.com:9092/", KapacitorVersion.v_1_0_0);
 ```
 
-Clients modules (properties of *Client* object) can then be consumed and methods for communicating with InfluxDb/Kapacitor can be consumed. 
+Clients modules (properties of *Client* object) can then be consumed and methods for communicating with InfluxDb/Kapacitor can be consumed.
 
 **Supported InfluxDbClient modules and API calls**
 
@@ -123,7 +130,7 @@ var response = await influxDbClient.Client.QueryAsync("yourDbName", query);
 The second `QueryAsync` overload will return the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. The response will be a _flattened_ collection of multi-results series. This means that the resulting series from all queries will be extracted into a single collection. This has been implemented to make it easier on the developer in case he is querying the same measurement with different params multiple times at once.
 
 ```cs
-var queries = new [] 
+var queries = new []
 {
     "SELECT * FROM reading WHERE time > now() - 1h",
     "SELECT * FROM reading WHERE time > now() - 2h"
@@ -136,7 +143,7 @@ var response = await influxDbClient.Client.QueryAsync("yourDbName", queries);
 `MultiQueryAsync` also returns the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. Unlike the second `QueryAsync` overload, the results *will not be flattened*. This method will return a collection of results where each result contains the series of a corresponding query.
 
 ```cs
-var queries = new [] 
+var queries = new []
 {
     "SELECT * FROM reading WHERE time > now() - 1h",
     "SELECT * FROM reading WHERE time > now() - 2h"
@@ -221,7 +228,7 @@ var response = await influxDbClient.ContinuousQuery.DeleteContinuousQueryAsync("
 ```
 
 #### BackfillAsync
-The `ContinuousQuery.BackfillAsync` method can be used to manually calculate aggregate data for the data that was already in your DB, not only for the newly incoming data. 
+The `ContinuousQuery.BackfillAsync` method can be used to manually calculate aggregate data for the data that was already in your DB, not only for the newly incoming data.
 
 Similarly to `CreateContinuousQueryAsync`, a `BackfillParams` object needs to be created first:
 
@@ -337,7 +344,7 @@ Can be used to do work with tasks (creation, deletion, listing, enablin, disabli
 To get a single Kapacitor task, execute the following:
 
 ```cs
-var response = await kapacitorClient.Task.GetTaskAsync("taskName");
+var response = await kapacitorClient.Task.GetTaskAsync("taskId");
 ```
 
 #### GetTasksAsync
@@ -355,7 +362,7 @@ To create/define a task, a `DefineTaskParams` object needs to be created first:
 ```cs
 var taskParams = new DefineTaskParams()
 {
-    TaskName = "someTaskName",
+    TaskId = "someTaskId",
     TaskType = TaskType.Stream,
     DBRPsParams = new DBRPsParams()
     {
@@ -363,9 +370,9 @@ var taskParams = new DefineTaskParams()
         RetentionPolicy = "default"
     },
     TickScript = "stream\r\n" +
-                 "    .from().measurement('reading')\r\n" +
-                 "    .alert()\r\n" +
-                 "        .crit(lambda: \"Temperature\" > 36)\r\n" +
+                 "    |from().measurement('reading')\r\n" +
+                 "    |alert()\r\n" +
+                 "        .crit(lambda: \"Humidity\" < 36)\r\n" +
                  "        .log('/tmp/alerts.log')\r\n"
 };
 
@@ -383,7 +390,7 @@ var response = await kapacitorClient.Task.DefineTaskAsync(taskParams);
 To delete a Kapacitor task, execute the following:
 
 ```cs
-var response = await kapacitorClient.Task.DeleteTaskAsync("taskName");
+var response = await kapacitorClient.Task.DeleteTaskAsync("taskId");
 ```
 
 #### EnableTaskAsync
@@ -391,7 +398,7 @@ var response = await kapacitorClient.Task.DeleteTaskAsync("taskName");
 To enable a Kapacitor task, execute the following:
 
 ```cs
-var response = await kapacitorClient.Task.EnableTaskAsync("taskName");
+var response = await kapacitorClient.Task.EnableTaskAsync("taskId");
 ```
 
 #### DisableTaskAsync
@@ -399,7 +406,7 @@ var response = await kapacitorClient.Task.EnableTaskAsync("taskName");
 To disable a Kapacitor task, execute the following:
 
 ```cs
-var response = await kapacitorClient.Task.DisableTaskAsync("taskName");
+var response = await kapacitorClient.Task.DisableTaskAsync("taskId");
 ```
 
 

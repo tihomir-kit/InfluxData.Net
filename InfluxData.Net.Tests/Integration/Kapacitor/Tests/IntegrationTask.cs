@@ -4,16 +4,15 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using InfluxData.Net.Common.Infrastructure;
 using Xunit;
+using InfluxData.Net.Integration.Kapacitor;
 
 namespace InfluxData.Net.Integration.Kapacitor.Tests
 {
-    [Collection("Kapacitor Integration")] // for sharing of the fixture instance between multiple test classes
-    [Trait("Kapacitor Integration", "Task")] // for organization of tests; by category, subtype
-    public class IntegrationTask : IDisposable
+    public abstract class IntegrationTask : IDisposable
     {
-        private readonly IntegrationFixture _fixture;
+        protected readonly IIntegrationFixture _fixture;
 
-        public IntegrationTask(IntegrationFixture fixture)
+        public IntegrationTask(IIntegrationFixture fixture)
         {
             _fixture = fixture;
             _fixture.TestSetup();
@@ -25,7 +24,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task DefineTask_OnValidArguments_ShouldDefineSuccessfully()
+        public virtual async Task DefineTask_OnValidArguments_ShouldDefineSuccessfully()
         {
             var taskParams = _fixture.MockDefineTaskParams();
 
@@ -34,19 +33,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         }
 
         [Fact]
-        public async Task DefineTask_OnNoTaskNameSpecified_ShouldThrowException()
-        {
-            var taskParams = _fixture.MockDefineTaskParams();
-            taskParams.TaskName = String.Empty;
-
-            Func<Task> act = async () => { await _fixture.Sut.Task.DefineTaskAsync(taskParams); };
-
-            act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=InternalServerError, response={\n    \"Error\": \"key required\"\n}");
-        }
-
-        [Fact]
-        public async Task DefineTask_OnNoTickScriptSpecified_ShouldThrowException()
+        public virtual async Task DefineTask_OnNoTickScriptSpecified_ShouldThrowException()
         {
             var taskParams = _fixture.MockDefineTaskParams();
             taskParams.TickScript = String.Empty;
@@ -54,11 +41,11 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             Func<Task> act = async () => { await _fixture.Sut.Task.DefineTaskAsync(taskParams); };
 
             act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=BadRequest, response={\n    \"Error\": \"must provide TICKscript via POST data.\"\n}");
+                .WithMessage("InfluxData API responded with status code=BadRequest, response={\n    \"error\": \"must provide TICKscript\"\n}");
         }
 
         [Fact]
-        public async Task DefineTask_OnInvalidTickScriptSpecified_ShouldThrowException()
+        public virtual async Task DefineTask_OnInvalidTickScriptSpecified_ShouldThrowException()
         {
             var taskParams = _fixture.MockDefineTaskParams();
             taskParams.TickScript = "invalidScript(); // '' borken[[|}";
@@ -66,95 +53,95 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             Func<Task> act = async () => { await _fixture.Sut.Task.DefineTaskAsync(taskParams); };
 
             act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=InternalServerError, response={\n    \"Error\": \"invalid task: parser: unexpected unknown state line 1 char 16 in \\\"idScript(); // '' bo\\\". expected: \\\"number\\\",\\\"string\\\",\\\"duration\\\",\\\"identifier\\\",\\\"TRUE\\\",\\\"FALSE\\\",\\\"==\\\",\\\"(\\\",\\\"-\\\",\\\"!\\\"\"\n}");
+                .WithMessage("InfluxData API responded with status code=BadRequest, response={\n    \"error\": \"invalid TICKscript: parser: unexpected unknown state line 1 char 16 in \\\"idScript(); // '' bo\\\". expected: \\\"number\\\",\\\"string\\\",\\\"duration\\\",\\\"identifier\\\",\\\"TRUE\\\",\\\"FALSE\\\",\\\"==\\\",\\\"(\\\",\\\"-\\\",\\\"!\\\"\"\n}");
         }
 
         [Fact]
-        public async Task GetTask_OnExistingTask_ShouldReturnTask()
+        public virtual async Task GetTask_OnExistingTask_ShouldReturnTask()
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
-            var response = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
+            var response = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
             response.Should().NotBeNull();
-            response.Name.Should().Be(taskParams.TaskName);
+            response.Id.Should().Be(taskParams.TaskId);
 
         }
 
         [Fact]
-        public async Task GetTask_OnNonExistingTask_ShouldThrowException()
+        public virtual async Task GetTask_OnNonExistingTask_ShouldThrowException()
         {
             Func<Task> act = async () => { await _fixture.Sut.Task.GetTaskAsync("nonexistingtask"); };
 
             act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=NotFound, response={\n    \"Error\": \"unknown task nonexistingtask\"\n}");
+                .WithMessage("InfluxData API responded with status code=NotFound, response={\n    \"error\": \"no task exists\"\n}");
         }
 
         [Fact]
-        public async Task GetTasks_OnExistingTask_ShouldReturnTaskCollection()
+        public virtual async Task GetTasks_OnExistingTask_ShouldReturnTaskCollection()
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
             var response = await _fixture.Sut.Task.GetTasksAsync();
             response.Should().NotBeNull();
             response.Count().Should().BeGreaterOrEqualTo(1);
-            var mockedTask = response.FirstOrDefault(p => p.Name == taskParams.TaskName);
+            var mockedTask = response.FirstOrDefault(p => p.Id == taskParams.TaskId);
             mockedTask.Should().NotBeNull();
         }
 
         [Fact]
-        public async Task DeleteTask_OnExistingTask_ShouldDeleteSuccessfully()
+        public virtual async Task DeleteTask_OnExistingTask_ShouldDeleteSuccessfully()
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
-            var response = await _fixture.Sut.Task.DeleteTaskAsync(taskParams.TaskName);
+            var response = await _fixture.Sut.Task.DeleteTaskAsync(taskParams.TaskId);
             response.Success.Should().BeTrue();
 
             var existingTasks = await _fixture.Sut.Task.GetTasksAsync();
-            existingTasks.FirstOrDefault(p => p.Name == taskParams.TaskName).Should().BeNull();
+            existingTasks.FirstOrDefault(p => p.Id == taskParams.TaskId).Should().BeNull();
         }
 
         [Fact]
-        public async Task EnableTask_OnExistingTask_ShouldEnableSuccessfully()
+        public virtual async Task EnableTask_OnExistingTask_ShouldEnableSuccessfully()
         {
             var taskParams = await _fixture.MockAndSaveTask();
 
-            var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
-            disabledTask.Enabled.Should().BeFalse();
+            var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
+            disabledTask.Status.Should().Be("disabled");
             disabledTask.Executing.Should().BeFalse();
 
-            var response = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskName);
+            var response = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskId);
             response.Success.Should().BeTrue();
 
-            var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
-            enabledTask.Enabled.Should().BeTrue();
+            var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
+            enabledTask.Status.Should().Be("enabled");
             enabledTask.Executing.Should().BeTrue();
         }
 
         [Fact]
-        public async Task EnableTask_OnNonExistingTask_ShouldThrowException()
+        public virtual async Task EnableTask_OnNonExistingTask_ShouldThrowException()
         {
             Func<Task> act = async () => { await _fixture.Sut.Task.EnableTaskAsync("nonexistingtask"); };
 
             act.ShouldThrow<InfluxDataApiException>()
-                .WithMessage("InfluxData API responded with status code=InternalServerError, response={\n    \"Error\": \"unknown task nonexistingtask\"\n}");
+                .WithMessage("InfluxData API responded with status code=NotFound, response={\n    \"error\": \"task does not exist, cannot update\"\n}");
         }
 
         [Fact]
-        public async Task DisableTask_OnExistingTask_ShouldDisableSuccessfully()
+        public virtual async Task DisableTask_OnExistingTask_ShouldDisableSuccessfully()
         {
             var taskParams = await _fixture.MockAndSaveTask();
-            var enableResponse = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskName);
+            var enableResponse = await _fixture.Sut.Task.EnableTaskAsync(taskParams.TaskId);
             enableResponse.Success.Should().BeTrue();
 
-            var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
-            enabledTask.Enabled.Should().BeTrue();
+            var enabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
+            enabledTask.Status.Should().Be("enabled");
             enabledTask.Executing.Should().BeTrue();
 
-            var disableResponse = await _fixture.Sut.Task.DisableTaskAsync(taskParams.TaskName);
+            var disableResponse = await _fixture.Sut.Task.DisableTaskAsync(taskParams.TaskId);
             disableResponse.Success.Should().BeTrue();
 
-            var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskName);
-            disabledTask.Enabled.Should().BeFalse();
+            var disabledTask = await _fixture.Sut.Task.GetTaskAsync(taskParams.TaskId);
+            disabledTask.Status.Should().Be("disabled");
             disabledTask.Executing.Should().BeFalse();
         }
     }

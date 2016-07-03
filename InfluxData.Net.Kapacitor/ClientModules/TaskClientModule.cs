@@ -8,6 +8,7 @@ using InfluxData.Net.Kapacitor.Constants;
 using InfluxData.Net.Kapacitor.Models;
 using InfluxData.Net.Kapacitor.Models.Responses;
 using InfluxData.Net.Kapacitor.RequestClients;
+using Newtonsoft.Json;
 
 namespace InfluxData.Net.Kapacitor.ClientModules
 {
@@ -18,13 +19,9 @@ namespace InfluxData.Net.Kapacitor.ClientModules
         {
         }
 
-        public virtual async Task<KapacitorTask> GetTaskAsync(string taskName)
+        public virtual async Task<KapacitorTask> GetTaskAsync(string taskId)
         {
-            var requestParams = new Dictionary<string, string>
-            {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
-            };
-            var response = await base.RequestClient.GetAsync(RequestPaths.Task, requestParams).ConfigureAwait(false);
+            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId)).ConfigureAwait(false);
             var task = response.ReadAs<KapacitorTask>();
 
             return task;
@@ -32,11 +29,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
         public virtual async Task<IEnumerable<KapacitorTask>> GetTasksAsync()
         {
-            var requestParams = new Dictionary<string, string>
-            {
-                { QueryParams.Tasks, String.Empty }
-            };
-            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks, requestParams).ConfigureAwait(false);
+            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks).ConfigureAwait(false);
             var tasks = response.ReadAs<KapacitorTasks>();
 
             return tasks.Tasks;
@@ -44,47 +37,47 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
         public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTaskParams taskParams)
         {
-            var dbrps = String.Format("[{{\"{0}\":\"{1}\", \"{2}\":\"{3}\"}}]", 
-                QueryParams.Db, taskParams.DBRPsParams.DbName, QueryParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy);
-
-            var requestParams  = new Dictionary<string, string>
+            var content = JsonConvert.SerializeObject(new Dictionary <string, object>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskParams.TaskName) },
-                { QueryParams.Type, taskParams.TaskType.ToString().ToLower() },
-                { QueryParams.Dbrps, HttpUtility.UrlEncode(dbrps) }
-            };
+                { BodyParams.Id, taskParams.TaskId },
+                { BodyParams.Type, taskParams.TaskType.ToString().ToLower() },
+                { BodyParams.Dbrps, new List<IDictionary<string, string>>
+                {
+                    new Dictionary<string, string>()
+                    {
+                        { BodyParams.Db, taskParams.DBRPsParams.DbName },
+                        { BodyParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy }
+                    }
+                }},
+                { BodyParams.Script, taskParams.TickScript }
+            });
 
-            return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript).ConfigureAwait(false);
+            return await base.RequestClient.PostAsync(RequestPaths.Tasks, content: content).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskName)
+        public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskId)
         {
-            var requestParams = new Dictionary<string, string>
-            {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
-            };
-
-            return await base.RequestClient.DeleteAsync(RequestPaths.Task, requestParams).ConfigureAwait(false);
+            return await base.RequestClient.DeleteAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId)).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> EnableTaskAsync(string taskName)
+        public virtual async Task<IInfluxDataApiResponse> EnableTaskAsync(string taskId)
         {
-            var requestParams = new Dictionary<string, string>
+            var content = JsonConvert.SerializeObject(new Dictionary<string, object>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
-            };
+                { BodyParams.Status, "enabled" },
+            });
 
-            return await base.RequestClient.PostAsync(RequestPaths.Enable, requestParams, String.Empty).ConfigureAwait(false);
+            return await base.RequestClient.PatchAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId), content).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> DisableTaskAsync(string taskName)
+        public virtual async Task<IInfluxDataApiResponse> DisableTaskAsync(string taskId)
         {
-            var requestParams = new Dictionary<string, string>
+            var content = JsonConvert.SerializeObject(new Dictionary<string, object>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
-            };
+                { BodyParams.Status, "disabled" },
+            });
 
-            return await base.RequestClient.PostAsync(RequestPaths.Disable, requestParams, String.Empty).ConfigureAwait(false);
+            return await base.RequestClient.PatchAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId), content).ConfigureAwait(false);
         }
     }
 }

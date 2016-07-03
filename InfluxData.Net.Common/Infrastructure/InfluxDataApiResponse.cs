@@ -42,7 +42,7 @@ namespace InfluxData.Net.Common.Infrastructure
 
         public override bool Success
         {
-            get { return StatusCode == HttpStatusCode.NoContent; }
+            get { return StatusCode == HttpStatusCode.NoContent || StatusCode == HttpStatusCode.OK; }
         }
     }
 }

@@ -9,7 +9,7 @@ using Moq;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {
-    public abstract class IntegrationFixtureBase : IDisposable
+    public abstract class IntegrationFixtureFactory : IDisposable
     {
         public string _fakeDbPrefix;
 
@@ -23,17 +23,17 @@ namespace InfluxData.Net.Integration.Kapacitor
 
         public bool VerifyAll { get; set; }
 
-        protected IntegrationFixtureBase(string fakeDbPrefix)
+        protected IntegrationFixtureFactory(string fakeDbPrefix, string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion)
         {
             _fakeDbPrefix = fakeDbPrefix;
 
             this.DbName = CreateRandomDbName();
 
             this.InfluxDbClient = new InfluxDbClient(
-                ConfigurationManager.AppSettings.Get("influxDbEndpointUri"),
+                ConfigurationManager.AppSettings.Get(influxDbEndpointUriKey),
                 ConfigurationManager.AppSettings.Get("influxDbUsername"),
                 ConfigurationManager.AppSettings.Get("influxDbPassword"),
-                InfluxDbVersion.Latest);
+                influxDbVersion);
 
             Task.Run(() => this.PurgeFakeDatabases()).Wait();
             Task.Run(() => this.CreateEmptyDatabase()).Wait();
