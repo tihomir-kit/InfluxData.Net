@@ -50,6 +50,7 @@
     <Compile Include="Constants\RequestPaths.cs" />
     <Compile Include="Enums\TaskType.cs" />
     <Compile Include="IKapacitorClient.cs" />
+    <Compile Include="Infrastructure\KapacitorClientDependencies.cs" />
     <Compile Include="KapacitorClient.cs" />
     <Compile Include="Infrastructure\IKapacitorClientConfiguration.cs" />
     <Compile Include="Infrastructure\KapacitorClientConfiguration.cs" />

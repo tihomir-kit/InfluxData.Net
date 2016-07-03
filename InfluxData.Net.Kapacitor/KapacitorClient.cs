@@ -29,9 +29,10 @@ namespace InfluxData.Net.Kapacitor
         public KapacitorClient(KapacitorClientConfiguration configuration)
         {
             var requestClientFactory = new KapacitorClientBootstrap(configuration);
-            _requestClient = requestClientFactory.GetRequestClient(); // TODO: handle the factory in the same way as in InfluxDB client
+            var dependencies = requestClientFactory.GetRequestClient(); // TODO: handle the factory in the same way as in InfluxDB client
+            _requestClient = dependencies.KapacitorRequestClient;
 
-            _taskClientModule = new Lazy<ITaskClientModule>(() => new TaskClientModule(_requestClient));
+            _taskClientModule = new Lazy<ITaskClientModule>(() => dependencies.TaskClientModule);
         }
     }
 }
