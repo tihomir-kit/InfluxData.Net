@@ -1,6 +1,8 @@
 using System;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Helpers;
+using InfluxData.Net.Common.Infrastructure;
+using System.Net.Http;
 
 namespace InfluxData.Net.Kapacitor.Infrastructure
 {
@@ -14,7 +16,9 @@ namespace InfluxData.Net.Kapacitor.Infrastructure
 
         public KapacitorVersion KapacitorVersion { get; private set; }
 
-        public KapacitorClientConfiguration(Uri endpointUri, string username, string password, KapacitorVersion kapacitorVersion)
+        public HttpClient HttpClient { get; private set; }
+
+        public KapacitorClientConfiguration(Uri endpointUri, string username, string password, KapacitorVersion kapacitorVersion, HttpClient httpClient = null)
         {
             Validate.IsNotNull(endpointUri, "Endpoint may not be null or empty.");
             //Validate.IsNotNullOrEmpty(password, "Password may not be null or empty.");
@@ -24,6 +28,7 @@ namespace InfluxData.Net.Kapacitor.Infrastructure
             Username = username;
             Password = password;
             KapacitorVersion = kapacitorVersion;
+            HttpClient = httpClient;
         }
 
         private static Uri SanitizeEndpoint(Uri endpointUri, bool isTls)

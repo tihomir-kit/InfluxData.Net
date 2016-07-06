@@ -1,3 +1,4 @@
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Infrastructure;
 

@@ -45,6 +45,9 @@
     <Compile Include="Helpers\Stopwatch.cs" />
     <Compile Include="Helpers\Validate.cs" />
     <Compile Include="Infrastructure\IInfluxDataApiResponse.cs" />
+    <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
+    <Compile Include="Infrastructure\IConfiguration.cs" />
+    <Compile Include="Infrastructure\IKapacitorClientConfiguration.cs" />
     <Compile Include="Infrastructure\InfluxDataApiResponse.cs" />
     <Compile Include="Infrastructure\InfluxDataException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

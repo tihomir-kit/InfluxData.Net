@@ -3,6 +3,7 @@ using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Kapacitor.Infrastructure;
 using InfluxData.Net.Kapacitor.RequestClients;
 using InfluxData.Net.Kapacitor.ClientModules;
+using InfluxData.Net.Common.Infrastructure;
 
 namespace InfluxData.Net.Kapacitor
 {

@@ -1,6 +1,8 @@
 using System;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Helpers;
+using InfluxData.Net.Common.Infrastructure;
+using System.Net.Http;
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
 {
@@ -14,7 +16,9 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 
         public InfluxDbVersion InfluxVersion { get; private set; }
 
-        public InfluxDbClientConfiguration(Uri endpointUri, string username, string password, InfluxDbVersion influxVersion)
+        public HttpClient HttpClient { get; private set; }
+
+        public InfluxDbClientConfiguration(Uri endpointUri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null)
         {
             Validate.IsNotNull(endpointUri, "Endpoint may not be null or empty.");
             Validate.IsNotNullOrEmpty(password, "Password may not be null or empty.");
@@ -24,6 +28,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             Username = username;
             Password = password;
             InfluxVersion = influxVersion;
+            HttpClient = httpClient;
         }
 
         private static Uri SanitizeEndpoint(Uri endpointUri, bool isTls)

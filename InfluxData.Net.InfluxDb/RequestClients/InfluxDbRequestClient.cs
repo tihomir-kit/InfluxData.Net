@@ -13,7 +13,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
     public class InfluxDbRequestClient : RequestClientBase, IInfluxDbRequestClient
     {
         public InfluxDbRequestClient(IInfluxDbClientConfiguration configuration)
-            : base(configuration.EndpointUri.AbsoluteUri, configuration.Username, configuration.Password, "InfluxData.Net.InfluxDb")
+            : base(configuration, "InfluxData.Net.InfluxDb")
         {
         }
 

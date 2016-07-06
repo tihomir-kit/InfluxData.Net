@@ -6,6 +6,8 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.QueryBuilders;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
+using InfluxData.Net.Common.Infrastructure;
+using System.Net.Http;
 
 namespace InfluxData.Net.InfluxDb
 {
@@ -62,8 +64,8 @@ namespace InfluxData.Net.InfluxDb
             get { return _diagnosticsClientModule.Value; }
         }
 
-        public InfluxDbClient(string uri, string username, string password, InfluxDbVersion influxVersion)
-             : this(new InfluxDbClientConfiguration(new Uri(uri), username, password, influxVersion))
+        public InfluxDbClient(string uri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null)
+             : this(new InfluxDbClientConfiguration(new Uri(uri), username, password, influxVersion, httpClient))
         {
         }
 
