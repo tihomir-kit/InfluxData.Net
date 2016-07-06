@@ -19,13 +19,25 @@ namespace InfluxData.Net.Common.RequestClients
         private readonly string _userName;
         private readonly string _password;
         private readonly string _userAgent;
+        private readonly HttpClient _httpClient;
 
-        protected RequestClientBase(string endpointUri, string userName, string password, string userAgent)
+        protected RequestClientBase(IInfluxDbClientConfiguration configuration, string userAgent) 
+            : this(configuration.EndpointUri.AbsoluteUri, configuration.Username, configuration.Password, configuration.HttpClient, userAgent)
+        {
+        }
+
+        protected RequestClientBase(IKapacitorClientConfiguration configuration, string userAgent)
+            : this(configuration.EndpointUri.AbsoluteUri, configuration.Username, configuration.Password, configuration.HttpClient, userAgent)
+        {
+        }
+
+        protected RequestClientBase(string endpointUri, string userName, string password, HttpClient httpClient, string userAgent)
         {
             _endpointUri = endpointUri;
             _userName = userName;
             _password = password;
             _userAgent = userAgent;
+            _httpClient = new HttpClient();
         }
 
         #region Request Base
@@ -87,12 +99,12 @@ namespace InfluxData.Net.Common.RequestClients
             HttpContent content = null,
             bool includeAuthToQuery = true)
         {
-            var client = new HttpClient();
+            //var client = new HttpClient();
 
-            if (requestTimeout.HasValue)
-            {
-                client.Timeout = requestTimeout.Value;
-            }
+            //if (requestTimeout.HasValue)
+            //{
+            //    client.Timeout = requestTimeout.Value;
+            //}
 
             var uri = BuildUri(path, extraParams, includeAuthToQuery);
             var request = BuildRequest(method, content, uri);
@@ -105,7 +117,7 @@ namespace InfluxData.Net.Common.RequestClients
             }
 #endif
 
-            return await client.SendAsync(request, completionOption, cancellationToken).ConfigureAwait(false);
+            return await _httpClient.SendAsync(request, completionOption, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion Request Base

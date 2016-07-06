@@ -17,7 +17,7 @@ namespace InfluxData.Net.Kapacitor.RequestClients
         }
 
         public KapacitorRequestClient(IKapacitorClientConfiguration configuration)
-            : base(configuration.EndpointUri.AbsoluteUri, configuration.Username, configuration.Password, "InfluxData.Net.Kapacitor")
+            : base(configuration, "InfluxData.Net.Kapacitor")
         {
         }
 

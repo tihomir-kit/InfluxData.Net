@@ -4,6 +4,7 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.QueryBuilders;
 using InfluxData.Net.InfluxDb.ResponseParsers;
 using InfluxData.Net.InfluxDb.RequestClients;
+using InfluxData.Net.Common.Infrastructure;
 
 namespace InfluxData.Net.InfluxDb
 {

@@ -1,6 +1,8 @@
 using System;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Helpers;
+using InfluxData.Net.Common.Infrastructure;
+using System.Net.Http;
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
 {
@@ -11,6 +13,8 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
         public string Username { get; private set; }
 
         public string Password { get; private set; }
+
+        public HttpClient HttpClient { get; set; }
 
         public InfluxDbVersion InfluxVersion { get; private set; }
 

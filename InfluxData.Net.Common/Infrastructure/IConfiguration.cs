@@ -1,9 +1,10 @@
 using System;
 using InfluxData.Net.Common.Enums;
+using System.Net.Http;
 
-namespace InfluxData.Net.Kapacitor.Infrastructure
+namespace InfluxData.Net.Common.Infrastructure
 {
-    public interface IKapacitorClientConfiguration
+    public interface IConfiguration
     {
         Uri EndpointUri { get; }
 
@@ -11,6 +12,6 @@ namespace InfluxData.Net.Kapacitor.Infrastructure
 
         string Password { get; }
 
-        KapacitorVersion KapacitorVersion { get; }
+        HttpClient HttpClient { get; set; }
     }
 }

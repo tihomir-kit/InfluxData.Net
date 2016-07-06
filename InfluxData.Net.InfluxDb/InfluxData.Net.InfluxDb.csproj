@@ -54,7 +54,6 @@
     <Compile Include="Helpers\SerieExtensions.cs" />
     <Compile Include="IInfluxDbClient.cs" />
     <Compile Include="InfluxDbClient.cs" />
-    <Compile Include="Infrastructure\IInfluxDbClientConfiguration.cs" />
     <Compile Include="Infrastructure\InfluxDbClientDependencies.cs" />
     <Compile Include="Models\Responses\ContinuousQuery.cs" />
     <Compile Include="Models\Responses\Measurement.cs" />
