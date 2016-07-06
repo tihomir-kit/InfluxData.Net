@@ -37,7 +37,7 @@ namespace InfluxData.Net.Common.RequestClients
             _userName = userName;
             _password = password;
             _userAgent = userAgent;
-            _httpClient = new HttpClient();
+            _httpClient = httpClient ?? new HttpClient();
         }
 
         #region Request Base
@@ -50,7 +50,7 @@ namespace InfluxData.Net.Common.RequestClients
             bool includeAuthToQuery = true,
             bool headerIsBody = false)
         {
-            var response = await RequestInnerAsync(null,
+            var response = await RequestInnerAsync(
                 HttpCompletionOption.ResponseHeadersRead,
                 CancellationToken.None,
                 method,
@@ -90,7 +90,6 @@ namespace InfluxData.Net.Common.RequestClients
         }
 
         private async Task<HttpResponseMessage> RequestInnerAsync(
-            TimeSpan? requestTimeout,
             HttpCompletionOption completionOption,
             CancellationToken cancellationToken,
             HttpMethod method,
@@ -99,13 +98,6 @@ namespace InfluxData.Net.Common.RequestClients
             HttpContent content = null,
             bool includeAuthToQuery = true)
         {
-            //var client = new HttpClient();
-
-            //if (requestTimeout.HasValue)
-            //{
-            //    client.Timeout = requestTimeout.Value;
-            //}
-
             var uri = BuildUri(path, extraParams, includeAuthToQuery);
             var request = BuildRequest(method, content, uri);
 

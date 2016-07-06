@@ -3,6 +3,8 @@ using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Kapacitor.ClientModules;
 using InfluxData.Net.Kapacitor.Infrastructure;
 using InfluxData.Net.Kapacitor.RequestClients;
+using System.Net.Http;
+using InfluxData.Net.Common.Infrastructure;
 
 namespace InfluxData.Net.Kapacitor
 {
@@ -11,13 +13,14 @@ namespace InfluxData.Net.Kapacitor
         private readonly IKapacitorRequestClient _requestClient;
 
         private readonly Lazy<ITaskClientModule> _taskClientModule;
+
         public ITaskClientModule Task
         {
             get { return _taskClientModule.Value; }
         }
 
-        public KapacitorClient(string uri, KapacitorVersion kapacitorVersion)
-            : this(new KapacitorClientConfiguration(new Uri(uri), null, null, kapacitorVersion))
+        public KapacitorClient(string uri, KapacitorVersion kapacitorVersion, HttpClient httpClient = null)
+            : this(new KapacitorClientConfiguration(new Uri(uri), null, null, kapacitorVersion, httpClient))
         {
         }
 
@@ -26,7 +29,7 @@ namespace InfluxData.Net.Kapacitor
         //{
         //}
 
-        public KapacitorClient(KapacitorClientConfiguration configuration)
+        public KapacitorClient(IKapacitorClientConfiguration configuration)
         {
             var requestClientFactory = new KapacitorClientBootstrap(configuration);
             var dependencies = requestClientFactory.GetRequestClient();

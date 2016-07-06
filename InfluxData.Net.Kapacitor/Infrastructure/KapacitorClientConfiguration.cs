@@ -8,19 +8,17 @@ namespace InfluxData.Net.Kapacitor.Infrastructure
 {
     public class KapacitorClientConfiguration : IKapacitorClientConfiguration
     {
-        // TODO: private set? necessary? handle getters setters
-
         public Uri EndpointUri { get; internal set; }
 
         public string Username { get; private set; }
 
         public string Password { get; private set; }
 
-        public HttpClient HttpClient { get; set; } 
-
         public KapacitorVersion KapacitorVersion { get; private set; }
 
-        public KapacitorClientConfiguration(Uri endpointUri, string username, string password, KapacitorVersion kapacitorVersion)
+        public HttpClient HttpClient { get; private set; }
+
+        public KapacitorClientConfiguration(Uri endpointUri, string username, string password, KapacitorVersion kapacitorVersion, HttpClient httpClient = null)
         {
             Validate.IsNotNull(endpointUri, "Endpoint may not be null or empty.");
             //Validate.IsNotNullOrEmpty(password, "Password may not be null or empty.");
@@ -30,6 +28,7 @@ namespace InfluxData.Net.Kapacitor.Infrastructure
             Username = username;
             Password = password;
             KapacitorVersion = kapacitorVersion;
+            HttpClient = httpClient;
         }
 
         private static Uri SanitizeEndpoint(Uri endpointUri, bool isTls)

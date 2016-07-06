@@ -39,6 +39,8 @@ var kapacitorClient = new KapacitorClient("http://yourkapacitor.com:9092/", Kapa
 
 Clients modules (properties of *Client* object) can then be consumed and methods for communicating with InfluxDb/Kapacitor can be consumed.
 
+If needed, a custom HttpClient can be used for making requests. Simply pass it into the `InfluxDbClient` or `KapacitorClient` as the last (optional) parameter.
+
 **Supported InfluxDbClient modules and API calls**
 
 - [Client](#client-module)

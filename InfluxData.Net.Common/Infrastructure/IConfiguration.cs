@@ -12,6 +12,6 @@ namespace InfluxData.Net.Common.Infrastructure
 
         string Password { get; }
 
-        HttpClient HttpClient { get; set; }
+        HttpClient HttpClient { get; }
     }
 }
