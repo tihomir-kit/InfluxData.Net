@@ -313,10 +313,10 @@ This module can be used to get [diagnostics information](https://influxdb.com/do
 
 #### PingAsync
 
-The `Client.PingAsync` will return a `Pong` object which will return endpoint's InfluxDb version number, round-trip time and ping success status:
+The `PingAsync` will return a `Pong` object which will return endpoint's InfluxDb version number, round-trip time and ping success status:
 
 ```cs
-var response = await influxDbClient.Client.PingAsync();
+var response = await influxDbClient.Diagnostics.PingAsync();
 ```
 
 #### GetStatsAsync
@@ -324,7 +324,7 @@ var response = await influxDbClient.Client.PingAsync();
 `GetStatsAsync` executes [SHOW STATS](https://influxdb.com/docs/v0.9/administration/statistics.html#show-stats) and parses the results into `Stats` response object.
 
 ```cs
-var response = await influxDbClient.Client.GetStatsAsync();
+var response = await influxDbClient.Diagnostics.GetStatsAsync();
 ```
 
 #### GetDiagnosticsAsync
@@ -332,7 +332,7 @@ var response = await influxDbClient.Client.GetStatsAsync();
 `GetDiagnosticsAsync` executes [SHOW DIAGNOSTICS](https://influxdb.com/docs/v0.9/administration/statistics.html#show-diagnostics) and parses the results into `Diagnostics` response object.
 
 ```cs
-var response = await influxDbClient.Client.GetDiagnosticsAsync();
+var response = await influxDbClient.Diagnostics.GetDiagnosticsAsync();
 ```
 
 ## KapacitorClient
