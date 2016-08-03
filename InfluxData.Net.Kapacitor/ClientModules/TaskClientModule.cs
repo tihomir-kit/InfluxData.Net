@@ -35,22 +35,11 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             return tasks.Tasks;
         }
 
-        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTaskParams taskParams)
+        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(BaseTaskParams taskParams)
         {
-            var content = JsonConvert.SerializeObject(new Dictionary <string, object>
-            {
-                { BodyParams.Id, taskParams.TaskId },
-                { BodyParams.Type, taskParams.TaskType.ToString().ToLower() },
-                { BodyParams.Dbrps, new List<IDictionary<string, string>>
-                {
-                    new Dictionary<string, string>()
-                    {
-                        { BodyParams.Db, taskParams.DBRPsParams.DbName },
-                        { BodyParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy }
-                    }
-                }},
-                { BodyParams.Script, taskParams.TickScript }
-            });
+            var jsonDictionary = taskParams.ToJsonDictionary();
+
+            var content = JsonConvert.SerializeObject(jsonDictionary);
 
             return await base.RequestClient.PostAsync(RequestPaths.Tasks, content: content).ConfigureAwait(false);
         }

@@ -42,8 +42,16 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             return tasks.Tasks;
         }
 
-        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTaskParams taskParams)
+        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(BaseTaskParams baseTaskParams)
         {
+            var taskParams = baseTaskParams as DefineTaskParams;
+            if (taskParams == null)
+            {
+                throw new NotSupportedException(
+                    string.Format("This Kapacitor version only supprts task creation using {0}",
+                        typeof (DefineTaskParams)));
+            }
+
             var dbrps = String.Format("[{{\"{0}\":\"{1}\", \"{2}\":\"{3}\"}}]", 
                 QueryParams.Db, taskParams.DBRPsParams.DbName, QueryParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy);
 
