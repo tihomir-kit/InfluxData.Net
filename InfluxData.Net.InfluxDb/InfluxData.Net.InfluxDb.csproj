@@ -58,6 +58,7 @@
     <Compile Include="Models\Responses\ContinuousQuery.cs" />
     <Compile Include="Models\Responses\Measurement.cs" />
     <Compile Include="Models\Responses\Diagnostics.cs" />
+    <Compile Include="Models\Responses\RetentionPolicy.cs" />
     <Compile Include="Models\Responses\SerieSet.cs" />
     <Compile Include="Models\Responses\Stats.cs" />
     <Compile Include="QueryBuilders\CqQueryBuilder_v_0_9_6.cs" />
