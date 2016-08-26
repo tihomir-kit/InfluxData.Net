@@ -22,14 +22,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _basicResponseParser = basicResponseParser;
         }
 
-        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
         {
             var response = await WriteAsync(dbName, new [] { point }, retenionPolicy, precision).ConfigureAwait(false);
 
             return response;
         }
 
-        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
         {
             var request = new WriteRequest(base.RequestClient.GetPointFormatter())
             {
