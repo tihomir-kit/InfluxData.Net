@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -16,10 +17,10 @@ namespace InfluxData.Net.Integration.Kapacitor
         public IKapacitorClient Sut { get; set; }
 
         protected IntegrationFixtureBase(
-            string influxDbEndpointUriKey, 
-            InfluxDbVersion influxDbVersion, 
-            string kapacitorEndpointUriKey, 
-            KapacitorVersion kapacitorVersion) 
+            string influxDbEndpointUriKey,
+            InfluxDbVersion influxDbVersion,
+            string kapacitorEndpointUriKey,
+            KapacitorVersion kapacitorVersion)
             : base("FakeKapacitorDb", influxDbEndpointUriKey, influxDbVersion)
         {
             this.Sut = new KapacitorClient(
@@ -78,6 +79,24 @@ namespace InfluxData.Net.Integration.Kapacitor
                              "    |alert()\r\n" +
                              "        .crit(lambda: \"Humidity\" < 36)\r\n" +
                              "        .log('/tmp/alerts.log')\r\n"
+            };
+        }
+
+        public virtual TemplateTaskParams MockTemplateTaskParams()
+        {
+            return new TemplateTaskParams()
+            {
+                TaskId = CreateRandomTaskId(),                
+                DBRPsParams = new DBRPsParams()
+                {
+                    DbName = this.DbName,
+                    RetentionPolicy = "default"
+                },
+                TemplateId = "TestTemplate",
+                TemplateVars = new Dictionary<string, TemplateVar>()
+                {
+                    {"measurement",new TemplateVar() {Type = "string",Value = "testMeasurment"} }
+                }
             };
         }
 
