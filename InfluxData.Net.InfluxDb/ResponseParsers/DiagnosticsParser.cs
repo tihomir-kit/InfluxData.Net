@@ -49,8 +49,8 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             var diagnosticsSystem = new DiagnosticsSystem()
             {
                 PID = serie.FirstRecordValueAs<long>("PID"),
-                CurrentTime = DateTime.Parse(serie.FirstRecordValueAs<string>("currentTime")),
-                Started = DateTime.Parse(serie.FirstRecordValueAs<string>("started")),
+                CurrentTime = serie.FirstRecordValueAs<DateTime>("currentTime"),
+                Started = serie.FirstRecordValueAs<DateTime>("started"),
                 Uptime = serie.FirstRecordValueAs<string>("uptime")
             };
 
