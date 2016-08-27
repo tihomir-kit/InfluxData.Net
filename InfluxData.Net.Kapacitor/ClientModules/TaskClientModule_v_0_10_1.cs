@@ -42,16 +42,8 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             return tasks.Tasks;
         }
 
-        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(BaseTaskParams baseTaskParams)
+        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTaskParams taskParams)
         {
-            var taskParams = baseTaskParams as DefineTaskParams;
-            if (taskParams == null)
-            {
-                throw new NotSupportedException(
-                    string.Format("This Kapacitor version only supprts task creation using {0}",
-                        typeof (DefineTaskParams)));
-            }
-
             var dbrps = String.Format("[{{\"{0}\":\"{1}\", \"{2}\":\"{3}\"}}]", 
                 QueryParams.Db, taskParams.DBRPsParams.DbName, QueryParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy);
 
@@ -62,7 +54,12 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                 { QueryParams.Dbrps, HttpUtility.UrlEncode(dbrps) }
             };
 
-            return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript); //.ConfigureAwait(false);
+            return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript).ConfigureAwait(false); // TODO: needs configure await or not?
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(TemplateTaskParams taskParams)
+        {
+            throw new InvalidOperationException("Method not applicable to this version of InfluxDB");
         }
 
         public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskName)

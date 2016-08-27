@@ -5,7 +5,7 @@ using InfluxData.Net.Kapacitor.Constants;
 namespace InfluxData.Net.Kapacitor.Models
 {
     /// <summary>
-    /// Task definition object. Used for creating tasks in Kapacitor. using a given tick script
+    /// Task definition object. Used for creating tasks in Kapacitor. Uses a tick script.
     /// </summary>
     public class DefineTaskParams : BaseTaskParams
     {
@@ -18,13 +18,5 @@ namespace InfluxData.Net.Kapacitor.Models
         /// Tick script to save.
         /// </summary>
         public string TickScript { get; set; }
-
-        internal override Dictionary<string, object> ToJsonDictionary()
-        {
-            var jsonDictionary = base.ToJsonDictionary();
-            jsonDictionary.Add(BodyParams.Type, TaskType.ToString().ToLower());
-            jsonDictionary.Add(BodyParams.Script, TickScript);
-            return jsonDictionary;
-        }
-    }    
+    }
 }

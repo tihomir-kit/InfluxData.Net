@@ -6,7 +6,7 @@ using InfluxData.Net.Kapacitor.Constants;
 namespace InfluxData.Net.Kapacitor.Models
 {
     /// <summary>
-    /// abstract Task definition object. Used for creating tasks in Kapacitor.
+    /// Base Task definition object. Used for creating tasks in Kapacitor.
     /// </summary>
     public abstract class BaseTaskParams
     {
@@ -21,37 +21,19 @@ namespace InfluxData.Net.Kapacitor.Models
         [Obsolete("Please use TaskId property instead")]
         public string TaskName
         {
-            get { return this.TaskId; }
-            set { this.TaskId = value; }
-        }        
+            get
+            {
+                return this.TaskId;
+            }
+            set {
+                this.TaskId = value;
+            }
+        }
 
         /// <summary>
         /// Database name / retention policy params.
         /// </summary>
         public DBRPsParams DBRPsParams { get; set; }
-
-        /// <summary>
-        /// Generates a json mapping dictionary from type to value
-        /// </summary>
-        /// <returns></returns>
-        internal virtual Dictionary<string, object> ToJsonDictionary()
-        {
-            var jsonDictionary = new Dictionary<string, object>
-            {
-                {BodyParams.Id, TaskId},               
-                {
-                    BodyParams.Dbrps, new List<IDictionary<string, string>>
-                    {
-                        new Dictionary<string, string>()
-                        {
-                            {BodyParams.Db, DBRPsParams.DbName},
-                            {BodyParams.RetentionPolicy, DBRPsParams.RetentionPolicy}
-                        }
-                    }
-                }
-            };
-            return jsonDictionary;
-        }
     }
 
     /// <summary>
