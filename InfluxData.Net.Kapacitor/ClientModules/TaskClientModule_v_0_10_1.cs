@@ -54,7 +54,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                 { QueryParams.Dbrps, HttpUtility.UrlEncode(dbrps) }
             };
 
-            return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript).ConfigureAwait(false); // TODO: needs configure await or not?
+            return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTemplatedTaskParams taskParams)

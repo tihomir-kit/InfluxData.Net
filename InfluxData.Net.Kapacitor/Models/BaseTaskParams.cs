@@ -66,13 +66,11 @@ namespace InfluxData.Net.Kapacitor.Models
         /// <summary>
         /// The type of the variable (lambda, string, etc..).
         /// </summary>
-        [JsonProperty("type")] // TOOD: check if this is needed
         public string Type { get; set; }
 
         /// <summary>
         /// The value for the task.
         /// </summary>
-        [JsonProperty("value")] // TOOD: check if this is needed
         public string Value { get; set; }
     }
 }

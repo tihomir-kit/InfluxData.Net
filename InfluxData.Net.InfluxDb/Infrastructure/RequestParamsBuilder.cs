@@ -32,9 +32,9 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             };
 
             if (paramKey1 != null && paramValue1 != null)
-                dict.Add(paramKey1, paramValue1);
+                dict.Add(paramKey1, HttpUtility.UrlEncode(paramValue1));
             if (paramKey2 != null && paramValue2 != null)
-                dict.Add(paramKey2, paramValue2);
+                dict.Add(paramKey2, HttpUtility.UrlEncode(paramValue2));
 
             return dict;
         }
