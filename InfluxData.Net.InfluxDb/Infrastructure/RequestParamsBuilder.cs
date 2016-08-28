@@ -30,10 +30,12 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             {
                 {QueryParams.Db, dbName}
             };
+
             if (paramKey1 != null && paramValue1 != null)
                 dict.Add(paramKey1, paramValue1);
             if (paramKey2 != null && paramValue2 != null)
                 dict.Add(paramKey2, paramValue2);
+
             return dict;
         }
     }

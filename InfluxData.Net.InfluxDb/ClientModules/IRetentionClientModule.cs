@@ -22,7 +22,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// </summary>
         /// <param name="dbName">Database name.</param>
         /// <returns></returns>
-        Task<IEnumerable<RetentionPolicy>> GetRetentionPolicies(string dbName);
+        Task<IEnumerable<RetentionPolicy>> GetRetentionPoliciesAsync(string dbName);
 
         /// <summary>
         /// Alters a retention policy.

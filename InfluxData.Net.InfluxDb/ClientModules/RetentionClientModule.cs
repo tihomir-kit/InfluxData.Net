@@ -28,7 +28,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public async Task<IEnumerable<RetentionPolicy>> GetRetentionPolicies(string dbName)
+        public async Task<IEnumerable<RetentionPolicy>> GetRetentionPoliciesAsync(string dbName)
         {
             var query = _retentionQueryBuilder.GetRetentionPolicies(dbName);
             var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
