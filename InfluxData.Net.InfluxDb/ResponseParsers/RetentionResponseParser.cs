@@ -29,7 +29,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             {
                 Name = (string)p[indexOfName],
                 Duration = (string)p[indexOfDuration],
-                ShardGroupduration = (string)p[indexOfShardGroupDuration],
+                ShardGroupDuration = (string)p[indexOfShardGroupDuration],
                 ReplicationCopies = (int)(long)p[indexOfReplica],
                 Default = (bool)p[indexOfDefault]
             }));
