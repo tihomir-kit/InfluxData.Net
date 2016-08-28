@@ -21,11 +21,20 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 
         public static IDictionary<string, string> BuildRequestParams(string dbName, string paramKey, string paramValue)
         {
-            return new Dictionary<string, string>
+            return BuildRequestParams(dbName, paramKey, paramValue, null, null);
+        }
+
+        public static IDictionary<string, string> BuildRequestParams(string dbName, string paramKey1, string paramValue1, string paramKey2, string paramValue2)
+        {
+            var dict = new Dictionary<string, string>
             {
-                { QueryParams.Db, dbName },
-                { paramKey, HttpUtility.UrlEncode(paramValue) }
+                {QueryParams.Db, dbName}
             };
+            if (paramKey1 != null && paramValue1 != null)
+                dict.Add(paramKey1, paramValue1);
+            if (paramKey2 != null && paramValue2 != null)
+                dict.Add(paramKey2, paramValue2);
+            return dict;
         }
     }
 }
