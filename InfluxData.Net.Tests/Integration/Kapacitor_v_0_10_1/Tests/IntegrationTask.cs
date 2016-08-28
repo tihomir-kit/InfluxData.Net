@@ -15,6 +15,12 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         {
         }
 
+        [Fact(Skip = "Test not applicable for this Kapacitor version")]
+        public override async Task DefineTemplateTask_OnValidArguments_ShouldDefineSuccessfully()
+        {
+            return;
+        }
+
         [Fact]
         public virtual async Task DefineTask_OnNoTaskIdSpecified_ShouldThrowException()
         {
