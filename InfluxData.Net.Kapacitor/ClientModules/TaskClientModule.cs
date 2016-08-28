@@ -45,11 +45,10 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             return await base.RequestClient.PostAsync(RequestPaths.Tasks, content: content).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(TemplateTaskParams taskParams)
+        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTemplatedTaskParams taskParams)
         {
             var contentDict = BuildDefineTaskContentDict(taskParams);
             contentDict.Add(BodyParams.TemplateId, taskParams.TemplateId);
-            contentDict.Add(BodyParams.TemplateVars, taskParams.TemplateVars);
             var content = JsonConvert.SerializeObject(contentDict);
 
             return await base.RequestClient.PostAsync(RequestPaths.Tasks, content: content).ConfigureAwait(false);
@@ -67,7 +66,8 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                         { BodyParams.Db, taskParams.DBRPsParams.DbName },
                         { BodyParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy }
                     }
-                }}
+                }},
+                { BodyParams.Vars, taskParams.TaskVars }
             };
         }
 

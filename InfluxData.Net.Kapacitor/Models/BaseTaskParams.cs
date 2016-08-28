@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.Kapacitor.Constants;
+using Newtonsoft.Json;
 
 namespace InfluxData.Net.Kapacitor.Models
 {
@@ -34,6 +35,11 @@ namespace InfluxData.Net.Kapacitor.Models
         /// Database name / retention policy params.
         /// </summary>
         public DBRPsParams DBRPsParams { get; set; }
+
+        /// <summary>
+        /// Variable dictionary that will be passed to create this task.
+        /// </summary>
+        public Dictionary<string, TaskVar> TaskVars { get; set; }
     }
 
     /// <summary>
@@ -50,5 +56,23 @@ namespace InfluxData.Net.Kapacitor.Models
         /// Retention policy.
         /// </summary>
         public string RetentionPolicy { get; set; }
+    }
+
+    /// <summary>
+    /// A task variable for overwriting any defined vars in the TICKscript.
+    /// </summary>
+    public class TaskVar
+    {
+        /// <summary>
+        /// The type of the variable (lambda, string, etc..).
+        /// </summary>
+        [JsonProperty("type")] // TOOD: check if this is needed
+        public string Type { get; set; }
+
+        /// <summary>
+        /// The value for the task.
+        /// </summary>
+        [JsonProperty("value")] // TOOD: check if this is needed
+        public string Value { get; set; }
     }
 }

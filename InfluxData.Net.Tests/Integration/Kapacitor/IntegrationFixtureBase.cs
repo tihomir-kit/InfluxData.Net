@@ -82,9 +82,9 @@ namespace InfluxData.Net.Integration.Kapacitor
             };
         }
 
-        public virtual TemplateTaskParams MockTemplateTaskParams()
+        public virtual DefineTemplatedTaskParams MockTemplateTaskParams()
         {
-            return new TemplateTaskParams()
+            return new DefineTemplatedTaskParams()
             {
                 TaskId = CreateRandomTaskId(),                
                 DBRPsParams = new DBRPsParams()
@@ -93,9 +93,9 @@ namespace InfluxData.Net.Integration.Kapacitor
                     RetentionPolicy = "default"
                 },
                 TemplateId = "TestTemplate",
-                TemplateVars = new Dictionary<string, TemplateVar>()
+                TaskVars = new Dictionary<string, TaskVar>()
                 {
-                    {"measurement",new TemplateVar() {Type = "string",Value = "testMeasurment"} }
+                    {"measurement",new TaskVar() {Type = "string",Value = "testMeasurment"} }
                 }
             };
         }

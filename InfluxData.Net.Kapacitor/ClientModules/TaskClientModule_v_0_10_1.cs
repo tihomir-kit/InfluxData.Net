@@ -57,7 +57,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript).ConfigureAwait(false); // TODO: needs configure await or not?
         }
 
-        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(TemplateTaskParams taskParams)
+        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTemplatedTaskParams taskParams)
         {
             throw new InvalidOperationException("Method not applicable to this version of InfluxDB");
         }
