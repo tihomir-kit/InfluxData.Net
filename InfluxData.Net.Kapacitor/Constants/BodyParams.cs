@@ -9,5 +9,7 @@
         public const string Status = "status";
         public const string RetentionPolicy = "rp";
         public const string Script = "script";
+        public const string TemplateId = "template-id";
+        public const string Vars = "vars";
     }
 }

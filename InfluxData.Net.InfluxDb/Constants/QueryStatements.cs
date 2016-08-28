@@ -13,7 +13,10 @@
         public const string GetDatabases = "SHOW DATABASES";
         public const string DropDatabase = "DROP DATABASE \"{0}\"";
 
+        public const string CreateRetentionPolicy = "CREATE RETENTION POLICY {0} ON {1} DURATION {2} REPLICATION {3}";
+        public const string GetRetentionPolicies = "SHOW RETENTION POLICIES ON {0}";
         public const string AlterRetentionPolicy = "ALTER RETENTION POLICY {0} ON {1} DURATION {2} REPLICATION {3}";
+        public const string DropRetentionPolicy = "DROP RETENTION POLICY {0} ON {1}";
 
         public const string CreateContinuousQuery = "CREATE CONTINUOUS QUERY {0} ON {1} {2}BEGIN {3} END;";
         public const string CreateContinuousQuerySubQuery = "SELECT {0} INTO \"{1}\" FROM {2} GROUP BY time({3}) {4} {5}";

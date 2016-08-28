@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using InfluxData.Net.Common.Infrastructure;
 using Xunit;
 using InfluxData.Net.Integration.Kapacitor;
+using Newtonsoft.Json;
 
 namespace InfluxData.Net.Integration.Kapacitor.Tests
 {
@@ -16,6 +20,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         {
             _fixture = fixture;
             _fixture.TestSetup();
+
         }
 
         public void Dispose()
@@ -30,6 +35,38 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
 
             var response = await _fixture.Sut.Task.DefineTaskAsync(taskParams);
             response.Success.Should().BeTrue();
+        }
+
+        [Fact]
+        public virtual async Task DefineTemplateTask_OnValidArguments_ShouldDefineSuccessfully()
+        {
+            // TODO: refactor
+
+            #region Arrange
+
+            Dictionary<string, object> defineTemplateDictionary = new Dictionary<string, object>()
+            {
+                { "id", "TestTemplate" },
+                { "type", "stream" },
+                {
+                    "script",
+                    "var measurement string\nvar where_filter = lambda: TRUE\nvar info = lambda: TRUE\n  stream\n     |from()\n         .measurement(measurement)\n         .where(where_filter)\n     |alert()\n          .info(info)\n          .log('/home/or/templateLog') "
+                }
+            };
+
+            string kapacitorUrl = ConfigurationManager.AppSettings.Get("kapacitorEndpointUri_v_1_0_0");
+            var content = JsonConvert.SerializeObject(defineTemplateDictionary);
+            HttpClient client = new HttpClient();
+            client.PostAsync(String.Format("{0}/kapacitor/v1/templates", kapacitorUrl), new StringContent(content)).Wait();
+
+            #endregion
+
+            var taskParams = _fixture.MockTemplateTaskParams();
+
+            var response = await _fixture.Sut.Task.DefineTaskAsync(taskParams);
+            response.Success.Should().BeTrue();
+
+            client.DeleteAsync(String.Format("{0}/kapacitor/v1/templates/{1}", kapacitorUrl, taskParams.TemplateId)).Wait();
         }
 
         [Fact]

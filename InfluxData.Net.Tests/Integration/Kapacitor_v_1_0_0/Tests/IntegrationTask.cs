@@ -13,7 +13,6 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
     {
         public IntegrationTask_v_1_0_0(IntegrationFixture_v_1_0_0 fixture) : base(fixture)
         {
-                
         }
     }
 }

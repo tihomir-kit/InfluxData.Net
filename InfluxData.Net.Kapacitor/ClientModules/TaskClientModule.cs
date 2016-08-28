@@ -37,10 +37,28 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
         public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTaskParams taskParams)
         {
-            var content = JsonConvert.SerializeObject(new Dictionary <string, object>
+            var contentDict = BuildDefineTaskContentDict(taskParams);
+            contentDict.Add(BodyParams.Type, taskParams.TaskType.ToString().ToLower());
+            contentDict.Add(BodyParams.Script, taskParams.TickScript);
+            var content = JsonConvert.SerializeObject(contentDict);
+
+            return await base.RequestClient.PostAsync(RequestPaths.Tasks, content: content).ConfigureAwait(false);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTemplatedTaskParams taskParams)
+        {
+            var contentDict = BuildDefineTaskContentDict(taskParams);
+            contentDict.Add(BodyParams.TemplateId, taskParams.TemplateId);
+            var content = JsonConvert.SerializeObject(contentDict);
+
+            return await base.RequestClient.PostAsync(RequestPaths.Tasks, content: content).ConfigureAwait(false);
+        }
+
+        protected virtual Dictionary<string, object> BuildDefineTaskContentDict(BaseTaskParams taskParams)
+        {
+            return new Dictionary<string, object>
             {
                 { BodyParams.Id, taskParams.TaskId },
-                { BodyParams.Type, taskParams.TaskType.ToString().ToLower() },
                 { BodyParams.Dbrps, new List<IDictionary<string, string>>
                 {
                     new Dictionary<string, string>()
@@ -49,10 +67,8 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                         { BodyParams.RetentionPolicy, taskParams.DBRPsParams.RetentionPolicy }
                     }
                 }},
-                { BodyParams.Script, taskParams.TickScript }
-            });
-
-            return await base.RequestClient.PostAsync(RequestPaths.Tasks, content: content).ConfigureAwait(false);
+                { BodyParams.Vars, taskParams.TaskVars }
+            };
         }
 
         public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskId)

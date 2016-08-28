@@ -62,7 +62,10 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
  - _[GetMeasurementsAsync()](#getmeasurementsasync)_
  - _[DropMeasurementAsync()](#dropmeasurementasync)_
 - [Retention](#retention-module)
+ - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
+ - _[GetRetentionPolicies()](#getretentionpoliciesasync)_
  - _[AlterRetentionPolicyAsync()](#alterretentionpolicyasync)_
+ - _[DropRetentionPolicyAsync()](#dropretentionpolicyasync)_
 - [Diagnostics](#diagnostics-module)
  - _[PingAsync()](#pingasync)_
  - _[GetStatsAsync()](#getstatsasync)_
@@ -299,12 +302,36 @@ var response = await influxDbClient.Serie.DropMeasurementAsync("yourDbName", "me
 
 This module currently supports only a single [retention-policy](https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#retention-policy-management) action.
 
+#### CreateRetentionPolicyAsync
+
+This example creates the _retentionPolicyName_ policy to _1h_ and 3 copies:
+
+```cs
+var response = await influxDbClient.Retention.CreateRetentionPolicyAsync("yourDbName", "retentionPolicyName", "1h", 3);
+```
+
+#### GetRetentionPoliciesAsync
+
+Gets a list of all retention policies in the speified database:
+
+```cs
+var response = await influxDbClient.Retention.GetRetentionPoliciesAsync("yourDbName");
+```
+
 #### AlterRetentionPolicyAsync
 
 This example alter the _retentionPolicyName_ policy to _1h_ and 3 copies:
 
 ```cs
 var response = await influxDbClient.Retention.AlterRetentionPolicyAsync("yourDbName", "retentionPolicyName", "1h", 3);
+```
+
+#### DropRetentionPolicyAsync
+
+This example drops the _retentionPolicyName_ policycopies:
+
+```cs
+var response = await influxDbClient.Retention.AlterRetentionPolicyAsync("yourDbName", "retentionPolicyName");
 ```
 
 ### Diagnostics Module
