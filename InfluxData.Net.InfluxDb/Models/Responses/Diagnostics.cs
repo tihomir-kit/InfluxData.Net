@@ -22,6 +22,8 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
         public DateTime Started { get; set; }
 
         public string Uptime { get; set; }
+
+        public TimeSpan UptimeTimeSpan { get; set; }
     }
 
     public class DiagnosticsBuild
