@@ -123,7 +123,13 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
                     {
                         var parsedSeconds = value.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
                         s = int.Parse(parsedSeconds[0]);
-                        if (parsedSeconds.Length == 2) ms = int.Parse(parsedSeconds[1]);
+
+                        //if (parsedSeconds.Length == 2)
+                        //{
+                        //    var _ms = parsedSeconds[1];
+                        //    if (_ms.Length > 3) _ms = _ms.Substring(0, 3);
+                        //    ms = int.Parse(_ms);
+                        //}
                     }
                 }
 
