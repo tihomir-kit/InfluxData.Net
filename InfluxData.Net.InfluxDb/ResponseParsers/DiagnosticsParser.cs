@@ -52,8 +52,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
                 PID = serie.FirstRecordValueAs<long>("PID"),
                 CurrentTime = DateTime.Parse(serie.FirstRecordValueAs<object>("currentTime").ToString()),
                 Started = DateTime.Parse(serie.FirstRecordValueAs<object>("started").ToString()),
-                Uptime = serie.FirstRecordValueAs<string>("uptime"),
-                UptimeTimeSpan = ParseGoDuration(serie.FirstRecordValueAs<string>("uptime"))
+                Uptime = ParseGoDuration(serie.FirstRecordValueAs<string>("uptime"))
             };
 
             return diagnosticsSystem;
@@ -124,12 +123,12 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
                         var parsedSeconds = value.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
                         s = int.Parse(parsedSeconds[0]);
 
-                        //if (parsedSeconds.Length == 2)
-                        //{
-                        //    var _ms = parsedSeconds[1];
-                        //    if (_ms.Length > 3) _ms = _ms.Substring(0, 3);
-                        //    ms = int.Parse(_ms);
-                        //}
+                        if (parsedSeconds.Length == 2)
+                        {
+                            var _ms = parsedSeconds[1];
+                            if (_ms.Length > 3) _ms = _ms.Substring(0, 3);
+                            ms = int.Parse(_ms);
+                        }
                     }
                 }
 
