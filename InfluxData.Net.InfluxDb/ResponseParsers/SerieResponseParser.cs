@@ -118,9 +118,21 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             if (series == null || series.Count() == 0)
                 return tagValues;
 
-            tagValues.AddRange(series.Single().Values.Select(p => new TagValue() { Name = (string)p[0], Value = p[1] }));
+            tagValues.AddRange(series.Single().Values.Select(p => new TagValue() { Name = (string)p[0], Value = (string)p[1] }));
 
             return tagValues;
+        }
+
+        public virtual IEnumerable<FieldKey> GetFieldKeys(IEnumerable<Serie> series)
+        {
+            var fieldKeys = new List<FieldKey>();
+
+            if (series == null || series.Count() == 0)
+                return fieldKeys;
+
+            fieldKeys.AddRange(series.Single().Values.Select(p => new FieldKey() { Name = (string)p[0], Type = (string)p[1] }));
+
+            return fieldKeys;
         }
     }
 }

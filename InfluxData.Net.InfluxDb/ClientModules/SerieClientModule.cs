@@ -76,5 +76,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
             return tagValues;
         }
+
+        public virtual async Task<IEnumerable<FieldKey>> GetFieldKeysAsync(string dbName, string measurementName)
+        {
+            var query = _serieQueryBuilder.GetFieldKeys(dbName, measurementName);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+            var fieldKeys = _serieResponseParser.GetFieldKeys(series);
+
+            return fieldKeys;
+        }
     }
 }

@@ -10,6 +10,7 @@
         public const string DropMeasurement = "DROP MEASUREMENT \"{0}\"";
         public const string ShowTagKeys = "SHOW TAG KEYS FROM \"{0}\"";
         public const string ShowTagValues = "SHOW TAG VALUES FROM \"{0}\" WITH KEY = \"{1}\"";
+        public const string ShowFieldKeys = "SHOW FIELD KEYS FROM \"{0}\"";
 
         public const string CreateDatabase = "CREATE DATABASE \"{0}\"";
         public const string GetDatabases = "SHOW DATABASES";

@@ -12,5 +12,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
         IEnumerable<string> GetTagKeys(IEnumerable<Serie> series);
 
         IEnumerable<TagValue> GetTagValues(IEnumerable<Serie> series);
+
+        IEnumerable<FieldKey> GetFieldKeys(IEnumerable<Serie> series);
     }
 }

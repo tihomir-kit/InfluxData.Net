@@ -61,6 +61,7 @@
     <Compile Include="Models\Responses\RetentionPolicy.cs" />
     <Compile Include="Models\Responses\SerieSet.cs" />
     <Compile Include="Models\Responses\Stats.cs" />
+    <Compile Include="Models\Responses\FieldKey.cs" />
     <Compile Include="Models\Responses\TagValue.cs" />
     <Compile Include="QueryBuilders\CqQueryBuilder_v_0_9_6.cs" />
     <Compile Include="RequestClients\InfluxDbRequestClient_v_0_9_6.cs" />

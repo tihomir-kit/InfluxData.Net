@@ -64,5 +64,13 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
         /// <param name="tagName">Tag name.</param>
         /// <returns></returns>
         string GetTagValues(string dbName, string measurementName, string tagName);
+
+        /// <summary>
+        /// Gets the field keys for a given measurement.
+        /// </summary>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="measurementName">Measurement name.</param>
+        /// <returns></returns>
+        string GetFieldKeys(string dbName, string measurementName);
     }
 }
