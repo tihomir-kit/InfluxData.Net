@@ -50,5 +50,22 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="measurementName">Measurement name.</param>
         /// <returns></returns>
         Task<IInfluxDataApiResponse> DropMeasurementAsync(string dbName, string measurementName);
+
+        /// <summary>
+        /// Gets all tag keys associated with a specific measurement.
+        /// </summary>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="measurementName">Measurement name.</param>
+        /// <returns></returns>
+        Task<IEnumerable<string>> GetTagKeysAsync(string dbName, string measurementName);
+
+        /// <summary>
+        /// Gets all tag values associated with a specific measurement and tag key.
+        /// </summary>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="measurementName">Measurement name.</param>
+        /// <param name="tagName">Tag name.</param>
+        /// <returns></returns>
+        Task<IEnumerable<TagValue>> GetTagValuesAsync(string dbName, string measurementName, string tagName);
     }
 }

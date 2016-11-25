@@ -98,5 +98,29 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
 
             return measurements;
         }
+
+        public virtual IEnumerable<string> GetTagKeys(IEnumerable<Serie> series)
+        {
+            var tagKeys = new List<string>();
+
+            if (series == null || series.Count() == 0)
+                return tagKeys;
+
+            tagKeys.AddRange(series.Single().Values.Select(p => (string)p[0]));
+
+            return tagKeys;
+        }
+
+        public virtual IEnumerable<TagValue> GetTagValues(IEnumerable<Serie> series)
+        {
+            var tagValues = new List<TagValue>();
+
+            if (series == null || series.Count() == 0)
+                return tagValues;
+
+            tagValues.AddRange(series.Single().Values.Select(p => new TagValue() { Name = (string)p[0], Value = p[1] }));
+
+            return tagValues;
+        }
     }
 }
