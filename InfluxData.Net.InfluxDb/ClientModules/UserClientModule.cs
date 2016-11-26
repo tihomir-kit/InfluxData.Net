@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Models.Responses;
@@ -38,6 +39,27 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var grants = _userResponseParser.GetPrivileges(series);
 
             return grants;
+        }
+
+        public async Task<IInfluxDataApiResponse> CreateUserAsync(string username, string password, bool isAdmin)
+        {
+            var query = _userQueryBuilder.CreateUser(username, password, isAdmin);
+            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            return response;
+        }
+
+        public async Task<IInfluxDataApiResponse> DropUserAsync(string username)
+        {
+            var query = _userQueryBuilder.DropUser(username);
+            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            return response;
+        }
+
+        public async Task<IInfluxDataApiResponse> SetPasswordAsync(string username, string password)
+        {
+            var query = _userQueryBuilder.SetPassword(username, password);
+            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            return response;
         }
     }
 }

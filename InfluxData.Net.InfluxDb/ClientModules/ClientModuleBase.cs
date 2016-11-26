@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Http;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxData.Helpers;
@@ -27,9 +28,25 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
+        protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string query, HttpMethod method)
+        {
+            var response = await this.RequestClient.QueryAsync(query, method).ConfigureAwait(false);
+            response.ValidateQueryResponse();
+
+            return response;
+        }
+
         protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string dbName, string query)
         {
             var response = await this.RequestClient.QueryAsync(dbName, query).ConfigureAwait(false);
+            response.ValidateQueryResponse();
+
+            return response;
+        }
+
+        protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string dbName, string query, HttpMethod method)
+        {
+            var response = await this.RequestClient.QueryAsync(dbName, query, method).ConfigureAwait(false);
             response.ValidateQueryResponse();
 
             return response;

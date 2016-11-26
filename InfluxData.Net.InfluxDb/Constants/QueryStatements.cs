@@ -33,5 +33,8 @@
 
         public const string GetUsers = "SHOW USERS";
         public const string GetGrants = "SHOW GRANTS FOR \"{0}\"";
+        public const string CreateUser = "CREATE USER \"{0}\" WITH PASSWORD '{1}'{2}";
+        public const string DropUser = "DROP USER \"{0}\"";
+        public const string SetPassword = "SET PASSWORD FOR \"{0}\" = '{1}'";
     }
 }
