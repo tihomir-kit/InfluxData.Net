@@ -30,5 +30,8 @@
 
         public const string GetStats = "SHOW STATS";
         public const string GetDiagnostics = "SHOW DIAGNOSTICS";
+
+        public const string GetUsers = "SHOW USERS";
+        public const string GetGrants = "SHOW GRANTS FOR \"{0}\"";
     }
 }
