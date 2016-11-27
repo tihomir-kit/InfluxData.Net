@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Constants;
+using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.QueryBuilders;
 using InfluxData.Net.InfluxDb.RequestClients;
@@ -28,7 +29,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var query = _userQueryBuilder.GetUsers();
             var series = await base.ResolveSingleGetSeriesResultAsync(query).ConfigureAwait(false);
             var users = _userResponseParser.GetUsers(series);
-            
             return users;
         }
 
@@ -37,7 +37,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var query = _userQueryBuilder.GetPrivileges(username);
             var series = await base.ResolveSingleGetSeriesResultAsync(query).ConfigureAwait(false);
             var grants = _userResponseParser.GetPrivileges(series);
-
             return grants;
         }
 
@@ -58,6 +57,34 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDataApiResponse> SetPasswordAsync(string username, string password)
         {
             var query = _userQueryBuilder.SetPassword(username, password);
+            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            return response;
+        }
+
+        public async Task<IInfluxDataApiResponse> GrantAdministratorAsync(string username)
+        {
+            var query = _userQueryBuilder.GrantAdministator(username);
+            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            return response;
+        }
+
+        public async Task<IInfluxDataApiResponse> RevokeAdministratorAsync(string username)
+        {
+            var query = _userQueryBuilder.RevokeAdministrator(username);
+            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            return response;
+        }
+
+        public async Task<IInfluxDataApiResponse> GrantPrivilegeAsync(string username, Privileges privilege, string dbName)
+        {
+            var query = _userQueryBuilder.GrantPrivilege(username, privilege, dbName);
+            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            return response;
+        }
+
+        public async Task<IInfluxDataApiResponse> RevokePrivilegeAsync(string username, Privileges privilege, string dbName)
+        {
+            var query = _userQueryBuilder.RevokePrivilege(username, privilege, dbName);
             var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
             return response;
         }

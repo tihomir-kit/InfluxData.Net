@@ -36,5 +36,9 @@
         public const string CreateUser = "CREATE USER \"{0}\" WITH PASSWORD '{1}'{2}";
         public const string DropUser = "DROP USER \"{0}\"";
         public const string SetPassword = "SET PASSWORD FOR \"{0}\" = '{1}'";
+        public const string GrantAdministrator = "GRANT ALL PRIVILEGES TO \"{0}\"";
+        public const string RevokeAdministrator = "REVOKE ALL PRIVILEGES FROM \"{0}\"";
+        public const string GrantPrivilege = "GRANT {0} ON \"{1}\" TO \"{2}\"";
+        public const string RevokePrivilege = "REVOKE {0} ON \"{1}\" FROM \"{2}\"";
     }
 }
