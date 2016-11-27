@@ -75,6 +75,9 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
  - _[DropSeriesAsync()](#dropseriesasync)_
  - _[GetMeasurementsAsync()](#getmeasurementsasync)_
  - _[DropMeasurementAsync()](#dropmeasurementasync)_
+ - _[GetTagKeysAsync()](#gettagkeysasync)_
+ - _[GetTagValuesAsync()](#gettagvaluesasync)_
+ - _[GetFieldKeysAsync()](#getfieldkeysasync)_
 - [Retention](#retention-module)
  - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
  - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
@@ -394,6 +397,30 @@ var response = await influxDbClient.Serie.GetMeasurementsAsync("yourDbName");
 
 ```cs
 var response = await influxDbClient.Serie.DropMeasurementAsync("yourDbName", "measurementNameToDrop");
+```
+
+#### GetTagKeysAsync
+
+[Gets a list of tag keys](https://docs.influxdata.com/influxdb/v0.9/query_language/schema_exploration/#explore-tag-keys-with-show-tag-keys) for a given database and measurement.
+
+```cs
+var response = await influxDbClient.Serie.GetTagKeysAsync("yourDbName", "measurementNameToGetTagsFor");
+```
+
+#### GetTagValuesAsync
+
+[Gets a list of tag values](https://docs.influxdata.com/influxdb/v0.9/query_language/schema_exploration/#explore-tag-values-with-show-tag-values) for a given database, measurement, and tag key.
+
+```cs
+var response = await influxDbClient.Serie.GetTagValuesAsync("yourDbName", "measurementNameToGetTagsValuesFor", "tagNameToGetValuesFor");
+```
+
+#### GetFieldKeysAsync
+
+[Gets a list of field keys](https://docs.influxdata.com/influxdb/v0.9/query_language/schema_exploration/#explore-field-keys-with-show-field-keys) for a given database and measurement. The returned list of field keys also specify the field type per key.
+
+```cs
+var response = await influxDbClient.Serie.GetFieldKeysAsync("yourDbName", "measurementNameToGetFieldKeysFor");
 ```
 
 ### Retention Module
