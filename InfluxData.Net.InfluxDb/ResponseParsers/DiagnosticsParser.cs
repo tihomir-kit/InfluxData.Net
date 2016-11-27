@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using InfluxData.Net.InfluxDb.Helpers;
 using InfluxData.Net.InfluxDb.Models.Responses;
 
@@ -49,9 +50,9 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             var diagnosticsSystem = new DiagnosticsSystem()
             {
                 PID = serie.FirstRecordValueAs<long>("PID"),
-                CurrentTime = DateTime.Parse(serie.FirstRecordValueAs<string>("currentTime")),
-                Started = DateTime.Parse(serie.FirstRecordValueAs<string>("started")),
-                Uptime = serie.FirstRecordValueAs<string>("uptime")
+                CurrentTime = DateTime.Parse(serie.FirstRecordValueAs<object>("currentTime").ToString()),
+                Started = DateTime.Parse(serie.FirstRecordValueAs<object>("started").ToString()),
+                Uptime = ParseGoDuration(serie.FirstRecordValueAs<string>("uptime"))
             };
 
             return diagnosticsSystem;
@@ -93,6 +94,50 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             };
 
             return diagnosticsNetwork;
+        }
+
+
+        protected virtual TimeSpan ParseGoDuration(string duration)
+        {
+            try
+            {
+                int h = -1, m = -1, s = -1, ms = -1;
+                Regex regex = new Regex("([0-9\\.]+)(.)");
+                var matches = regex.Matches(duration);
+
+                foreach (Match match in matches)
+                {
+                    var value = match.Groups[1].Value;
+                    var units = match.Groups[2].Value;
+
+                    if (units == "h")
+                    {
+                        h = int.Parse(value);
+                    }
+                    else if (units == "m")
+                    {
+                        m = int.Parse(value);
+                    }
+                    else if (units == "s")
+                    {
+                        var parsedSeconds = value.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+                        s = int.Parse(parsedSeconds[0]);
+
+                        if (parsedSeconds.Length == 2)
+                        {
+                            var _ms = parsedSeconds[1];
+                            if (_ms.Length > 3) _ms = _ms.Substring(0, 3);
+                            ms = int.Parse(_ms);
+                        }
+                    }
+                }
+
+                return new TimeSpan(0, h > 0 ? h : 0, m > 0 ? m : 0, s > 0 ? s : 0, ms > 0 ? ms : 0);
+            }
+            catch
+            {
+                return new TimeSpan(0, 0, -1);
+            }
         }
     }
 }
