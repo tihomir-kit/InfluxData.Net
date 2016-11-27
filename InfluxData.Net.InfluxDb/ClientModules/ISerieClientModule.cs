@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
+using InfluxData.Net.Common.Enums;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -50,5 +51,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="measurementName">Measurement name.</param>
         /// <returns></returns>
         Task<IInfluxDataApiResponse> DropMeasurementAsync(string dbName, string measurementName);
+
+        IBatchWriter CreateBatchWriter(string dbName, int interval = 1000, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds);
     }
 }
