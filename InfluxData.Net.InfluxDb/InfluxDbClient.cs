@@ -89,7 +89,7 @@ namespace InfluxData.Net.InfluxDb
             _databaseResponseParser = new Lazy<IDatabaseResponseParser>(() => new DatabaseResponseParser(), true);
             _retentionResponseParser = new Lazy<IRetentionResponseParser>(() => new RetentionResponseParser(), true);
             _cqResponseParser = new Lazy<ICqResponseParser>(() => new CqResponseParser(), true);
-            _diagnosticsResponseParser = new Lazy<IDiagnosticsResponseParser>(() => new DiagnosticsParser(), true);
+            _diagnosticsResponseParser = new Lazy<IDiagnosticsResponseParser>(() => new DiagnosticsResponseParser(), true);
 
             // NOTE: once a breaking change occures, ClientModules will need to be resolved with factories
             _basicClientModule = new Lazy<IBasicClientModule>(() => new BasicClientModule(_requestClient, _basicResponseParser.Value));
