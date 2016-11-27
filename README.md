@@ -55,6 +55,16 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
  - _[CreateDatabaseAsync()](#createdatabaseasync)_
  - _[GetDatabasesAsync()](#getdatabasesasync)_
  - _[DropDatabaseAsync()](#dropdatabaseasync)_
+- [User](#user-module)
+ - _[CreateUserAsync()](#createuserasync)_
+ - _[GetUsersAsync()](#getusersasync)_
+ - _[DropUserAsync()](#dropuserasync)_
+ - _[SetPasswordAsync()](#setpasswordasync)_
+ - _[GetPrivilegesAsync()](#getprivilegesasync)_
+ - _[GrantAdministratorAsync()](#grantadministratorasync)_
+ - _[RevokeAdministratorAsync()](#revokeadministratorasync)_
+ - _[GrantPrivilegeAsync()](#grantprivilegeasync)_
+ - _[RevokePrivilegeAsync()](#revokeprivilegeasync)_
 - [ContinuousQuery](#continuous-query-module)
  - _[CreateContinuousQueryAsync()](#createcontinuousqueryasync)_
  - _[GetContinuousQueriesAsync()](#getcontinuousqueriesasync)_
@@ -65,6 +75,9 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
  - _[DropSeriesAsync()](#dropseriesasync)_
  - _[GetMeasurementsAsync()](#getmeasurementsasync)_
  - _[DropMeasurementAsync()](#dropmeasurementasync)_
+ - _[GetTagKeysAsync()](#gettagkeysasync)_
+ - _[GetTagValuesAsync()](#gettagvaluesasync)_
+ - _[GetFieldKeysAsync()](#getfieldkeysasync)_
 - [Retention](#retention-module)
  - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
  - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
@@ -188,6 +201,90 @@ Drops a database:
 var response = await influxDbClient.Database.DropDatabaseAsync("dbNameToDrop");
 ```
 
+### User Module
+
+The user module can be used to [manage database users](https://docs.influxdata.com/influxdb/v0.9/administration/authentication_and_authorization/#authorization) on the InfluxDb system.
+
+#### CreateUserAsync
+
+Creates a new user. The user can either be created as a regular user or an administrator user by specifiy the desired value for the `isAdmin` parameter when calling the method.
+
+To create a new user:
+
+```cs
+var response = await influxDbClient.User.CreateUserAsync("regularUserName", false);
+```
+
+To create a new administrator:
+
+```cs
+var response = await influxDbClient.User.CreateUserAsync("adminUserName", true);
+```
+
+#### GetUsersAsync
+
+Gets a list of users for the system (this request requires administrator privileges):
+
+```cs
+var users = await influxDbClient.User.GetUsersAsync();
+```
+
+#### DropUserAsync
+
+Drops an existing user (this request requires administrator privileges):
+
+```cs
+var response = await influxDbClient.User.DropUserAsync("userNameToDrop");
+```
+
+#### SetPasswordAsync
+
+Sets a user's password (this request requires administrator privileges):
+
+```cs
+var response = await influxDbClient.User.SetPasswordAsync("userNameToUpdate", "passwordToSet");
+```
+
+#### GetPrivilegesAsync
+
+Gets a list of a user's granted privileges (this request requires administrator privileges):
+
+```cs
+var grantedPrivilges = await influxDbClient.User.GetPrivilegesAsync("userNameToGetPrivilegesFor");
+```
+
+#### GrantAdministratorAsync
+
+Grants administrator privileges to a user (this request requires administrator privileges):
+
+```cs
+var response = await influxDbClient.User.GrantAdministratorAsync("userNameToGrantTo");
+```
+
+#### RevokeAdministratorAsync
+
+Revokes administrator privileges from a user (this request requires administrator privileges):
+
+```cs
+var response = await influxDbClient.User.RevokeAdministratorAsync("userNameToRevokeFrom");
+```
+
+#### GrantPrivilegeAsync
+
+Grants the specified privilege to a user for a given database (this request requires administrator privileges):
+
+```cs
+var response = await influxDbClient.User.GrantPrivilegeAsync("userNameToGrantTo", Privileges.Read, "databaseName");
+```
+
+#### RevokePrivilegeAsync
+
+Revokes the specified privilege from a user for a given database (this request requires administrator privileges):
+
+```cs
+var response = await influxDbClient.User.RevokePrivilegeAsync("userNameToRevokeFrom", Privileges.Read, "databaseName");
+```
+
 ### Continuous Query Module
 
 This module can be used to manage [CQ's](https://docs.influxdata.com/influxdb/v0.9/query_language/continuous_queries/) and to backfill with aggregate data.
@@ -300,6 +397,30 @@ var response = await influxDbClient.Serie.GetMeasurementsAsync("yourDbName");
 
 ```cs
 var response = await influxDbClient.Serie.DropMeasurementAsync("yourDbName", "measurementNameToDrop");
+```
+
+#### GetTagKeysAsync
+
+[Gets a list of tag keys](https://docs.influxdata.com/influxdb/v0.9/query_language/schema_exploration/#explore-tag-keys-with-show-tag-keys) for a given database and measurement.
+
+```cs
+var response = await influxDbClient.Serie.GetTagKeysAsync("yourDbName", "measurementNameToGetTagsFor");
+```
+
+#### GetTagValuesAsync
+
+[Gets a list of tag values](https://docs.influxdata.com/influxdb/v0.9/query_language/schema_exploration/#explore-tag-values-with-show-tag-values) for a given database, measurement, and tag key.
+
+```cs
+var response = await influxDbClient.Serie.GetTagValuesAsync("yourDbName", "measurementNameToGetTagsValuesFor", "tagNameToGetValuesFor");
+```
+
+#### GetFieldKeysAsync
+
+[Gets a list of field keys](https://docs.influxdata.com/influxdb/v0.9/query_language/schema_exploration/#explore-field-keys-with-show-field-keys) for a given database and measurement. The returned list of field keys also specify the field type per key.
+
+```cs
+var response = await influxDbClient.Serie.GetFieldKeysAsync("yourDbName", "measurementNameToGetFieldKeysFor");
 ```
 
 ### Retention Module
