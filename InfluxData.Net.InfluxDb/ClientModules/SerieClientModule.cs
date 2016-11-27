@@ -62,9 +62,9 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public IBatchWriter CreateBatchWriter(string dbName, int interval = 1000, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
-            return ((IBatchWriterFactory)_batchWriter).CreateBatchWriter(dbName, interval, retenionPolicy, precision);
+            return ((IBatchWriterFactory)_batchWriter).CreateBatchWriter(dbName, retenionPolicy, precision);
         }
     }
 }

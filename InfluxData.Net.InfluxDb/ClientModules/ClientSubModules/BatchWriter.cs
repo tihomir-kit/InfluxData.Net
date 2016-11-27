@@ -22,30 +22,37 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// </summary>
         private BlockingCollection<Point> _pointCollection;
 
+        /// <summary>
+        /// Constructor used by InfluxDbClient to inject the IBasicClientModule.
+        /// </summary>
         internal BatchWriter(IBasicClientModule basicClientModule)
         {
             _basicClientModule = basicClientModule;
         }
 
-        internal BatchWriter(IBasicClientModule basicClientModule, string dbName, int interval, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        /// <summary>
+        /// Constructor used by BatchWriter to create new instances of BatchWriter (through the CreateBatchWriter() method) with
+        /// IBasicClientModule from InfluxDbClient. This instance BatchWriter instance is served to the end users.
+        /// </summary>
+        private BatchWriter(IBasicClientModule basicClientModule, string dbName, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
             _basicClientModule = basicClientModule;
             _dbName = dbName;
-            _interval = 1000;
             _retentionPolicy = retenionPolicy;
             _precision = precision;
         }
 
-        public virtual IBatchWriter CreateBatchWriter(string dbName, int interval, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        {
+            return new BatchWriter(_basicClientModule, dbName, retenionPolicy, precision);
+        }
+
+        public virtual void Start(int interval = 1000)
         {
             if (interval <= 0)
                 throw new ArgumentException("Interval must be a positive int value (milliseconds)");
 
-            return new BatchWriter(_basicClientModule, dbName, interval, retenionPolicy, precision);
-        }
-
-        public virtual void Start()
-        {
+            _interval = interval;
             _isRunning = true;
             this.EnqueueBatchWritingAsync();
         }
@@ -68,6 +75,11 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _isRunning = false;
         }
 
+        /// <summary>
+        /// Waits for the "interval" amount of time then writes all the current
+        /// blocking collection points to InfluxDb and calls itself again.
+        /// </summary>
+        /// <returns>Task.</returns>
         private async Task EnqueueBatchWritingAsync()
         {
             if (!_isRunning)
@@ -78,6 +90,11 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             this.EnqueueBatchWritingAsync();
         }
 
+        /// <summary>
+        /// Dequeues all the current points from the blocking collection
+        /// and writes them all to InfluxDb in a single request.
+        /// </summary>
+        /// <returns>Task.</returns>
         private async Task WriteBatchedPointsAsync()
         {
             var pointCount = _pointCollection.Count;

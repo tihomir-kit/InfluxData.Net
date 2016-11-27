@@ -36,8 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ClientModules\BatchWriter\BatchWriter.cs" />
-    <Compile Include="ClientModules\BatchWriter\IBatchWriter.cs" />
+    <Compile Include="ClientModules\ClientSubModules\BatchWriter.cs" />
+    <Compile Include="ClientModules\ClientSubModules\IBatchWriter.cs" />
     <Compile Include="ClientModules\DiagnosticsClientModule.cs" />
     <Compile Include="ClientModules\IDiagnosticsClientModule.cs" />
     <Compile Include="ClientModules\ISerieClientModule.cs" />
