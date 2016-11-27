@@ -96,7 +96,11 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
             return diagnosticsNetwork;
         }
 
-
+        /// <summary>
+        /// Parses GoLang duration into a TimeSpan object.
+        /// </summary>
+        /// <param name="duration">GoLang formatted time duration.</param>
+        /// <returns>TimeSpan object.</returns>
         protected virtual TimeSpan ParseGoDuration(string duration)
         {
             try
@@ -107,8 +111,8 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
 
                 foreach (Match match in matches)
                 {
-                    var value = match.Groups[1].Value;
-                    var units = match.Groups[2].Value;
+                    var value = match.Groups[1].Value; // Numeric duration value
+                    var units = match.Groups[2].Value; // Duration suffix (h/m/s)
 
                     if (units == "h")
                     {
@@ -120,19 +124,25 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
                     }
                     else if (units == "s")
                     {
-                        var parsedSeconds = value.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-                        s = int.Parse(parsedSeconds[0]);
+                        // Split seconds into s and ms
+                        var splitSeconds = value.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+                        s = int.Parse(splitSeconds[0]); // Parse the seconds portion
 
-                        if (parsedSeconds.Length == 2)
+                        if (splitSeconds.Length == 2) // Parse the milliseconds portion
                         {
-                            var _ms = parsedSeconds[1];
+                            var _ms = splitSeconds[1];
                             if (_ms.Length > 3) _ms = _ms.Substring(0, 3);
                             ms = int.Parse(_ms);
                         }
                     }
                 }
 
-                return new TimeSpan(0, h > 0 ? h : 0, m > 0 ? m : 0, s > 0 ? s : 0, ms > 0 ? ms : 0);
+                return new TimeSpan(
+                    0, h > 0 ? h : 0, 
+                    m > 0 ? m : 0, 
+                    s > 0 ? s : 0, 
+                    ms > 0 ? ms : 0
+                );
             }
             catch
             {
