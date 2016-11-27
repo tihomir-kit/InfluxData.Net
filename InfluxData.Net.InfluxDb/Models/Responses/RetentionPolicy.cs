@@ -18,7 +18,7 @@
         /// <summary>
         /// RP shard group duration.
         /// </summary>
-        public string ShardGroupduration { get; set; }
+        public string ShardGroupDuration { get; set; }
 
         /// <summary>
         /// RP replication copies.
