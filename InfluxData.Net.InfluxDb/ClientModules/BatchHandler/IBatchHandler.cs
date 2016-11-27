@@ -6,12 +6,15 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public interface IBatchHandler
     {
-        IBatchHandler CreateBatchHandler(string dbName, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds);
-
         void Start();
 
         void AddPoints(IEnumerable<Point> points);
 
         void Stop();
+    }
+
+    internal interface IBatchHandlerFactory : IBatchHandler
+    {
+        IBatchHandler CreateBatchHandler(string dbName, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds);
     }
 }

@@ -24,7 +24,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         public IBatchHandler CreateBatchHandler(string dbName, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
         {
-            return _batchHandler.CreateBatchHandler(dbName, retenionPolicy, precision);
+            return ((IBatchHandlerFactory)_batchHandler).CreateBatchHandler(dbName, retenionPolicy, precision);
         }
     }
 }
