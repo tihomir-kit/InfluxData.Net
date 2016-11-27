@@ -75,7 +75,7 @@
     <Compile Include="ResponseParsers\ICqResponseParser.cs" />
     <Compile Include="ResponseParsers\IBasicResponseParser.cs" />
     <Compile Include="ResponseParsers\IDiagnosticsResponseParser.cs" />
-    <Compile Include="ResponseParsers\DiagnosticsParser.cs" />
+    <Compile Include="ResponseParsers\DiagnosticsResponseParser.cs" />
     <Compile Include="QueryBuilders\DiagnosticsQueryBuilder.cs" />
     <Compile Include="QueryBuilders\IDiagnosticsQueryBuilder.cs" />
     <Compile Include="RequestClients\IInfluxDbRequestClient.cs" />

@@ -7,7 +7,7 @@ using InfluxData.Net.InfluxDb.Models.Responses;
 
 namespace InfluxData.Net.InfluxDb.ResponseParsers
 {
-    internal class DiagnosticsParser : IDiagnosticsResponseParser
+    internal class DiagnosticsResponseParser : IDiagnosticsResponseParser
     {
         public virtual Stats GetStats(IEnumerable<Serie> series)
         {
