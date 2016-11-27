@@ -4,8 +4,9 @@ using InfluxData.Net.InfluxDb.Models;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System;
+using InfluxData.Net.InfluxDb.ClientModules;
 
-namespace InfluxData.Net.InfluxDb.ClientModules
+namespace InfluxData.Net.InfluxDb.ClientSubModules
 {
     public class BatchWriter : IBatchWriterFactory
     {

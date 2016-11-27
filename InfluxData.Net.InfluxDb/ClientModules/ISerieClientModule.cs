@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.Common.Enums;
+using InfluxData.Net.InfluxDb.ClientSubModules;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {

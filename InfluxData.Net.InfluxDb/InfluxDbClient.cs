@@ -8,6 +8,7 @@ using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
 using InfluxData.Net.Common.Infrastructure;
 using System.Net.Http;
+using InfluxData.Net.InfluxDb.ClientSubModules;
 
 namespace InfluxData.Net.InfluxDb
 {
@@ -93,6 +94,7 @@ namespace InfluxData.Net.InfluxDb
             // NOTE: once a breaking change occures, ClientModules will need to be resolved with factories
             _basicClientModule = new Lazy<IBasicClientModule>(() => new BasicClientModule(_requestClient, _basicResponseParser.Value));
             var batchWriter = new Lazy<IBatchWriterFactory>(() => new BatchWriter(_basicClientModule.Value));
+
             _serieClientModule = new Lazy<ISerieClientModule>(() => new SerieClientModule(_requestClient, _serieQueryBuilder.Value, _serieResponseParser.Value, batchWriter.Value));
             _databaseClientModule = new Lazy<IDatabaseClientModule>(() => new DatabaseClientModule(_requestClient, _databaseQueryBuilder.Value, _databaseResponseParser.Value));
             _retentionClientModule = new Lazy<IRetentionClientModule>(() => new RetentionClientModule(_requestClient, _retentionQueryBuilder.Value, _retentionResponseParser.Value));

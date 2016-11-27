@@ -2,7 +2,7 @@
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Common.Enums;
 
-namespace InfluxData.Net.InfluxDb.ClientModules
+namespace InfluxData.Net.InfluxDb.ClientSubModules
 {
     /// <summary>
     /// A client sub-module which can then be shared by multiple threads/processes to be used
