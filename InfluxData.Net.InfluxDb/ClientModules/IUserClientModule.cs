@@ -15,12 +15,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         Task<IEnumerable<User>> GetUsersAsync();
 
         /// <summary>
-        /// Gets a list of granted database privileges for a user.
-        /// </summary>
-        /// <param name="username">The name of the user to get granted privilges for.</param>
-        Task<IEnumerable<Grant>> GetPrivilegesAsync(string username);
-
-        /// <summary>
         /// Creates a new InfluxDB user with the given user name, password, and admin privileges.
         /// </summary>
         /// <param name="username">The user's name.</param>
@@ -43,6 +37,12 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="password">The password to set.</param>
         /// <returns>The query response.</returns>
         Task<IInfluxDataApiResponse> SetPasswordAsync(string username, string password);
+
+        /// <summary>
+        /// Gets a list of granted database privileges for a user.
+        /// </summary>
+        /// <param name="username">The name of the user to get granted privilges for.</param>
+        Task<IEnumerable<Grant>> GetPrivilegesAsync(string username);
 
         /// <summary>
         /// Grants a user administrator privileges.

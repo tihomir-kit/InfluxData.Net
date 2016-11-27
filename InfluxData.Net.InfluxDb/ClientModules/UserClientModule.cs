@@ -32,14 +32,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return users;
         }
 
-        public async Task<IEnumerable<Grant>> GetPrivilegesAsync(string username)
-        {
-            var query = _userQueryBuilder.GetPrivileges(username);
-            var series = await base.ResolveSingleGetSeriesResultAsync(query).ConfigureAwait(false);
-            var grants = _userResponseParser.GetPrivileges(series);
-            return grants;
-        }
-
         public async Task<IInfluxDataApiResponse> CreateUserAsync(string username, string password, bool isAdmin)
         {
             var query = _userQueryBuilder.CreateUser(username, password, isAdmin);
@@ -59,6 +51,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var query = _userQueryBuilder.SetPassword(username, password);
             var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
             return response;
+        }
+
+        public async Task<IEnumerable<Grant>> GetPrivilegesAsync(string username)
+        {
+            var query = _userQueryBuilder.GetPrivileges(username);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query).ConfigureAwait(false);
+            var grants = _userResponseParser.GetPrivileges(series);
+            return grants;
         }
 
         public async Task<IInfluxDataApiResponse> GrantAdministratorAsync(string username)
