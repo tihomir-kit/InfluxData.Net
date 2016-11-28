@@ -11,7 +11,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
             return QueryStatements.GetUsers;
         }
 
-        public virtual string CreateUser(string username, string password, bool isAdmin)
+        public virtual string CreateUser(string username, string password, bool isAdmin = false)
         {
             return String.Format(QueryStatements.CreateUser, username, password, isAdmin ? QueryStatements.WithAllPrivileges : null);
         }

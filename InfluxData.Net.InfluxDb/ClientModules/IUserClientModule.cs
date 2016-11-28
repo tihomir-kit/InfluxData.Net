@@ -21,7 +21,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="password">The user's password.</param>
         /// <param name="isAdmin">Whether or not to make the user an administrator.</param>
         /// <returns>The query response.</returns>
-        Task<IInfluxDataApiResponse> CreateUserAsync(string username, string password, bool isAdmin);
+        Task<IInfluxDataApiResponse> CreateUserAsync(string username, string password, bool isAdmin = false);
 
         /// <summary>
         /// Drops an existing InfluxDB user with the given user name.
