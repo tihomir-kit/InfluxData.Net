@@ -23,10 +23,22 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await base.RequestAsync(HttpMethod.Get, RequestPaths.Query, requestParams).ConfigureAwait(false);
         }
 
+        public virtual async Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method)
+        {
+            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(query);
+            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
+        }
+
         public virtual async Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query)
         {
             var requestParams = RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
             return await base.RequestAsync(HttpMethod.Get, RequestPaths.Query, requestParams).ConfigureAwait(false);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, HttpMethod method)
+        {
+            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
+            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> PostAsync(WriteRequest writeRequest)
