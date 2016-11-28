@@ -33,7 +33,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string query, HttpMethod method)
         {
             var response = await this.RequestClient.QueryAsync(query, method).ConfigureAwait(false);
-            response.ValidateQueryResponse();
+            response.ValidateQueryResponse(this.RequestClient.Configuration.ThrowOnWarning);
 
             return response;
         }
@@ -49,7 +49,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string dbName, string query, HttpMethod method)
         {
             var response = await this.RequestClient.QueryAsync(dbName, query, method).ConfigureAwait(false);
-            response.ValidateQueryResponse();
+            response.ValidateQueryResponse(this.RequestClient.Configuration.ThrowOnWarning);
 
             return response;
         }

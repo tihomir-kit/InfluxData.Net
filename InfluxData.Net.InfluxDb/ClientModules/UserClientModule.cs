@@ -32,7 +32,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return users;
         }
 
-        public async Task<IInfluxDataApiResponse> CreateUserAsync(string username, string password, bool isAdmin)
+        public async Task<IInfluxDataApiResponse> CreateUserAsync(string username, string password, bool isAdmin = false)
         {
             var query = _userQueryBuilder.CreateUser(username, password, isAdmin);
             var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);

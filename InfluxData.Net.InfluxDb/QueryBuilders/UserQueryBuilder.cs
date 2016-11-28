@@ -1,5 +1,6 @@
 ﻿using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Enums;
+using System;
 
 namespace InfluxData.Net.InfluxDb.QueryBuilders
 {
@@ -12,42 +13,42 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
 
         public virtual string CreateUser(string username, string password, bool isAdmin)
         {
-            return string.Format(QueryStatements.CreateUser, username, password, isAdmin ? " WITH ALL PRIVILEGES" : null);
+            return String.Format(QueryStatements.CreateUser, username, password, isAdmin ? QueryStatements.WithAllPrivileges : null);
         }
 
         public virtual string DropUser(string username)
         {
-            return string.Format(QueryStatements.DropUser, username);
+            return String.Format(QueryStatements.DropUser, username);
         }
 
         public virtual string SetPassword(string username, string password)
         {
-            return string.Format(QueryStatements.SetPassword, username, password);
+            return String.Format(QueryStatements.SetPassword, username, password);
         }
 
         public virtual string GetPrivileges(string username)
         {
-            return string.Format(QueryStatements.GetGrants, username);
+            return String.Format(QueryStatements.GetGrants, username);
         }
 
         public virtual string GrantAdministator(string username)
         {
-            return string.Format(QueryStatements.GrantAdministrator, username);
+            return String.Format(QueryStatements.GrantAdministrator, username);
         }
 
         public virtual string RevokeAdministrator(string username)
         {
-            return string.Format(QueryStatements.RevokeAdministrator, username);
+            return String.Format(QueryStatements.RevokeAdministrator, username);
         }
 
         public virtual string GrantPrivilege(string username, Privileges privilege, string dbName)
         {
-            return string.Format(QueryStatements.GrantPrivilege, privilege.ToString().ToUpper(), dbName, username);
+            return String.Format(QueryStatements.GrantPrivilege, privilege.ToString().ToUpper(), dbName, username);
         }
 
         public virtual string RevokePrivilege(string username, Privileges privilege, string dbName)
         {
-            return string.Format(QueryStatements.RevokePrivilege, privilege.ToString().ToUpper(), dbName, username);
+            return String.Format(QueryStatements.RevokePrivilege, privilege.ToString().ToUpper(), dbName, username);
         }
     }
 }

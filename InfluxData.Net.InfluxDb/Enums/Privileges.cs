@@ -11,11 +11,8 @@ namespace InfluxData.Net.InfluxDb.Enums
     public enum Privileges
     {
         None = 0,
-
         Read = 1,
-
         Write = 2,
-
         All = 4,
     }
 }
