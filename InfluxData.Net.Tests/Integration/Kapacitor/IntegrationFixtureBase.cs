@@ -86,7 +86,7 @@ namespace InfluxData.Net.Integration.Kapacitor
         {
             return new DefineTemplatedTaskParams()
             {
-                TaskId = CreateRandomTaskId(),                
+                TaskId = CreateRandomTaskId(),
                 DBRPsParams = new DBRPsParams()
                 {
                     DbName = this.DbName,

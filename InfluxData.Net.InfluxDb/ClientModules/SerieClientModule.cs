@@ -5,6 +5,8 @@ using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.QueryBuilders;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
+using InfluxData.Net.Common.Enums;
+using InfluxData.Net.InfluxDb.ClientSubModules;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -12,12 +14,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
     {
         private readonly ISerieQueryBuilder _serieQueryBuilder;
         private readonly ISerieResponseParser _serieResponseParser;
+        private readonly IBatchWriter _batchWriter;
 
-        public SerieClientModule(IInfluxDbRequestClient requestClient, ISerieQueryBuilder serieQueryBuilder, ISerieResponseParser serieResponseParser)
+        public SerieClientModule(IInfluxDbRequestClient requestClient, ISerieQueryBuilder serieQueryBuilder, ISerieResponseParser serieResponseParser, IBatchWriter batchWriter)
             : base(requestClient)
         {
             _serieQueryBuilder = serieQueryBuilder;
             _serieResponseParser = serieResponseParser;
+            _batchWriter = batchWriter;
         }
 
         public virtual async Task<IEnumerable<SerieSet>> GetSeriesAsync(string dbName, string measurementName = null, IEnumerable<string> filters = null)
@@ -57,6 +61,11 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var response = await base.GetAndValidateQueryAsync(dbName, query).ConfigureAwait(false);
 
             return response;
+        }
+
+        public IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
+        {
+            return ((IBatchWriterFactory)_batchWriter).CreateBatchWriter(dbName, retenionPolicy, precision);
         }
     }
 }
