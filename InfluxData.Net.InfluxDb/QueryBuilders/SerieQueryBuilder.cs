@@ -60,5 +60,26 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
 
             return query;
         }
+
+        public virtual string GetTagKeys(string dbName, string measurementName)
+        {
+            var query = String.Format(QueryStatements.ShowTagKeys, measurementName);
+
+            return query;
+        }
+
+        public virtual string GetTagValues(string dbName, string measurementName, string tagName)
+        {
+            var query = String.Format(QueryStatements.ShowTagValues, measurementName, tagName);
+
+            return query;
+        }
+
+        public virtual string GetFieldKeys(string dbName, string measurementName)
+        {
+            var query = String.Format(QueryStatements.ShowFieldKeys, measurementName);
+
+            return query;
+        }
     }
 }

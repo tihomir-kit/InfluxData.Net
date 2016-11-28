@@ -8,6 +8,9 @@
         public const string DropSeries = "DROP SERIES FROM \"{0}\"";
         public const string GetMeasurements = "SHOW MEASUREMENTS ";
         public const string DropMeasurement = "DROP MEASUREMENT \"{0}\"";
+        public const string ShowTagKeys = "SHOW TAG KEYS FROM \"{0}\"";
+        public const string ShowTagValues = "SHOW TAG VALUES FROM \"{0}\" WITH KEY = \"{1}\"";
+        public const string ShowFieldKeys = "SHOW FIELD KEYS FROM \"{0}\"";
 
         public const string CreateDatabase = "CREATE DATABASE \"{0}\"";
         public const string GetDatabases = "SHOW DATABASES";
@@ -27,5 +30,15 @@
 
         public const string GetStats = "SHOW STATS";
         public const string GetDiagnostics = "SHOW DIAGNOSTICS";
+
+        public const string GetUsers = "SHOW USERS";
+        public const string GetGrants = "SHOW GRANTS FOR \"{0}\"";
+        public const string CreateUser = "CREATE USER \"{0}\" WITH PASSWORD '{1}'{2}";
+        public const string DropUser = "DROP USER \"{0}\"";
+        public const string SetPassword = "SET PASSWORD FOR \"{0}\" = '{1}'";
+        public const string GrantAdministrator = "GRANT ALL PRIVILEGES TO \"{0}\"";
+        public const string RevokeAdministrator = "REVOKE ALL PRIVILEGES FROM \"{0}\"";
+        public const string GrantPrivilege = "GRANT {0} ON \"{1}\" TO \"{2}\"";
+        public const string RevokePrivilege = "REVOKE {0} ON \"{1}\" FROM \"{2}\"";
     }
 }

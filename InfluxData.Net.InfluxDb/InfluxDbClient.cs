@@ -21,6 +21,7 @@ namespace InfluxData.Net.InfluxDb
         private readonly Lazy<IRetentionQueryBuilder> _retentionQueryBuilder;
         private readonly Lazy<ICqQueryBuilder> _cqQueryBuilder;
         private readonly Lazy<IDiagnosticsQueryBuilder> _diagnosticsQueryBuilder;
+        private readonly Lazy<IUserQueryBuilder> _userQueryBuilder;
 
         private readonly Lazy<IBasicResponseParser> _basicResponseParser;
         private readonly Lazy<ISerieResponseParser> _serieResponseParser;
@@ -28,6 +29,7 @@ namespace InfluxData.Net.InfluxDb
         private readonly Lazy<IRetentionResponseParser> _retentionResponseParser;
         private readonly Lazy<ICqResponseParser> _cqResponseParser;
         private readonly Lazy<IDiagnosticsResponseParser> _diagnosticsResponseParser;
+        private readonly Lazy<IUserResponseParser> _userResponseParser;
 
         private readonly Lazy<IBasicClientModule> _basicClientModule;
         public IBasicClientModule Client
@@ -65,6 +67,12 @@ namespace InfluxData.Net.InfluxDb
             get { return _diagnosticsClientModule.Value; }
         }
 
+        private readonly Lazy<IUserClientModule> _userClientModule;
+        public IUserClientModule User
+        {
+            get { return _userClientModule.Value; }
+        }
+
         public InfluxDbClient(string uri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null)
              : this(new InfluxDbClientConfiguration(new Uri(uri), username, password, influxVersion, httpClient))
         {
@@ -82,6 +90,7 @@ namespace InfluxData.Net.InfluxDb
             _retentionQueryBuilder = new Lazy<IRetentionQueryBuilder>(() => new RetentionQueryBuilder(), true);
             _cqQueryBuilder = new Lazy<ICqQueryBuilder>(() => dependencies.CqQueryBuilder, true);
             _diagnosticsQueryBuilder = new Lazy<IDiagnosticsQueryBuilder>(() => new DiagnosticsQueryBuilder(), true);
+            _userQueryBuilder = new Lazy<IUserQueryBuilder>(() => new UserQueryBuilder(), true);
 
             // NOTE: once a breaking change occures, Parsers will need to be resolved with factories
             _basicResponseParser = new Lazy<IBasicResponseParser>(() => new BasicResponseParser(), true);
@@ -90,6 +99,7 @@ namespace InfluxData.Net.InfluxDb
             _retentionResponseParser = new Lazy<IRetentionResponseParser>(() => new RetentionResponseParser(), true);
             _cqResponseParser = new Lazy<ICqResponseParser>(() => new CqResponseParser(), true);
             _diagnosticsResponseParser = new Lazy<IDiagnosticsResponseParser>(() => new DiagnosticsResponseParser(), true);
+            _userResponseParser = new Lazy<IUserResponseParser>(() => new UserResponseParser(), true);
 
             // NOTE: once a breaking change occures, ClientModules will need to be resolved with factories
             _basicClientModule = new Lazy<IBasicClientModule>(() => new BasicClientModule(_requestClient, _basicResponseParser.Value));
@@ -100,6 +110,7 @@ namespace InfluxData.Net.InfluxDb
             _retentionClientModule = new Lazy<IRetentionClientModule>(() => new RetentionClientModule(_requestClient, _retentionQueryBuilder.Value, _retentionResponseParser.Value));
             _cqClientModule = new Lazy<ICqClientModule>(() => new CqClientModule(_requestClient, _cqQueryBuilder.Value, _cqResponseParser.Value));
             _diagnosticsClientModule = new Lazy<IDiagnosticsClientModule>(() => new DiagnosticsClientModule(_requestClient, _diagnosticsQueryBuilder.Value, _diagnosticsResponseParser.Value));
+            _userClientModule = new Lazy<IUserClientModule>(() => new UserClientModule(_requestClient, _userQueryBuilder.Value, _userResponseParser.Value));
         }
 
         public IPointFormatter GetPointFormatter()
