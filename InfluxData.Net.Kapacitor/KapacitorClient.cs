@@ -19,8 +19,8 @@ namespace InfluxData.Net.Kapacitor
             get { return _taskClientModule.Value; }
         }
 
-        public KapacitorClient(string uri, KapacitorVersion kapacitorVersion, HttpClient httpClient = null)
-            : this(new KapacitorClientConfiguration(new Uri(uri), null, null, kapacitorVersion, httpClient))
+        public KapacitorClient(string uri, KapacitorVersion kapacitorVersion, HttpClient httpClient = null, bool throwOnWarning = false)
+            : this(new KapacitorClientConfiguration(new Uri(uri), null, null, kapacitorVersion, httpClient, throwOnWarning))
         {
         }
 

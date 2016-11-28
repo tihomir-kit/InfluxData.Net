@@ -51,6 +51,7 @@
     <Compile Include="Constants\QueryParams.cs" />
     <Compile Include="Constants\RequestPaths.cs" />
     <Compile Include="Enums\TaskType.cs" />
+    <Compile Include="Helpers\ResponseExtensions.cs" />
     <Compile Include="IKapacitorClient.cs" />
     <Compile Include="Infrastructure\KapacitorClientDependencies.cs" />
     <Compile Include="KapacitorClient.cs" />

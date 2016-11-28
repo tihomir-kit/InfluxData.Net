@@ -46,23 +46,22 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query)
         {
-            var response = await base.RequestClient.QueryAsync(dbName, query).ConfigureAwait(false);
             var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+
             return series;
         }
 
         public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries)
         {
-            var response = await base.RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
-            var results = response.ReadAs<QueryResponse>().Validate().Results;
+            var results = await base.ResolveGetSeriesResultAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
             var series = _basicResponseParser.FlattenResultsSeries(results);
+
             return series;
         }
 
         public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries)
         {
-            var response = await base.RequestClient.QueryAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
-            var results = response.ReadAs<QueryResponse>().Validate().Results;
+            var results = await base.ResolveGetSeriesResultAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
             var resultSeries = _basicResponseParser.MapResultsSeries(results);
 
             return resultSeries;

@@ -65,8 +65,8 @@ namespace InfluxData.Net.InfluxDb
             get { return _diagnosticsClientModule.Value; }
         }
 
-        public InfluxDbClient(string uri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null)
-             : this(new InfluxDbClientConfiguration(new Uri(uri), username, password, influxVersion, httpClient))
+        public InfluxDbClient(string uri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null, bool throwOnWarning = false)
+             : this(new InfluxDbClientConfiguration(new Uri(uri), username, password, influxVersion, httpClient, throwOnWarning))
         {
         }
 

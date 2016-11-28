@@ -8,17 +8,19 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 {
     public class InfluxDbClientConfiguration : IInfluxDbClientConfiguration
     {
-        public Uri EndpointUri { get; internal set; }
+        public Uri EndpointUri { get; private set; }
 
         public string Username { get; private set; }
 
         public string Password { get; private set; }
 
+        public bool ThrowOnWarning { get; private set; }
+
         public InfluxDbVersion InfluxVersion { get; private set; }
 
         public HttpClient HttpClient { get; private set; }
 
-        public InfluxDbClientConfiguration(Uri endpointUri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null)
+        public InfluxDbClientConfiguration(Uri endpointUri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null, bool throwOnWarning = false)
         {
             Validate.IsNotNull(endpointUri, "Endpoint may not be null or empty.");
             Validate.IsNotNullOrEmpty(password, "Password may not be null or empty.");
@@ -28,7 +30,8 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             Username = username;
             Password = password;
             InfluxVersion = influxVersion;
-            HttpClient = httpClient;
+            HttpClient = httpClient ?? new HttpClient();
+            ThrowOnWarning = throwOnWarning;
         }
 
         private static Uri SanitizeEndpoint(Uri endpointUri, bool isTls)

@@ -34,5 +34,10 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
         /// <see cref="IEnumerable{Serie}"/> result items.
         /// </summary>
         public IEnumerable<Serie> Series { get; set; }
+
+        /// <summary>
+        /// Serie messages.
+        /// </summary>
+        public IEnumerable<Message> Messages { get; set; }
     }
 }

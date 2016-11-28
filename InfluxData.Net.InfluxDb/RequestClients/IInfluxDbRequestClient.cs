@@ -9,6 +9,8 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 {
     public interface IInfluxDbRequestClient
     {
+        IConfiguration Configuration { get; }
+
         /// <summary>
         /// Executes a query against the InfluxDb API in a single request. Multiple queries can be 
         /// passed in in the form of semicolon-delimited string.

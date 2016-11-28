@@ -34,10 +34,8 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             var httpContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
             var requestParams = RequestParamsBuilder.BuildRequestParams(
                 writeRequest.DbName, 
-                QueryParams.Precision, 
-                writeRequest.Precision, 
-                QueryParams.RetentionPolicy, 
-                writeRequest.RetentionPolicy);
+                QueryParams.Precision, writeRequest.Precision, 
+                QueryParams.RetentionPolicy, writeRequest.RetentionPolicy);
 
             var result = await base.RequestAsync(HttpMethod.Post, RequestPaths.Write, requestParams, httpContent).ConfigureAwait(false);
 

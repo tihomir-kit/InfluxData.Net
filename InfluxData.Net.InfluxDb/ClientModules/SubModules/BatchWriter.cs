@@ -96,7 +96,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             if (!_isRunning)
                 return;
 
-            await Task.Delay(_interval);
+            await Task.Delay(_interval).ConfigureAwait(false);
             this.WriteBatchedPointsAsync();
             this.EnqueueBatchWritingAsync();
         }
@@ -131,7 +131,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             {
                 await _basicClientModule.WriteAsync(_dbName, points, _retentionPolicy, _precision).ContinueWith(p => {
                     RaiseError(p.Exception);
-                }, TaskContinuationOptions.OnlyOnFaulted);
+                }, TaskContinuationOptions.OnlyOnFaulted).ConfigureAwait(false);
             }
         }
 
