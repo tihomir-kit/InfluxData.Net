@@ -66,11 +66,11 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
  - _[GetMeasurementsAsync()](#getmeasurementsasync)_
  - _[DropMeasurementAsync()](#dropmeasurementasync)_
  - _[CreateBatchWriter()](#createbatchwriter)_
-  - _[Start()](#bw-start)_
-  - _[AddPoint()](#bw-addpoint)_
-  - _[AddPoints()](#bw-addpoints)_
-  - _[Stop()](#bw-stop)_
-  - _[OnError()](#bw-onerror)_
+    - _[Start()](#bw-start)_
+    - _[AddPoint()](#bw-addpoint)_
+    - _[AddPoints()](#bw-addpoints)_
+    - _[Stop()](#bw-stop)_
+    - _[OnError()](#bw-onerror)_
 - [Retention](#retention-module)
  - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
  - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
@@ -320,7 +320,7 @@ out until stopped. For thread safety, the `BatchWriter` uses the `BlockingCollec
 var batchWriter = await influxDbClient.Serie.CreateBatchWriter("yourDbName");
 ```
 
-##### [Start](#bw-start)
+##### Start <a name="bw-start"></a>
 
 Starts the async batch writing task. You can set the interval after which the points will be submitted to
 the InfluxDb API (or use the default 1000ms). You can also instruct the _BatchWriter_ to not stop if the
@@ -330,7 +330,7 @@ _BatchWriter_ encounters an error by setting the _continueOnError_ to true.
 batchWriter.Start(5000);
 ```
 
-##### [Stop](#bw-stop)
+##### Stop <a name="bw-stop"></a>
 
 Stops the async batch writing task.
 
@@ -338,7 +338,7 @@ Stops the async batch writing task.
 batchWriter.Stop();
 ```
 
-##### [AddPoint](#bw-addpoint)
+##### AddPoint <a name="bw-addpoint"></a>
 
 Adds a single `Point` item to the blocking collection.
 
@@ -346,13 +346,30 @@ Adds a single `Point` item to the blocking collection.
 batchWriter.Stop();
 ```
 
-##### [AddPoints](#bw-addpoints)
+##### AddPoints <a name="bw-addpoints"></a>
 
-Stops the async batch writing task.
+Adds a multiple `Point` items to the collection.
 
 ```cs
-batchWriter.Stop();
+var points = new Point[10] { ... };
+batchWriter.AddPoints(points);
 ```
+
+##### OnError <a name="bw-onerror"></a>
+
+OnError event handler. You can attach to it to handle any exceptions that might be thrown by the API.
+
+```cs
+// Attach to the event handler
+batchWriter.OnError += BatchWriter_OnError;
+
+// OnError handler method
+private void BatchWriter_OnError(object sender, Exception e)
+{
+    // Handle the error here
+}
+```
+
 
 ### Retention Module
 
