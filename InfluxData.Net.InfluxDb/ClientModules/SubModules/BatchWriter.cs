@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System;
 using InfluxData.Net.InfluxDb.ClientModules;
+using InfluxData.Net.Common.Infrastructure;
 
 namespace InfluxData.Net.InfluxDb.ClientSubModules
 {
@@ -12,9 +13,10 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
     {
         private IBasicClientModule _basicClientModule;
         private string _dbName;
-        private int _interval;
         private string _retentionPolicy;
         private TimeUnit _precision;
+        private int _interval;
+        private bool _continueOnError;
         private bool _isRunning;
 
         /// <summary>
@@ -22,6 +24,11 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// <see cref="http://www.codethinked.com/blockingcollection-and-iproducerconsumercollection"/>
         /// </summary>
         private BlockingCollection<Point> _pointCollection;
+
+        /// <summary>
+        /// On batch writing error event handler.
+        /// </summary>
+        public event EventHandler<Exception> OnError = delegate { };
 
         /// <summary>
         /// Constructor used by InfluxDbClient to inject the IBasicClientModule.
@@ -35,23 +42,26 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// Constructor used by BatchWriter to create new instances of BatchWriter (through the CreateBatchWriter() method) with
         /// IBasicClientModule from InfluxDbClient. This instance BatchWriter instance is served to the end users.
         /// </summary>
-        private BatchWriter(IBasicClientModule basicClientModule, string dbName, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        private BatchWriter(IBasicClientModule basicClientModule, string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
         {
             _basicClientModule = basicClientModule;
             _dbName = dbName;
             _retentionPolicy = retenionPolicy;
             _precision = precision;
+            _pointCollection = new BlockingCollection<Point>();
         }
 
-        public virtual IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
         {
             return new BatchWriter(_basicClientModule, dbName, retenionPolicy, precision);
         }
 
-        public virtual void Start(int interval = 1000)
+        public virtual void Start(int interval = 1000, bool continueOnError = false)
         {
             if (interval <= 0)
                 throw new ArgumentException("Interval must be a positive int value (milliseconds)");
+
+            _continueOnError = continueOnError;
 
             _interval = interval;
             _isRunning = true;
@@ -112,14 +122,25 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
                 }
                 else
                 {
-                    throw new Exception("Could not dequeue the collection");
+                    RaiseError(new InvalidOperationException("Could not dequeue the collection"));
+                    return;
                 }
             }
 
             if (points.Count > 0)
             {
-                await _basicClientModule.WriteAsync(_dbName, points, _retentionPolicy, _precision);
+                await _basicClientModule.WriteAsync(_dbName, points, _retentionPolicy, _precision).ContinueWith(p => {
+                    RaiseError(p.Exception);
+                }, TaskContinuationOptions.OnlyOnFaulted);
             }
+        }
+
+        private void RaiseError(Exception e)
+        {
+            if (!_continueOnError)
+                _isRunning = false;
+
+            this.OnError(this, e);
         }
     }
 }

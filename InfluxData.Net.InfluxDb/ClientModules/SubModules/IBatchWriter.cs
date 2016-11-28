@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Common.Enums;
+using System;
 
 namespace InfluxData.Net.InfluxDb.ClientSubModules
 {
@@ -16,8 +17,9 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// <summary>
         /// Starts the batch writer.
         /// <param name="interval">Interval between writes (milliseconds).</param>
+        /// <param param name="continueOnError">Should continue running on write error? (defaults to false)</param>
         /// </summary>
-        void Start(int interval = 1000);
+        void Start(int interval = 1000, bool continueOnError = false);
 
         /// <summary>
         /// Adds a single point to the BatchWriter points collection (uses BlockingCollection 
@@ -39,6 +41,11 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// Stops the batch writer.
         /// </summary>
         void Stop();
+
+        /// <summary>
+        /// On batch writing error event handler.
+        /// </summary>
+        event EventHandler<Exception> OnError;
     }
 
     internal interface IBatchWriterFactory : IBatchWriter
@@ -54,6 +61,6 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// <param name="retenionPolicy">Retention policy.</param>
         /// <param name="precision">Precision.</param>
         /// <returns>BatchWriter instance.</returns>
-        IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = "default", TimeUnit precision = TimeUnit.Milliseconds);
+        IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds);
     }
 }
