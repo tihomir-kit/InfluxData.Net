@@ -96,7 +96,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             if (!_isRunning)
                 return;
 
-            await Task.Delay(_interval); // TODO: should be configurable
+            await Task.Delay(_interval);
             this.WriteBatchedPointsAsync();
             this.EnqueueBatchWritingAsync();
         }
