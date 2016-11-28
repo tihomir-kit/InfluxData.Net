@@ -8,5 +8,11 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
         IEnumerable<SerieSet> GetSerieSets(IEnumerable<Serie> series);
 
         IEnumerable<Measurement> GetMeasurements(IEnumerable<Serie> series);
+
+        IEnumerable<string> GetTagKeys(IEnumerable<Serie> series);
+
+        IEnumerable<TagValue> GetTagValues(IEnumerable<Serie> series);
+
+        IEnumerable<FieldKey> GetFieldKeys(IEnumerable<Serie> series);
     }
 }

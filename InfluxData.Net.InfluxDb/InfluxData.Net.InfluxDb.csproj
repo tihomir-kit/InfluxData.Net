@@ -41,6 +41,7 @@
     <Compile Include="ClientModules\DiagnosticsClientModule.cs" />
     <Compile Include="ClientModules\IDiagnosticsClientModule.cs" />
     <Compile Include="ClientModules\ISerieClientModule.cs" />
+    <Compile Include="ClientModules\IUserClientModule.cs" />
     <Compile Include="ClientModules\SerieClientModule.cs" />
     <Compile Include="ClientModules\RetentionClientModule.cs" />
     <Compile Include="ClientModules\DatabaseClientModule.cs" />
@@ -51,24 +52,33 @@
     <Compile Include="ClientModules\IDatabaseClientModule.cs" />
     <Compile Include="ClientModules\IBasicClientModule.cs" />
     <Compile Include="ClientModules\ICqClientModule.cs" />
+    <Compile Include="ClientModules\UserClientModule.cs" />
     <Compile Include="Constants\QueryParams.cs" />
     <Compile Include="Constants\QueryStatements.cs" />
     <Compile Include="Constants\RequestPaths.cs" />
     <Compile Include="Enums\FillType.cs" />
+    <Compile Include="Enums\Privileges.cs" />
     <Compile Include="Helpers\SerieExtensions.cs" />
     <Compile Include="IInfluxDbClient.cs" />
     <Compile Include="InfluxDbClient.cs" />
     <Compile Include="Infrastructure\InfluxDbClientDependencies.cs" />
     <Compile Include="Models\Responses\ContinuousQuery.cs" />
+    <Compile Include="Models\Responses\Grant.cs" />
     <Compile Include="Models\Responses\Measurement.cs" />
     <Compile Include="Models\Responses\Diagnostics.cs" />
     <Compile Include="Models\Responses\RetentionPolicy.cs" />
     <Compile Include="Models\Responses\SerieSet.cs" />
     <Compile Include="Models\Responses\Stats.cs" />
+    <Compile Include="Models\Responses\FieldKey.cs" />
+    <Compile Include="Models\Responses\TagValue.cs" />
+    <Compile Include="Models\Responses\User.cs" />
     <Compile Include="QueryBuilders\CqQueryBuilder_v_0_9_6.cs" />
+    <Compile Include="QueryBuilders\IUserQueryBuilder.cs" />
+    <Compile Include="QueryBuilders\UserQueryBuilder.cs" />
     <Compile Include="RequestClients\InfluxDbRequestClient_v_0_9_6.cs" />
     <Compile Include="ResponseParsers\ISerieResponseParser.cs" />
     <Compile Include="ResponseParsers\IRetentionResponseParser.cs" />
+    <Compile Include="ResponseParsers\IUserResponseParser.cs" />
     <Compile Include="ResponseParsers\SerieResponseParser_v_0_9_6.cs" />
     <Compile Include="ResponseParsers\SerieResponseParser.cs" />
     <Compile Include="ResponseParsers\RetentionResponseParser.cs" />
@@ -109,6 +119,7 @@
     <Compile Include="Models\Responses\Serie.cs" />
     <Compile Include="Models\WriteRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResponseParsers\UserResponseParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -63,6 +63,33 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
+        public virtual async Task<IEnumerable<string>> GetTagKeysAsync(string dbName, string measurementName)
+        {
+            var query = _serieQueryBuilder.GetTagKeys(dbName, measurementName);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+            var tagKeys = _serieResponseParser.GetTagKeys(series);
+
+            return tagKeys;
+        }
+
+        public virtual async Task<IEnumerable<TagValue>> GetTagValuesAsync(string dbName, string measurementName, string tagName)
+        {
+            var query = _serieQueryBuilder.GetTagValues(dbName, measurementName, tagName);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+            var tagValues = _serieResponseParser.GetTagValues(series);
+
+            return tagValues;
+        }
+
+        public virtual async Task<IEnumerable<FieldKey>> GetFieldKeysAsync(string dbName, string measurementName)
+        {
+            var query = _serieQueryBuilder.GetFieldKeys(dbName, measurementName);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+            var fieldKeys = _serieResponseParser.GetFieldKeys(series);
+
+            return fieldKeys;
+        }
+
         public IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
         {
             return ((IBatchWriterFactory)_batchWriter).CreateBatchWriter(dbName, retenionPolicy, precision);
