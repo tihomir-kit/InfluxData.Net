@@ -65,6 +65,12 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
  - _[DropSeriesAsync()](#dropseriesasync)_
  - _[GetMeasurementsAsync()](#getmeasurementsasync)_
  - _[DropMeasurementAsync()](#dropmeasurementasync)_
+ - _[CreateBatchWriter()](#createbatchwriter)_
+  - _[Start()](#bw-start)_
+  - _[AddPoint()](#bw-addpoint)_
+  - _[AddPoints()](#bw-addpoints)_
+  - _[Stop()](#bw-stop)_
+  - _[OnError()](#bw-onerror)_
 - [Retention](#retention-module)
  - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
  - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
@@ -270,7 +276,7 @@ var response = await influxDbClient.ContinuousQuery.BackfillAsync("yourDbName", 
 
 This module provides methods for listing existing DB series and measures as well as methods for removing them.
 
-####GetSeriesAsync
+#### GetSeriesAsync
 
 Gets [list of series](https://influxdb.com/docs/v0.9/query_language/schema_exploration.html#explore-series-with-show-series) in the database. If `measurementName` (optional) param is provided, will only return series for that measurement. `WHERE` clauses can be passed in through the optional `filters` param.
 
@@ -286,7 +292,7 @@ var response = await influxDbClient.Serie.GetSeriesAsync("yourDbName");
 var response = await influxDbClient.Serie.DropSeriesAsync("yourDbName", "serieNameToDrop");
 ```
 
-####GetMeasurementsAsync
+#### GetMeasurementsAsync
 
 Gets [list of measurements](https://influxdb.com/docs/v0.9/query_language/schema_exploration.html#explore-measurements-with-show-measurements) in the database. `WHERE` clauses can be passed in through the optional `filters` param.
 
@@ -300,6 +306,52 @@ var response = await influxDbClient.Serie.GetMeasurementsAsync("yourDbName");
 
 ```cs
 var response = await influxDbClient.Serie.DropMeasurementAsync("yourDbName", "measurementNameToDrop");
+```
+
+#### CreateBatchWriter
+
+Creates a `BatchWriter` instance which can then be shared by multiple threads/processes to be used
+for batch `Point` writing in intervals (for example every five seconds). It will keep the points in-memory
+for a specified interval. After the interval times out, the collection will get dequeued and "batch-written"
+to InfluxDb. The `BatchWriter` will keep checking the collection for new points after each interval times
+out until stopped. For thread safety, the `BatchWriter` uses the `BlockingCollection` internally.
+
+```cs
+var batchWriter = await influxDbClient.Serie.CreateBatchWriter("yourDbName");
+```
+
+##### [Start](#bw-start)
+
+Starts the async batch writing task. You can set the interval after which the points will be submitted to
+the InfluxDb API (or use the default 1000ms). You can also instruct the _BatchWriter_ to not stop if the
+_BatchWriter_ encounters an error by setting the _continueOnError_ to true.
+
+```cs
+batchWriter.Start(5000);
+```
+
+##### [Stop](#bw-stop)
+
+Stops the async batch writing task.
+
+```cs
+batchWriter.Stop();
+```
+
+##### [AddPoint](#bw-addpoint)
+
+Adds a single `Point` item to the blocking collection.
+
+```cs
+batchWriter.Stop();
+```
+
+##### [AddPoints](#bw-addpoints)
+
+Stops the async batch writing task.
+
+```cs
+batchWriter.Stop();
 ```
 
 ### Retention Module

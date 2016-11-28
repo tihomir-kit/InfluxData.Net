@@ -97,7 +97,6 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             result.FirstOrDefault(p => p.Name == points.Last().Name).Name.Should().NotBeNull();
         }
 
-        
         [Fact]
         public virtual async Task CreateBatchWriter_OnBatchPointSubmission_ShouldWritePoints()
         {
@@ -127,6 +126,25 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             result = await _fixture.Sut.Serie.GetSeriesAsync(dbName);
             result.Should().HaveCount(3);
             result.Last().Series.Should().HaveCount(1);
+        }
+
+        [Fact]
+        public virtual async Task CreateBatchWriter_OnBatchError_ShouldRaise()
+        {
+            var dbName = _fixture.CreateRandomDbName();
+            await _fixture.CreateEmptyDatabase(dbName);
+            var batchWriter = _fixture.Sut.Serie.CreateBatchWriter(dbName, "invalidRetention");
+            batchWriter.Start();
+
+            var errorRaised = false;
+            batchWriter.OnError += (sender, e) => errorRaised = true;
+
+            var points = _fixture.MockPoints(1);
+            Task.Run(() => batchWriter.AddPoints(points)).Wait();
+
+            await Task.Delay(1500);
+
+            errorRaised.Should().BeTrue();
         }
     }
 }

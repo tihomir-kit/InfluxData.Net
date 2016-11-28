@@ -11,7 +11,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
 {
     public class BatchWriter : IBatchWriterFactory
     {
-        private IBasicClientModule _basicClientModule;
+        private readonly IBasicClientModule _basicClientModule;
         private string _dbName;
         private string _retentionPolicy;
         private TimeUnit _precision;
@@ -59,7 +59,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         public virtual void Start(int interval = 1000, bool continueOnError = false)
         {
             if (interval <= 0)
-                throw new ArgumentException("Interval must be a positive int value (milliseconds)");
+                throw new ArgumentException("Interval must be a positive value (milliseconds)");
 
             _continueOnError = continueOnError;
 
@@ -91,7 +91,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// blocking collection points to InfluxDb and calls itself again.
         /// </summary>
         /// <returns>Task.</returns>
-        private async Task EnqueueBatchWritingAsync()
+        protected virtual async Task EnqueueBatchWritingAsync()
         {
             if (!_isRunning)
                 return;
@@ -106,7 +106,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// and writes them all to InfluxDb in a single request.
         /// </summary>
         /// <returns>Task.</returns>
-        private async Task WriteBatchedPointsAsync()
+        protected virtual async Task WriteBatchedPointsAsync()
         {
             var pointCount = _pointCollection.Count;
             IList<Point> points = new List<Point>();
@@ -135,12 +135,16 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             }
         }
 
-        private void RaiseError(Exception e)
+        /// <summary>
+        /// Raises an error event and stops the BatchWritter unless continueOnError is set.
+        /// </summary>
+        /// <param name="exception">Exception to raise.</param>
+        protected virtual void RaiseError(Exception exception)
         {
             if (!_continueOnError)
                 _isRunning = false;
 
-            this.OnError(this, e);
+            this.OnError(this, exception);
         }
     }
 }

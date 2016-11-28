@@ -55,9 +55,10 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         /// <summary>
         /// Creates a BatchWriter instance which can then be shared by multiple threads/processes to be used
-        /// for batch Point writing. It will keep the points in-memory for a specified interval. After the 
-        /// interval times out, the collection will get dequeued and batch-written to influx. The BatchWriter
-        /// will keep checking the collection after each interval until stopped.
+        /// for batch Point writing in intervals (for example every five seconds). It will keep the points 
+        /// in-memory for a specified interval. After the interval times out, the collection will get 
+        /// dequeued and "batch-written" to influx. The BatchWriter will keep checking the collection 
+        /// for new points after each interval times out until stopped.
         /// </summary>
         /// <see cref="http://www.codethinked.com/blockingcollection-and-iproducerconsumercollection"/>
         /// <param name="dbName">Database name.</param>
