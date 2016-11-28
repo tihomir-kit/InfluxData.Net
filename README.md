@@ -203,7 +203,7 @@ var response = await influxDbClient.Database.DropDatabaseAsync("dbNameToDrop");
 
 ### User Module
 
-The user module can be used to [manage database users](https://docs.influxdata.com/influxdb/v0.9/administration/authentication_and_authorization/#authorization) on the InfluxDb system.
+The user module can be used to [manage database users](https://docs.influxdata.com/influxdb/v0.9/administration/authentication_and_authorization/#authorization) on the InfluxDb system. The requests in the user module must be called with user credentials that have administrator privileges or authentication must be disabled on the server.
 
 #### CreateUserAsync
 
@@ -223,7 +223,7 @@ var response = await influxDbClient.User.CreateUserAsync("adminUserName", true);
 
 #### GetUsersAsync
 
-Gets a list of users for the system (this request requires administrator privileges):
+Gets a list of users for the system:
 
 ```cs
 var users = await influxDbClient.User.GetUsersAsync();
@@ -231,7 +231,7 @@ var users = await influxDbClient.User.GetUsersAsync();
 
 #### DropUserAsync
 
-Drops an existing user (this request requires administrator privileges):
+Drops an existing user:
 
 ```cs
 var response = await influxDbClient.User.DropUserAsync("userNameToDrop");
@@ -239,7 +239,7 @@ var response = await influxDbClient.User.DropUserAsync("userNameToDrop");
 
 #### SetPasswordAsync
 
-Sets a user's password (this request requires administrator privileges):
+Sets a user's password:
 
 ```cs
 var response = await influxDbClient.User.SetPasswordAsync("userNameToUpdate", "passwordToSet");
@@ -247,7 +247,7 @@ var response = await influxDbClient.User.SetPasswordAsync("userNameToUpdate", "p
 
 #### GetPrivilegesAsync
 
-Gets a list of a user's granted privileges (this request requires administrator privileges):
+Gets a list of a user's granted privileges:
 
 ```cs
 var grantedPrivilges = await influxDbClient.User.GetPrivilegesAsync("userNameToGetPrivilegesFor");
@@ -255,7 +255,7 @@ var grantedPrivilges = await influxDbClient.User.GetPrivilegesAsync("userNameToG
 
 #### GrantAdministratorAsync
 
-Grants administrator privileges to a user (this request requires administrator privileges):
+Grants administrator privileges to a user:
 
 ```cs
 var response = await influxDbClient.User.GrantAdministratorAsync("userNameToGrantTo");
@@ -263,7 +263,7 @@ var response = await influxDbClient.User.GrantAdministratorAsync("userNameToGran
 
 #### RevokeAdministratorAsync
 
-Revokes administrator privileges from a user (this request requires administrator privileges):
+Revokes administrator privileges from a user:
 
 ```cs
 var response = await influxDbClient.User.RevokeAdministratorAsync("userNameToRevokeFrom");
@@ -271,7 +271,7 @@ var response = await influxDbClient.User.RevokeAdministratorAsync("userNameToRev
 
 #### GrantPrivilegeAsync
 
-Grants the specified privilege to a user for a given database (this request requires administrator privileges):
+Grants the specified privilege to a user for a given database:
 
 ```cs
 var response = await influxDbClient.User.GrantPrivilegeAsync("userNameToGrantTo", Privileges.Read, "databaseName");
@@ -279,7 +279,7 @@ var response = await influxDbClient.User.GrantPrivilegeAsync("userNameToGrantTo"
 
 #### RevokePrivilegeAsync
 
-Revokes the specified privilege from a user for a given database (this request requires administrator privileges):
+Revokes the specified privilege from a user for a given database:
 
 ```cs
 var response = await influxDbClient.User.RevokePrivilegeAsync("userNameToRevokeFrom", Privileges.Read, "databaseName");
