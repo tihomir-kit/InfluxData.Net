@@ -29,11 +29,11 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         public virtual void Formatter_OnGetLineTemplate_ShouldFormatPoint()
         {
             const string value = @"\=&,""*"" -";
-            const string escapedFieldValue = @"\\=&\,\""*\""\ -";
-            const string escapedTagValue = @"\\=&\,""*""\ -";
             const string seriesName = @"x";
             const string tagName = @"tag_string";
+            const string escapedTagValue = @"\\=&\,""*""\ -";
             const string fieldName = @"field_string";
+            const string escapedFieldValue = @"\\\=&\,\""*\""\ -";
             var dt = DateTime.Now;
 
             var point = new Point
@@ -71,6 +71,27 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             writeResponse.Success.Should().BeTrue();
             await _fixture.EnsureValidPointCount(points.First().Name, points.First().Fields.First().Key, 5);
             await _fixture.EnsurePointExists(points.ToArray()[2]);
+        }
+
+        /// <see cref="https://github.com/pootzko/InfluxData.Net/issues/26"/>
+        [Fact]
+        public virtual async Task ClientWrite_OnBackslashInPointField_ShouldWriteSuccessfully()
+        {
+            var point = new Point
+            {
+                Name = "test",
+                Fields = new Dictionary<string, object>
+                {
+                    { "test", "backslash\\" },
+                },
+                Timestamp = DateTime.UtcNow,
+            };
+
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point);
+
+            writeResponse.Success.Should().BeTrue();
+            await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
+            await _fixture.EnsurePointExists(point);
         }
 
         [Fact]

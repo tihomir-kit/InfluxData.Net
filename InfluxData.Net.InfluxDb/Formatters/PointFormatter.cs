@@ -151,7 +151,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
             var result = value
                 // literal backslash escaping is broken
                 // https://github.com/influxdb/influxdb/issues/3070
-                //.Replace(@"\", @"\\")
+                .Replace(@"\", @"\\")
                 .Replace(@"""", @"\""") // TODO: check if this is right or if "" should become \"\"
                 .Replace(@" ", @"\ ")
                 .Replace(@"=", @"\=")
