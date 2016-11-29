@@ -93,7 +93,8 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
 
             writeResponse.Success.Should().BeTrue();
             await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
-            await _fixture.EnsurePointExists(point);
+            var serie = await _fixture.EnsurePointExists(point);
+            serie.Values[0][1].Should().Be(point.Fields.First().Value);
         }
 
         [Fact]

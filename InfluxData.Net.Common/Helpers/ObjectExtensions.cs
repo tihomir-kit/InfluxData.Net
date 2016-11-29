@@ -40,7 +40,7 @@ namespace InfluxData.Net.Common.Helpers
         }
 
         /// <summary>
-        /// Converts DateTime to unix time (default to milliseconds).
+        /// Converts DateTime to unix time (defaults to milliseconds).
         /// </summary>
         /// <param name="date">DateTime to convert.</param>
         /// <param name="precision">Precision (optional, defaults to milliseconds)</param>
@@ -73,9 +73,9 @@ namespace InfluxData.Net.Common.Helpers
         }
 
         /// <summary>
-        /// Converts from unix time (in milliseconds) to DateTime.
+        /// Converts from unix time (expects milliseconds by default) to DateTime.
         /// </summary>
-        /// <param name="unixTime">The unix time (milliseconds by default).</param>
+        /// <param name="unixTime">The unix time (expects milliseconds by default).</param>
         /// <param name="precision">Precision (optional, defaults to milliseconds)</param>
         /// <returns>DateTime object.</returns>
         public static DateTime FromUnixTime(this long unixTime, string precision = TimeUnit.Milliseconds)

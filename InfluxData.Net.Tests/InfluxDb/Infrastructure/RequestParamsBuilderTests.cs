@@ -9,7 +9,7 @@ using Xunit;
 
 namespace InfluxData.Net.Tests.InfluxDb.Infrastructure
 {
-    [Trait("Infrastructure", "Request Params Builder")]
+    [Trait("InfluxDb Infrastructure", "Request Params Builder")]
     public class RequestParamsBuilderTests
     {
         private readonly string _unencodedString = "X ; X;X [ X[X ] X]X { X{X";

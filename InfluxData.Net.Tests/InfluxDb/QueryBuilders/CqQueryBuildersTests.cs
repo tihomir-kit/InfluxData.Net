@@ -4,7 +4,7 @@ using Xunit;
 
 namespace InfluxData.Net.Tests.InfluxDb.QueryBuilders
 {
-    [Trait("QueryBuilders", "Continuous Queries")]
+    [Trait("InfluxDb QueryBuilders", "Continuous Queries")]
     public class CqQueryBuildersTests
     {
         public ICqQueryBuilder Sut { get; set; }

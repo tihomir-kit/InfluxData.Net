@@ -110,6 +110,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Helpers\ObjectExtensionsTests.cs" />
     <Compile Include="InfluxDb\Infrastructure\RequestParamsBuilderTests.cs" />
     <Compile Include="InfluxDb\ResponseParsers\DiagnosticsParserTests.cs" />
     <Compile Include="Integration\InfluxDb\IIntegrationFixture.cs" />

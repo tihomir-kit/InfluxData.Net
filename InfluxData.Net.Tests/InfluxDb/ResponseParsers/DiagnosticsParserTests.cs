@@ -9,7 +9,7 @@ using Xunit;
 
 namespace InfluxData.Net.Tests.InfluxDb.ResponseParsers
 {
-    [Trait("ResponseParsers", "Diagnostic")]
+    [Trait("InfluxDb ResponseParsers", "Diagnostic")]
     public class DiagnosticsParserTests
     {
         public IDiagnosticsResponseParser Sut { get; set; }
