@@ -20,6 +20,15 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 
         public HttpClient HttpClient { get; private set; }
 
+        /// <summary>
+        /// InfluxDb client configuration.
+        /// </summary>
+        /// <param name="endpointUri">InfluxDb server URI.</param>
+        /// <param name="username">InfluxDb server username.</param>
+        /// <param name="password">InfluxDb server password.</param>
+        /// <param name="influxVersion">InfluxDb server version.</param>
+        /// <param name="httpClient">Custom HttpClient object (optional).</param>
+        /// <param name="throwOnWarning">Should throw exception upon InfluxDb warning message (for debugging).</param>
         public InfluxDbClientConfiguration(Uri endpointUri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null, bool throwOnWarning = false)
         {
             Validate.IsNotNull(endpointUri, "Endpoint may not be null or empty.");

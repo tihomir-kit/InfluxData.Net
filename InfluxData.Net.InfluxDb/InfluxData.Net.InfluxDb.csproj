@@ -36,6 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ClientModules\CqClientModule_v_0_9_6.cs" />
+    <Compile Include="ClientModules\DatabaseClientModule_v_0_9_6.cs" />
     <Compile Include="ClientModules\SubModules\BatchWriter.cs" />
     <Compile Include="ClientModules\SubModules\IBatchWriter.cs" />
     <Compile Include="ClientModules\DiagnosticsClientModule.cs" />
@@ -61,7 +63,6 @@
     <Compile Include="Helpers\SerieExtensions.cs" />
     <Compile Include="IInfluxDbClient.cs" />
     <Compile Include="InfluxDbClient.cs" />
-    <Compile Include="Infrastructure\InfluxDbClientDependencies.cs" />
     <Compile Include="Models\Responses\ContinuousQuery.cs" />
     <Compile Include="Models\Responses\Grant.cs" />
     <Compile Include="Models\Responses\Measurement.cs" />
@@ -98,7 +99,6 @@
     <Compile Include="QueryBuilders\ISerieQueryBuilder.cs" />
     <Compile Include="QueryBuilders\RetentionQueryBuilder.cs" />
     <Compile Include="QueryBuilders\IRetentionQueryBuilder.cs" />
-    <Compile Include="InfluxDbClientBootstrap.cs" />
     <Compile Include="Infrastructure\RequestParamsBuilder.cs" />
     <Compile Include="RequestClients\InfluxDbRequestClient_v_0_9_2.cs" />
     <Compile Include="RequestClients\InfluxDbRequestClient.cs" />

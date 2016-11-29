@@ -35,21 +35,21 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDataApiResponse> CreateUserAsync(string username, string password, bool isAdmin = false)
         {
             var query = _userQueryBuilder.CreateUser(username, password, isAdmin);
-            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(query).ConfigureAwait(false);
             return response;
         }
 
         public async Task<IInfluxDataApiResponse> DropUserAsync(string username)
         {
             var query = _userQueryBuilder.DropUser(username);
-            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(query).ConfigureAwait(false);
             return response;
         }
 
         public async Task<IInfluxDataApiResponse> SetPasswordAsync(string username, string password)
         {
             var query = _userQueryBuilder.SetPassword(username, password);
-            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(query).ConfigureAwait(false);
             return response;
         }
 
@@ -64,28 +64,28 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public async Task<IInfluxDataApiResponse> GrantAdministratorAsync(string username)
         {
             var query = _userQueryBuilder.GrantAdministator(username);
-            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(query).ConfigureAwait(false);
             return response;
         }
 
         public async Task<IInfluxDataApiResponse> RevokeAdministratorAsync(string username)
         {
             var query = _userQueryBuilder.RevokeAdministrator(username);
-            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(query).ConfigureAwait(false);
             return response;
         }
 
         public async Task<IInfluxDataApiResponse> GrantPrivilegeAsync(string username, Privileges privilege, string dbName)
         {
             var query = _userQueryBuilder.GrantPrivilege(username, privilege, dbName);
-            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(query).ConfigureAwait(false);
             return response;
         }
 
         public async Task<IInfluxDataApiResponse> RevokePrivilegeAsync(string username, Privileges privilege, string dbName)
         {
             var query = _userQueryBuilder.RevokePrivilege(username, privilege, dbName);
-            var response = await base.GetAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(query).ConfigureAwait(false);
             return response;
         }
     }
