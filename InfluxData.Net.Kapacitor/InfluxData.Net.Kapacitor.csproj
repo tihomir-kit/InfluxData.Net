@@ -65,7 +65,6 @@
     <Compile Include="RequestClients\KapacitorRequestClient_v_0_10_1.cs" />
     <Compile Include="RequestClients\KapacitorRequestClient_v_0_10_0.cs" />
     <Compile Include="RequestClients\KapacitorRequestClient.cs" />
-    <Compile Include="KapacitorClientBootstrap.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
