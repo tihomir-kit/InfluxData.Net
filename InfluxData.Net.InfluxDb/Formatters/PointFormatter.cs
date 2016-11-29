@@ -5,6 +5,8 @@ using System.Linq;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
+using InfluxData.Net.Common.Enums;
+using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.Formatters
 {
@@ -28,7 +30,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
         /// stock,symbol=AAPL bid = 127.46, ask = 127.48
         /// temperature,machine=unit42,type=assembly external = 25,internal=37 1434067467000000000
         /// </remarks>
-        public virtual string PointToString(Point point)
+        public virtual string PointToString(Point point, string precision = TimeUnit.Milliseconds)
         {
             Validate.IsNotNullOrEmpty(point.Name, "measurement");
             Validate.IsNotNull(point.Tags, "tags");
@@ -37,7 +39,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
             var tags = FormatPointTags(point.Tags);
             var fields = FormatPointFields(point.Fields);
             var key = FormatPointKey(point, tags);
-            var timestamp = FormatPointTimestamp(point);
+            var timestamp = FormatPointTimestamp(point, precision);
 
             var result = String.Format(GetLineTemplate(), key, fields, timestamp);
 
@@ -134,9 +136,9 @@ namespace InfluxData.Net.InfluxDb.Formatters
             return String.IsNullOrEmpty(tags) ? EscapeNonTagValue(point.Name) : String.Join(",", EscapeNonTagValue(point.Name), tags);
         }
 
-        protected virtual string FormatPointTimestamp(Point point)
+        protected virtual string FormatPointTimestamp(Point point, string precision = TimeUnit.Milliseconds)
         {
-            return point.Timestamp.HasValue ? point.Timestamp.Value.ToUnixTime().ToString() : string.Empty;
+            return point.Timestamp.HasValue ? point.Timestamp.Value.ToUnixTime(precision).ToString() : string.Empty;
         }
 
         protected virtual string ToInt(string result)

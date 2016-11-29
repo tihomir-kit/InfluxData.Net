@@ -4,6 +4,7 @@ using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.ClientSubModules;
+using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -90,6 +91,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="retenionPolicy">Retention policy.</param>
         /// <param name="precision">Precision.</param>
         /// <returns>BatchWriter instance.</returns>
-        IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds);
+        IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, string precision = TimeUnit.Milliseconds);
     }
 }

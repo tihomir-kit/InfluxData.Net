@@ -7,6 +7,7 @@ using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.ClientSubModules;
+using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -90,7 +91,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return fieldKeys;
         }
 
-        public IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
+        public IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, string precision = TimeUnit.Milliseconds)
         {
             return ((IBatchWriterFactory)_batchWriter).CreateBatchWriter(dbName, retenionPolicy, precision);
         }

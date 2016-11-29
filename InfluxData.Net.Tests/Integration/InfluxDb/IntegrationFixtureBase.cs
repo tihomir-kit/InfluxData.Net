@@ -10,6 +10,8 @@ using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Integration.Kapacitor;
 using Ploeh.AutoFixture;
 using InfluxData.Net.Common.Enums;
+using InfluxData.Net.Common.Constants;
+using InfluxData.Net.InfluxDb.Models.Responses;
 
 namespace InfluxData.Net.Integration.InfluxDb
 {
@@ -52,7 +54,9 @@ namespace InfluxData.Net.Integration.InfluxDb
         /// Checks if the point is in the database. (checks by serie name and timestamp).
         /// </summary>
         /// <param name="expectedPoint">Expected point.</param>
-        public async Task EnsurePointExists(Point expectedPoint)
+        /// <param name="precision">Precision (optional, defaults to milliseconds)</param>
+        /// <returns>Task with the expected serie.</returns>
+        public async Task<Serie> EnsurePointExists(Point expectedPoint, string precision = TimeUnit.Milliseconds)
         {
             var expectedSerie = this.Sut.RequestClient.GetPointFormatter().PointToSerie(expectedPoint);
 
@@ -60,7 +64,7 @@ namespace InfluxData.Net.Integration.InfluxDb
             response.Should().NotBeNull();
             response.Count().Should().BeGreaterOrEqualTo(1);
 
-            var serie = response.FirstOrDefault(p => ((DateTime)p.Values[0][0]).ToUnixTime() == ((DateTime)expectedPoint.Timestamp).ToUnixTime());
+            var serie = response.FirstOrDefault(p => ((DateTime)p.Values[0][0]).ToUnixTime(precision) == ((DateTime)expectedPoint.Timestamp).ToUnixTime(precision));
             serie.Should().NotBeNull();
             serie.Name.Should().Be(expectedSerie.Name);
             serie.Tags.Count.Should().Be(expectedSerie.Tags.Count);
@@ -68,6 +72,8 @@ namespace InfluxData.Net.Integration.InfluxDb
             serie.Columns.ShouldAllBeEquivalentTo(expectedSerie.Columns);
             serie.Columns.Count().Should().Be(expectedSerie.Columns.Count());
             serie.Values[0].Count().Should().Be(expectedSerie.Values[0].Count());
+
+            return serie;
         }
 
         #endregion Validation

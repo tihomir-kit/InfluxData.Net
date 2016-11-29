@@ -9,6 +9,7 @@ using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
+using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -22,21 +23,21 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _basicResponseParser = basicResponseParser;
         }
 
-        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retentionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retentionPolicy = null, string precision = TimeUnit.Milliseconds)
         {
             var response = await WriteAsync(dbName, new [] { point }, retentionPolicy, precision).ConfigureAwait(false);
 
             return response;
         }
 
-        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retentionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retentionPolicy = null, string precision = TimeUnit.Milliseconds)
         {
             var request = new WriteRequest(base.RequestClient.GetPointFormatter())
             {
                 DbName = dbName,
                 Points = points,
                 RetentionPolicy = retentionPolicy,
-                Precision = precision.GetParamValue()
+                Precision = precision
             };
 
             var response = await base.RequestClient.PostAsync(request).ConfigureAwait(false);

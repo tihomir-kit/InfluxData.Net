@@ -28,7 +28,7 @@ namespace InfluxData.Net.InfluxDb.Models
         public IEnumerable<Point> Points { get; set; }
 
         /// <summary>
-        /// Pont data time precision.
+        /// Point data time precision.
         /// </summary>
         public string Precision { get; set; }
 
@@ -43,7 +43,7 @@ namespace InfluxData.Net.InfluxDb.Models
         /// <returns></returns>
         public string GetLines()
         {
-            return String.Join("\n", Points.Select(p => _formatter.PointToString(p)));
+            return String.Join("\n", Points.Select(p => _formatter.PointToString(p, Precision)));
         }
     }
 }

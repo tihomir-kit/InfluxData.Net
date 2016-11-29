@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System;
 using InfluxData.Net.InfluxDb.ClientModules;
 using InfluxData.Net.Common.Infrastructure;
+using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.ClientSubModules
 {
@@ -14,7 +15,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         private readonly IBasicClientModule _basicClientModule;
         private string _dbName;
         private string _retentionPolicy;
-        private TimeUnit _precision;
+        private string _precision;
         private int _interval;
         private bool _continueOnError;
         private bool _isRunning;
@@ -42,7 +43,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// Constructor used by BatchWriter to create new instances of BatchWriter (through the CreateBatchWriter() method) with
         /// IBasicClientModule from InfluxDbClient. This instance BatchWriter instance is served to the end users.
         /// </summary>
-        private BatchWriter(IBasicClientModule basicClientModule, string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
+        private BatchWriter(IBasicClientModule basicClientModule, string dbName, string retenionPolicy = null, string precision = TimeUnit.Milliseconds)
         {
             _basicClientModule = basicClientModule;
             _dbName = dbName;
@@ -51,7 +52,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             _pointCollection = new BlockingCollection<Point>();
         }
 
-        public virtual IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds)
+        public virtual IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, string precision = TimeUnit.Milliseconds)
         {
             return new BatchWriter(_basicClientModule, dbName, retenionPolicy, precision);
         }

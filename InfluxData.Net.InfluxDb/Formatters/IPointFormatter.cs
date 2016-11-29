@@ -1,3 +1,5 @@
+using InfluxData.Net.Common.Constants;
+using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 
@@ -7,7 +9,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
     {
         string GetLineTemplate();
 
-        string PointToString(Point point);
+        string PointToString(Point point, string precision = TimeUnit.Milliseconds);
 
         Serie PointToSerie(Point point);
     }
