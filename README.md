@@ -2,6 +2,8 @@ InfluxData.Net
 ============
 **Compatible with InfluxDB v1.0.0-beta and Kapacitor v1.0.0-beta API's**
 
+_NOTE: The library will most probably work just as fine with newer versions of the TICK stack as well but it hasn't been tested against them._
+
 > InfluxData.Net is a portable .NET library to access the REST API of an [InfluxDB](https://influxdata.com/time-series-platform/influxdb/) database and [Kapacitor](https://influxdata.com/time-series-platform/kapacitor/) processing tool.
 
 InfluxDB is the data storage layer in [InfluxData](https://influxdata.com/)'s [TICK stack](https://influxdata.com/get-started/#whats-the-tick-stack) which is an open-source end-to-end platform for managing time-series data at scale.
@@ -23,6 +25,14 @@ Currently older supported versions:
 **Installation**
 You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) package to install the latest version of InfluxData.Net Lib.
 
+## Table of contents
+
+ - [Contributing](#contributing)
+ - [Usage](#usage)
+   - [API reference](#api-reference)
+ - [Bugs & feature requests](#bugs--feature-requests)
+ - [License](#license)
+
 ## Contributing
 
 Please apply your changes to the [develop branch](https://github.com/pootzko/InfluxData.Net/tree/develop) it makes it a bit easier and cleaner for me to keep everything in order. For extra points in the FLOSS hall of fame, write a few tests for your awesome contribution as well. :) Thanks for your help!
@@ -35,7 +45,7 @@ To use InfluxData.Net InfluxDbClient you must first create an instance of `Influ
 var influxDbClient = new InfluxDbClient("http://yourinfluxdb.com:8086/", "username", "password", InfluxDbVersion.v_1_0_0);
 ```
 
-Additional, optional params for InfluxDbClient are a custom `HttpClient` if you think you need control over it, and `throwOnWarning` which will throw an exception if the InfluxDb API returns a warning as a part of the response. That should preferably be used only for debugging purposes.
+Additional, optional params for InfluxDbClient are a custom `HttpClient` if you think you need control over it, and `throwOnWarning` which will throw an `InfluxDataWarningException` if the InfluxDb API returns a warning as a part of the response. That should preferably be used only for debugging purposes.
 
 To use InfluxData.Net KapacitorClient you must first create an instance of `KapacitorClient` (Kapacitor doesn't support authentication yet, so use this overload for now):
 
@@ -47,7 +57,7 @@ Clients modules (properties of *Client* object) can then be consumed and methods
 
 If needed, a custom HttpClient can be used for making requests. Simply pass it into the `InfluxDbClient` or `KapacitorClient` as the last (optional) parameter.
 
-**Supported InfluxDbClient modules and API calls**
+**Supported InfluxDbClient modules and API calls <a name="api-reference"></a>**
 
 - [Client](#client-module)
  - _[WriteAsync()](#writeasync)_
@@ -466,7 +476,8 @@ batchWriter.Stop();
 Adds a single `Point` item to the blocking collection.
 
 ```cs
-batchWriter.Stop();
+var point = new Point() { ... };
+batchWriter.AddPoint(point);
 ```
 
 ##### AddPoints <a name="bw-addpoints"></a>
