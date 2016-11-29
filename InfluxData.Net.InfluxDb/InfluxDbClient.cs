@@ -14,87 +14,131 @@ namespace InfluxData.Net.InfluxDb
 {
     public class InfluxDbClient : IInfluxDbClient
     {
-        private readonly IInfluxDbRequestClient _requestClient;
+        private IInfluxDbRequestClient _requestClient;
+        public IInfluxDbRequestClient RequestClient
+        {
+            get { return _requestClient; }
+        }
 
-        private readonly Lazy<ISerieQueryBuilder> _serieQueryBuilder;
-        private readonly Lazy<IDatabaseQueryBuilder> _databaseQueryBuilder;
-        private readonly Lazy<IRetentionQueryBuilder> _retentionQueryBuilder;
-        private readonly Lazy<ICqQueryBuilder> _cqQueryBuilder;
-        private readonly Lazy<IDiagnosticsQueryBuilder> _diagnosticsQueryBuilder;
-        private readonly Lazy<IUserQueryBuilder> _userQueryBuilder;
+        private Lazy<ISerieQueryBuilder> _serieQueryBuilder;
+        private Lazy<IDatabaseQueryBuilder> _databaseQueryBuilder;
+        private Lazy<IRetentionQueryBuilder> _retentionQueryBuilder;
+        private Lazy<ICqQueryBuilder> _cqQueryBuilder;
+        private Lazy<IDiagnosticsQueryBuilder> _diagnosticsQueryBuilder;
+        private Lazy<IUserQueryBuilder> _userQueryBuilder;
 
-        private readonly Lazy<IBasicResponseParser> _basicResponseParser;
-        private readonly Lazy<ISerieResponseParser> _serieResponseParser;
-        private readonly Lazy<IDatabaseResponseParser> _databaseResponseParser;
-        private readonly Lazy<IRetentionResponseParser> _retentionResponseParser;
-        private readonly Lazy<ICqResponseParser> _cqResponseParser;
-        private readonly Lazy<IDiagnosticsResponseParser> _diagnosticsResponseParser;
-        private readonly Lazy<IUserResponseParser> _userResponseParser;
+        private Lazy<IBasicResponseParser> _basicResponseParser;
+        private Lazy<ISerieResponseParser> _serieResponseParser;
+        private Lazy<IDatabaseResponseParser> _databaseResponseParser;
+        private Lazy<IRetentionResponseParser> _retentionResponseParser;
+        private Lazy<ICqResponseParser> _cqResponseParser;
+        private Lazy<IDiagnosticsResponseParser> _diagnosticsResponseParser;
+        private Lazy<IUserResponseParser> _userResponseParser;
 
-        private readonly Lazy<IBasicClientModule> _basicClientModule;
+        private Lazy<IBasicClientModule> _basicClientModule;
         public IBasicClientModule Client
         { 
             get { return _basicClientModule.Value; }
         }
 
-        private readonly Lazy<ISerieClientModule> _serieClientModule;
+        private Lazy<ISerieClientModule> _serieClientModule;
         public ISerieClientModule Serie
         {
             get { return _serieClientModule.Value; }
         }
 
-        private readonly Lazy<IDatabaseClientModule> _databaseClientModule;
+        private Lazy<IDatabaseClientModule> _databaseClientModule;
         public IDatabaseClientModule Database
         {
             get { return _databaseClientModule.Value; }
         }
 
-        private readonly Lazy<IRetentionClientModule> _retentionClientModule;
+        private Lazy<IRetentionClientModule> _retentionClientModule;
         public IRetentionClientModule Retention
         {
             get { return _retentionClientModule.Value; }
         }
 
-        private readonly Lazy<ICqClientModule> _cqClientModule;
+        private Lazy<ICqClientModule> _cqClientModule;
         public ICqClientModule ContinuousQuery
         {
             get { return _cqClientModule.Value; }
         }
 
-        private readonly Lazy<IDiagnosticsClientModule> _diagnosticsClientModule;
+        private Lazy<IDiagnosticsClientModule> _diagnosticsClientModule;
         public IDiagnosticsClientModule Diagnostics
         {
             get { return _diagnosticsClientModule.Value; }
         }
 
-        private readonly Lazy<IUserClientModule> _userClientModule;
+        private Lazy<IUserClientModule> _userClientModule;
         public IUserClientModule User
         {
             get { return _userClientModule.Value; }
         }
 
-        public InfluxDbClient(string uri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null)
-             : this(new InfluxDbClientConfiguration(new Uri(uri), username, password, influxVersion, httpClient))
+        /// <summary>
+        /// InfluxDb client.
+        /// </summary>
+        /// <param name="endpointUri">InfluxDb server URI.</param>
+        /// <param name="username">InfluxDb server username.</param>
+        /// <param name="password">InfluxDb server password.</param>
+        /// <param name="influxVersion">InfluxDb server version.</param>
+        /// <param name="httpClient">Custom HttpClient object (optional).</param>
+        /// <param name="throwOnWarning">Should throw exception upon InfluxDb warning message (for debugging).</param>
+        public InfluxDbClient(string endpointUri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null, bool throwOnWarning = false)
+             : this(new InfluxDbClientConfiguration(new Uri(endpointUri), username, password, influxVersion, httpClient, throwOnWarning))
         {
         }
 
+        /// <summary>
+        /// InfluxDb client.
+        /// </summary>
+        /// <param name="configuration">InfluxDb client configuration.</param>
         public InfluxDbClient(IInfluxDbClientConfiguration configuration)
         {
-            var requestClientFactory = new InfluxDbClientBootstrap(configuration);
-            var dependencies = requestClientFactory.GetClientDependencies();
-            _requestClient = dependencies.RequestClient;
+            switch (configuration.InfluxVersion)
+            {
+                case InfluxDbVersion.Latest:
+                case InfluxDbVersion.v_1_0_0:
+                    this.BootstrapInfluxDbLatest(configuration);
+                    break;
+                case InfluxDbVersion.v_0_9_6:
+                case InfluxDbVersion.v_0_9_5:
+                    this.BootstrapInfluxDbLatest(configuration);
+                    this.BootstrapInfluxDb_v_0_9_6(configuration);
+                    break;
+                case InfluxDbVersion.v_0_9_2:
+                    this.BootstrapInfluxDbLatest(configuration);
+                    this.BootstrapInfluxDb_v_0_9_6(configuration);
+                    this.BootstrapInfluxDb_v_0_9_2(configuration);
+                    break;
+                case InfluxDbVersion.v_0_8_x:
+                    throw new NotImplementedException("InfluxDB v0.8.x is not supported by InfluxData.Net library.");
+                default:
+                    throw new ArgumentOutOfRangeException("influxDbClientConfiguration", String.Format("Unknown version {0}.", configuration.InfluxVersion));
+            }
+        }
+
+        /// <summary>
+        /// The default (latest supported) dependency chain setup.
+        /// </summary>
+        /// <param name="configuration">InfluxDb client configuration.</param>
+        protected virtual void BootstrapInfluxDbLatest(IInfluxDbClientConfiguration configuration)
+        {
+            _requestClient = new InfluxDbRequestClient(configuration);
 
             // NOTE: once a breaking change occures, QueryBuilders will need to be resolved with factories
             _serieQueryBuilder = new Lazy<ISerieQueryBuilder>(() => new SerieQueryBuilder(), true);
             _databaseQueryBuilder = new Lazy<IDatabaseQueryBuilder>(() => new DatabaseQueryBuilder(), true);
             _retentionQueryBuilder = new Lazy<IRetentionQueryBuilder>(() => new RetentionQueryBuilder(), true);
-            _cqQueryBuilder = new Lazy<ICqQueryBuilder>(() => dependencies.CqQueryBuilder, true);
+            _cqQueryBuilder = new Lazy<ICqQueryBuilder>(() => new CqQueryBuilder(), true);
             _diagnosticsQueryBuilder = new Lazy<IDiagnosticsQueryBuilder>(() => new DiagnosticsQueryBuilder(), true);
             _userQueryBuilder = new Lazy<IUserQueryBuilder>(() => new UserQueryBuilder(), true);
 
             // NOTE: once a breaking change occures, Parsers will need to be resolved with factories
             _basicResponseParser = new Lazy<IBasicResponseParser>(() => new BasicResponseParser(), true);
-            _serieResponseParser = new Lazy<ISerieResponseParser>(() => dependencies.SerieResponseParser, true);
+            _serieResponseParser = new Lazy<ISerieResponseParser>(() => new SerieResponseParser(), true);
             _databaseResponseParser = new Lazy<IDatabaseResponseParser>(() => new DatabaseResponseParser(), true);
             _retentionResponseParser = new Lazy<IRetentionResponseParser>(() => new RetentionResponseParser(), true);
             _cqResponseParser = new Lazy<ICqResponseParser>(() => new CqResponseParser(), true);
@@ -113,9 +157,29 @@ namespace InfluxData.Net.InfluxDb
             _userClientModule = new Lazy<IUserClientModule>(() => new UserClientModule(_requestClient, _userQueryBuilder.Value, _userResponseParser.Value));
         }
 
-        public IPointFormatter GetPointFormatter()
+        /// <summary>
+        /// v0.9.6 and older dependency chain setup.
+        /// </summary>
+        /// <param name="configuration">InfluxDb client configuration.</param>
+        protected virtual void BootstrapInfluxDb_v_0_9_6(IInfluxDbClientConfiguration configuration)
         {
-            return _requestClient.GetPointFormatter();
+            _requestClient = new InfluxDbRequestClient_v_0_9_6(configuration);
+
+            _cqQueryBuilder = new Lazy<ICqQueryBuilder>(() => new CqQueryBuilder_v_0_9_6(), true);
+
+            _serieResponseParser = new Lazy<ISerieResponseParser>(() => new SerieResponseParser_v_0_9_6(), true);
+
+            _databaseClientModule = new Lazy<IDatabaseClientModule>(() => new DatabaseClientModule_v_0_9_6(_requestClient, _databaseQueryBuilder.Value, _databaseResponseParser.Value));
+            _cqClientModule = new Lazy<ICqClientModule>(() => new CqClientModule_v_0_9_6(_requestClient, _cqQueryBuilder.Value, _cqResponseParser.Value));
+        }
+
+        /// <summary>
+        /// v0.9.2 and older dependency chain setup.
+        /// </summary>
+        /// <param name="configuration">InfluxDb client configuration.</param>
+        protected virtual void BootstrapInfluxDb_v_0_9_2(IInfluxDbClientConfiguration configuration)
+        {
+            _requestClient = new InfluxDbRequestClient_v_0_9_2(configuration);
         }
     }
 }

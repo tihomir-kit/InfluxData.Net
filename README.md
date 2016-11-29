@@ -218,13 +218,13 @@ Creates a new user. The user can either be created as a regular user or an admin
 To create a new user:
 
 ```cs
-var response = await influxDbClient.User.CreateUserAsync("regularUserName", false);
+var response = await influxDbClient.User.CreateUserAsync("userName");
 ```
 
 To create a new administrator:
 
 ```cs
-var response = await influxDbClient.User.CreateUserAsync("adminUserName", true);
+var response = await influxDbClient.User.CreateUserAsync("userName", true);
 ```
 
 #### GetUsersAsync

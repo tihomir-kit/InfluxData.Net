@@ -61,7 +61,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
                 }
             }
 
-             return grants;
+            return grants;
         }
     }
 }

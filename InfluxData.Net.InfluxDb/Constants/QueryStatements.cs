@@ -40,5 +40,6 @@
         public const string RevokeAdministrator = "REVOKE ALL PRIVILEGES FROM \"{0}\"";
         public const string GrantPrivilege = "GRANT {0} ON \"{1}\" TO \"{2}\"";
         public const string RevokePrivilege = "REVOKE {0} ON \"{1}\" FROM \"{2}\"";
+        public const string WithAllPrivileges = " WITH ALL PRIVILEGES";
     }
 }

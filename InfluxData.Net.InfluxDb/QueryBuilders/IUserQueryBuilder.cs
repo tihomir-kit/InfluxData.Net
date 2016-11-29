@@ -15,7 +15,7 @@ namespace InfluxData.Net.InfluxDb.QueryBuilders
         /// <param name="username">The user's name.</param>
         /// <param name="password">The user's password.</param>
         /// <param name="isAdmin">Whether or not the user is a database administrator.</param>
-        string CreateUser(string username, string password, bool isAdmin);
+        string CreateUser(string username, string password, bool isAdmin = false);
 
         /// <summary>
         /// Drops an existing user.

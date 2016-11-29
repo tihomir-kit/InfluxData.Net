@@ -15,6 +15,8 @@ namespace InfluxData.Net.InfluxDb.ClientModules
     {
         protected IInfluxDbRequestClient RequestClient { get; private set; }
 
+        protected IConfiguration Configuration { get; private set; }
+
         public ClientModuleBase(IInfluxDbRequestClient requestClient)
         {
             this.RequestClient = requestClient;
@@ -22,39 +24,43 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string query)
         {
-            var response = await this.RequestClient.QueryAsync(query).ConfigureAwait(false);
-            response.ValidateQueryResponse();
-
-            return response;
+            return await this.RequestAndValidateQueryAsync(query, HttpMethod.Get).ConfigureAwait(false);
         }
 
-        protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string query, HttpMethod method)
+        protected virtual async Task<IInfluxDataApiResponse> PostAndValidateQueryAsync(string query)
+        {
+            return await this.RequestAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+        }
+
+        protected virtual async Task<IInfluxDataApiResponse> RequestAndValidateQueryAsync(string query, HttpMethod method)
         {
             var response = await this.RequestClient.QueryAsync(query, method).ConfigureAwait(false);
-            response.ValidateQueryResponse();
+            response.ValidateQueryResponse(this.RequestClient.Configuration.ThrowOnWarning);
 
             return response;
         }
 
         protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string dbName, string query)
         {
-            var response = await this.RequestClient.QueryAsync(dbName, query).ConfigureAwait(false);
-            response.ValidateQueryResponse();
-
-            return response;
+            return await this.RequestAndValidateQueryAsync(dbName, query, HttpMethod.Get).ConfigureAwait(false);
         }
 
-        protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string dbName, string query, HttpMethod method)
+        protected virtual async Task<IInfluxDataApiResponse> PostAndValidateQueryAsync(string dbName, string query)
+        {
+            return await this.RequestAndValidateQueryAsync(dbName, query, HttpMethod.Post).ConfigureAwait(false);
+        }
+
+        protected virtual async Task<IInfluxDataApiResponse> RequestAndValidateQueryAsync(string dbName, string query, HttpMethod method)
         {
             var response = await this.RequestClient.QueryAsync(dbName, query, method).ConfigureAwait(false);
-            response.ValidateQueryResponse();
+            response.ValidateQueryResponse(this.RequestClient.Configuration.ThrowOnWarning);
 
             return response;
         }
 
         protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string query)
         {
-            var response = await this.RequestClient.QueryAsync(query).ConfigureAwait(false);
+            var response = await this.RequestClient.GetQueryAsync(query).ConfigureAwait(false);
             var series = ResolveSingleGetSeriesResult(response);
 
             return series;
@@ -62,7 +68,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string dbName, string query)
         {
-            var response = await this.RequestClient.QueryAsync(dbName, query).ConfigureAwait(false);
+            var response = await this.RequestClient.GetQueryAsync(dbName, query).ConfigureAwait(false);
             var series = ResolveSingleGetSeriesResult(response);
 
             return series;
@@ -70,13 +76,19 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
         protected virtual IEnumerable<Serie> ResolveSingleGetSeriesResult(IInfluxDataApiResponse response)
         {
-            var queryResponse = response.ReadAs<QueryResponse>().Validate();
+            var queryResponse = response.ReadAs<QueryResponse>().Validate(this.RequestClient.Configuration.ThrowOnWarning);
             var result = queryResponse.Results.Single();
             Validate.IsNotNull(result, "result");
 
             var series = result.Series != null ? result.Series.ToList() : new List<Serie>();
 
             return series;
+        }
+
+        protected virtual async Task<IEnumerable<SeriesResult>> ResolveGetSeriesResultAsync(string dbName, string query)
+        {
+            var response = await this.RequestClient.GetQueryAsync(dbName, query).ConfigureAwait(false);
+            return response.ReadAs<QueryResponse>().Validate(this.RequestClient.Configuration.ThrowOnWarning).Results;
         }
     }
 }

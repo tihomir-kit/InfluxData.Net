@@ -15,29 +15,24 @@ namespace InfluxData.Net.Common.RequestClients
 {
     public abstract class RequestClientBase
     {
-        private readonly string _endpointUri;
-        private readonly string _userName;
-        private readonly string _password;
+        public IConfiguration Configuration { get; private set; }
+
         private readonly string _userAgent;
-        private readonly HttpClient _httpClient;
 
         protected RequestClientBase(IInfluxDbClientConfiguration configuration, string userAgent) 
-            : this(configuration.EndpointUri.AbsoluteUri, configuration.Username, configuration.Password, configuration.HttpClient, userAgent)
+            : this((IConfiguration)configuration, userAgent)
         {
         }
 
         protected RequestClientBase(IKapacitorClientConfiguration configuration, string userAgent)
-            : this(configuration.EndpointUri.AbsoluteUri, configuration.Username, configuration.Password, configuration.HttpClient, userAgent)
+            : this((IConfiguration)configuration, userAgent)
         {
         }
 
-        protected RequestClientBase(string endpointUri, string userName, string password, HttpClient httpClient, string userAgent)
+        protected RequestClientBase(IConfiguration configuration, string userAgent)
         {
-            _endpointUri = endpointUri;
-            _userName = userName;
-            _password = password;
+            this.Configuration = configuration;
             _userAgent = userAgent;
-            _httpClient = httpClient ?? new HttpClient();
         }
 
         #region Request Base
@@ -86,7 +81,9 @@ namespace InfluxData.Net.Common.RequestClients
             Debug.WriteLine("[ResponseData] {0}", responseContent);
 #endif
 
-            return new InfluxDataApiResponse(response.StatusCode, responseContent);
+            var influxResponse = new InfluxDataApiResponse(response.StatusCode, responseContent);
+
+            return influxResponse;
         }
 
         private async Task<HttpResponseMessage> RequestInnerAsync(
@@ -109,7 +106,7 @@ namespace InfluxData.Net.Common.RequestClients
             }
 #endif
 
-            return await _httpClient.SendAsync(request, completionOption, cancellationToken).ConfigureAwait(false);
+            return await this.Configuration.HttpClient.SendAsync(request, completionOption, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion Request Base
@@ -119,11 +116,14 @@ namespace InfluxData.Net.Common.RequestClients
         private StringBuilder BuildUri(string path, IDictionary<string, string> requestParams, bool includeAuthToQuery)
         {
             var urlBuilder = new StringBuilder();
-            urlBuilder.AppendFormat("{0}{1}", _endpointUri, path);
+            urlBuilder.AppendFormat("{0}{1}", this.Configuration.EndpointUri.AbsoluteUri, path);
 
             if (includeAuthToQuery)
             {
-                urlBuilder.AppendFormat("?{0}={1}&{2}={3}", QueryParams.Username, HttpUtility.UrlEncode(_userName), QueryParams.Password, HttpUtility.UrlEncode(_password));
+                urlBuilder.AppendFormat("?{0}={1}&{2}={3}", 
+                    QueryParams.Username, HttpUtility.UrlEncode(this.Configuration.Username), 
+                    QueryParams.Password, HttpUtility.UrlEncode(this.Configuration.Password)
+                );
             }
 
             if (requestParams != null && requestParams.Count > 0)
