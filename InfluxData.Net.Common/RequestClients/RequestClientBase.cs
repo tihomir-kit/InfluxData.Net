@@ -81,9 +81,7 @@ namespace InfluxData.Net.Common.RequestClients
             Debug.WriteLine("[ResponseData] {0}", responseContent);
 #endif
 
-            var influxResponse = new InfluxDataApiResponse(response.StatusCode, responseContent);
-
-            return influxResponse;
+            return new InfluxDataApiResponse(response.StatusCode, responseContent);
         }
 
         private async Task<HttpResponseMessage> RequestInnerAsync(

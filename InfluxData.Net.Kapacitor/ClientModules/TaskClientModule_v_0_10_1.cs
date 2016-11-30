@@ -57,7 +57,9 @@ namespace InfluxData.Net.Kapacitor.ClientModules
             return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript).ConfigureAwait(false);
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public virtual async Task<IInfluxDataApiResponse> DefineTaskAsync(DefineTemplatedTaskParams taskParams)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             throw new InvalidOperationException("Method not applicable to this version of InfluxDB");
         }

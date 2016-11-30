@@ -86,7 +86,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
                 {
                     { "test", "backslash\\" },
                 },
-                Timestamp = DateTime.UtcNow,
+                Timestamp = DateTime.UtcNow
             };
 
             var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point);

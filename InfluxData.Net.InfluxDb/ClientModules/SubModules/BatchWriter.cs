@@ -66,7 +66,9 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
 
             _interval = interval;
             _isRunning = true;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.EnqueueBatchWritingAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         public virtual void AddPoint(Point point)
@@ -98,8 +100,10 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
                 return;
 
             await Task.Delay(_interval).ConfigureAwait(false);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.WriteBatchedPointsAsync();
             this.EnqueueBatchWritingAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         /// <summary>
