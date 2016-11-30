@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using InfluxData.Net.Common.Constants;
+using InfluxData.Net.Common.Enums;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -24,37 +26,59 @@ namespace InfluxData.Net.Common.Helpers
         }
 
         /// <summary>
-        /// Converts <see cref="{TimeUnit}"/> enum to param InfluxDb-ready string value.
-        /// </summary>
-        /// <param name="value"><see cref="{TimeUnit}"/> enum.</param>
-        /// <returns>InfluxDb-ready time unit string value.</returns>
-        public static string GetParamValue(this Enum value)
-        {
-            var valueFields = value.GetType().GetField(value.ToString());
-            var paramValue = (ParamValueAttribute[])(valueFields)
-                        .GetCustomAttributes(typeof(ParamValueAttribute), false);
-
-            return paramValue.Length > 0 ? paramValue[0].Value : value.ToString();
-        }
-
-        /// <summary>
-        /// Converts DateTime to unix time (in milliseconds).
+        /// Converts DateTime to unix time (defaults to milliseconds).
         /// </summary>
         /// <param name="date">DateTime to convert.</param>
+        /// <param name="precision">Precision (optional, defaults to milliseconds)</param>
         /// <returns>Unix-style timestamp in milliseconds.</returns>
-        public static long ToUnixTime(this DateTime date)
+        public static long ToUnixTime(this DateTime date, string precision = TimeUnit.Milliseconds)
         {
-            return Convert.ToInt64((date - _epoch).TotalMilliseconds);
+            var span = date - _epoch;
+            double fractionalSpan;
+
+            switch (precision)
+            {
+                case TimeUnit.Milliseconds:
+                    fractionalSpan = span.TotalMilliseconds;
+                    break;
+                case TimeUnit.Seconds:
+                    fractionalSpan = span.TotalSeconds;
+                    break;
+                case TimeUnit.Minutes:
+                    fractionalSpan = span.TotalMinutes;
+                    break;
+                case TimeUnit.Hours:
+                    fractionalSpan = span.TotalHours;
+                    break;
+                default:
+                    fractionalSpan = span.TotalMilliseconds;
+                    break;
+            }
+
+            return Convert.ToInt64(fractionalSpan);
         }
 
         /// <summary>
-        /// Converts from unix time (in milliseconds) to DateTime.
+        /// Converts from unix time (expects milliseconds by default) to DateTime.
         /// </summary>
-        /// <param name="unixTimeInMillis">The unix time in milliseconds.</param>
+        /// <param name="unixTime">The unix time (expects milliseconds by default).</param>
+        /// <param name="precision">Precision (optional, defaults to milliseconds)</param>
         /// <returns>DateTime object.</returns>
-        public static DateTime FromUnixTime(this long unixTimeInMillis)
+        public static DateTime FromUnixTime(this long unixTime, string precision = TimeUnit.Milliseconds)
         {
-            return _epoch.AddMilliseconds(unixTimeInMillis);
+            switch (precision)
+            {
+                case TimeUnit.Milliseconds:
+                    return _epoch.AddMilliseconds(unixTime);
+                case TimeUnit.Seconds:
+                    return _epoch.AddSeconds(unixTime);
+                case TimeUnit.Minutes:
+                    return _epoch.AddMinutes(unixTime);
+                case TimeUnit.Hours:
+                    return _epoch.AddHours(unixTime);
+                default:
+                    return _epoch.AddMilliseconds(unixTime);
+            }
         }
 
         /// <summary>

@@ -20,7 +20,6 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         {
             _fixture = fixture;
             _fixture.TestSetup();
-
         }
 
         public void Dispose()
@@ -40,10 +39,6 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
         [Fact]
         public virtual async Task DefineTemplateTask_OnValidArguments_ShouldDefineSuccessfully()
         {
-            // TODO: refactor
-
-            #region Arrange
-
             Dictionary<string, object> defineTemplateDictionary = new Dictionary<string, object>()
             {
                 { "id", "TestTemplate" },
@@ -58,8 +53,6 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
             var content = JsonConvert.SerializeObject(defineTemplateDictionary);
             HttpClient client = new HttpClient();
             client.PostAsync(String.Format("{0}/kapacitor/v1/templates", kapacitorUrl), new StringContent(content)).Wait();
-
-            #endregion
 
             var taskParams = _fixture.MockTemplateTaskParams();
 

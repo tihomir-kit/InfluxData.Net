@@ -29,4 +29,15 @@ namespace InfluxData.Net.Common.Infrastructure
 
         public string ResponseBody { get; private set; }
     }
+
+    public class InfluxDataWarningException : InfluxDataException
+    {
+        public InfluxDataWarningException(string warningMessage)
+             : base(String.Format("InfluxData API responded with a warning {0}", warningMessage))
+        {
+            WarningMessage = warningMessage;
+        }
+
+        public string WarningMessage { get; private set; }
+    }
 }

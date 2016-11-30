@@ -7,6 +7,8 @@ using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using Xunit;
+using InfluxData.Net.Common.Enums;
+using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
@@ -29,11 +31,11 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         public virtual void Formatter_OnGetLineTemplate_ShouldFormatPoint()
         {
             const string value = @"\=&,""*"" -";
-            const string escapedFieldValue = @"\\=&\,\""*\""\ -";
-            const string escapedTagValue = @"\\=&\,""*""\ -";
             const string seriesName = @"x";
             const string tagName = @"tag_string";
+            const string escapedTagValue = @"\\=&\,""*""\ -";
             const string fieldName = @"field_string";
+            const string escapedFieldValue = @"\\\=&\,\""*\""\ -";
             var dt = DateTime.Now;
 
             var point = new Point
@@ -50,7 +52,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
                 Timestamp = dt
             };
 
-            var formatter = _fixture.Sut.GetPointFormatter();
+            var formatter = _fixture.Sut.RequestClient.GetPointFormatter();
             var expected = String.Format(formatter.GetLineTemplate(),
                 /* key */ seriesName + "," + tagName + "=" + escapedTagValue,
                 /* fields */ fieldName + "=" + "\"" + escapedFieldValue + "\"",
@@ -71,6 +73,113 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             writeResponse.Success.Should().BeTrue();
             await _fixture.EnsureValidPointCount(points.First().Name, points.First().Fields.First().Key, 5);
             await _fixture.EnsurePointExists(points.ToArray()[2]);
+        }
+
+        /// <see cref="https://github.com/pootzko/InfluxData.Net/issues/26"/>
+        [Fact]
+        public virtual async Task ClientWrite_OnBackslashInPointField_ShouldWriteSuccessfully()
+        {
+            var point = new Point
+            {
+                Name = "test",
+                Fields = new Dictionary<string, object>
+                {
+                    { "test", "backslash\\" },
+                },
+                Timestamp = DateTime.UtcNow,
+            };
+
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point);
+
+            writeResponse.Success.Should().BeTrue();
+            await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
+            var serie = await _fixture.EnsurePointExists(point);
+            serie.Values[0][1].Should().Be(point.Fields.First().Value);
+        }
+
+        [Fact]
+        public virtual async Task ClientWrite_OnTimeUnitHours_ShouldWriteSuccessfully()
+        {
+            var point = _fixture.MockPoints(1).Single();
+
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point, precision: TimeUnit.Hours);
+            writeResponse.Success.Should().BeTrue();
+            await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
+            var serie = await _fixture.EnsurePointExists(point, TimeUnit.Hours);
+
+            var pointTimestamp = (DateTime)point.Timestamp;
+            var serieTimestamp = (DateTime)serie.Values[0][0];
+            serieTimestamp.Date.Should().Be(pointTimestamp.Date);
+        }
+
+        [Fact]
+        public virtual async Task ClientWrite_OnTimeUnitMinutes_ShouldWriteSuccessfully()
+        {
+            var point = _fixture.MockPoints(1).Single();
+
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point, precision: TimeUnit.Minutes);
+            writeResponse.Success.Should().BeTrue();
+            await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
+            var serie = await _fixture.EnsurePointExists(point, TimeUnit.Minutes);
+
+            var pointTimestamp = (DateTime)point.Timestamp;
+            var serieTimestamp = (DateTime)serie.Values[0][0];
+            serieTimestamp.Date.Should().Be(pointTimestamp.Date);
+            serieTimestamp.Hour.Should().Be(pointTimestamp.Hour);
+        }
+
+        /// <see cref="https://github.com/pootzko/InfluxData.Net/issues/25"/>
+        [Fact]
+        public virtual async Task ClientWrite_OnTimeUnitSeconds_ShouldWriteSuccessfully()
+        {
+            var point = _fixture.MockPoints(1).Single();
+
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point, precision: TimeUnit.Seconds);
+            writeResponse.Success.Should().BeTrue();
+            await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
+            var serie = await _fixture.EnsurePointExists(point, TimeUnit.Seconds);
+
+            var pointTimestamp = (DateTime)point.Timestamp;
+            var serieTimestamp = (DateTime)serie.Values[0][0];
+            serieTimestamp.Date.Should().Be(pointTimestamp.Date);
+            serieTimestamp.Hour.Should().Be(pointTimestamp.Hour);
+            serieTimestamp.Minute.Should().Be(pointTimestamp.Minute);
+        }
+
+
+        [Fact]
+        public virtual async Task ClientWrite_OnTimeUnitMillis_ShouldWriteSuccessfully()
+        {
+            var point = _fixture.MockPoints(1).Single();
+
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point, precision: TimeUnit.Milliseconds);
+            writeResponse.Success.Should().BeTrue();
+            await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
+            var serie = await _fixture.EnsurePointExists(point, TimeUnit.Milliseconds);
+
+            var pointTimestamp = (DateTime)point.Timestamp;
+            var serieTimestamp = (DateTime)serie.Values[0][0];
+            serieTimestamp.Date.Should().Be(pointTimestamp.Date);
+            serieTimestamp.Hour.Should().Be(pointTimestamp.Hour);
+            serieTimestamp.Minute.Should().Be(pointTimestamp.Minute);
+            serieTimestamp.Second.Should().Be(pointTimestamp.Second);
+        }
+
+        [Fact]
+        public virtual async Task ClientWrite_OnTimeUnitDefault_ShouldWriteSuccessfully()
+        {
+            var points = await _fixture.MockAndWritePoints(1);
+            var point = points.Single();
+
+            await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
+            var serie = await _fixture.EnsurePointExists(point);
+
+            var pointTimestamp = (DateTime)point.Timestamp;
+            var serieTimestamp = (DateTime)serie.Values[0][0];
+            serieTimestamp.Date.Should().Be(pointTimestamp.Date);
+            serieTimestamp.Hour.Should().Be(pointTimestamp.Hour);
+            serieTimestamp.Minute.Should().Be(pointTimestamp.Minute);
+            serieTimestamp.Second.Should().Be(pointTimestamp.Second);
         }
 
         [Fact]
@@ -228,7 +337,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         public virtual void WriteRequest_OnGetLines_ShouldReturnNewLineSeparatedPoints()
         {
             var points = _fixture.MockPoints(2);
-            var formatter = _fixture.Sut.GetPointFormatter();
+            var formatter = _fixture.Sut.RequestClient.GetPointFormatter();
             var request = new WriteRequest(formatter)
             {
                 Points = points

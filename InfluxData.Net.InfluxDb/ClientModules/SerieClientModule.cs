@@ -5,6 +5,9 @@ using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.QueryBuilders;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
+using InfluxData.Net.Common.Enums;
+using InfluxData.Net.InfluxDb.ClientSubModules;
+using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -12,12 +15,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
     {
         private readonly ISerieQueryBuilder _serieQueryBuilder;
         private readonly ISerieResponseParser _serieResponseParser;
+        private readonly IBatchWriter _batchWriter;
 
-        public SerieClientModule(IInfluxDbRequestClient requestClient, ISerieQueryBuilder serieQueryBuilder, ISerieResponseParser serieResponseParser)
+        public SerieClientModule(IInfluxDbRequestClient requestClient, ISerieQueryBuilder serieQueryBuilder, ISerieResponseParser serieResponseParser, IBatchWriter batchWriter)
             : base(requestClient)
         {
             _serieQueryBuilder = serieQueryBuilder;
             _serieResponseParser = serieResponseParser;
+            _batchWriter = batchWriter;
         }
 
         public virtual async Task<IEnumerable<SerieSet>> GetSeriesAsync(string dbName, string measurementName = null, IEnumerable<string> filters = null)
@@ -57,6 +62,38 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var response = await base.GetAndValidateQueryAsync(dbName, query).ConfigureAwait(false);
 
             return response;
+        }
+
+        public virtual async Task<IEnumerable<string>> GetTagKeysAsync(string dbName, string measurementName)
+        {
+            var query = _serieQueryBuilder.GetTagKeys(dbName, measurementName);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+            var tagKeys = _serieResponseParser.GetTagKeys(series);
+
+            return tagKeys;
+        }
+
+        public virtual async Task<IEnumerable<TagValue>> GetTagValuesAsync(string dbName, string measurementName, string tagName)
+        {
+            var query = _serieQueryBuilder.GetTagValues(dbName, measurementName, tagName);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+            var tagValues = _serieResponseParser.GetTagValues(series);
+
+            return tagValues;
+        }
+
+        public virtual async Task<IEnumerable<FieldKey>> GetFieldKeysAsync(string dbName, string measurementName)
+        {
+            var query = _serieQueryBuilder.GetFieldKeys(dbName, measurementName);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+            var fieldKeys = _serieResponseParser.GetFieldKeys(series);
+
+            return fieldKeys;
+        }
+
+        public IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, string precision = TimeUnit.Milliseconds)
+        {
+            return ((IBatchWriterFactory)_batchWriter).CreateBatchWriter(dbName, retenionPolicy, precision);
         }
     }
 }

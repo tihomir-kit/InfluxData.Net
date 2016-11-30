@@ -5,6 +5,7 @@ using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
+using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -18,7 +19,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="retentionPolicy">The retention policy.</param>
         /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retentionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds);
+        Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
 
         /// <summary>
         /// Writes multiple serie points to the database.
@@ -28,7 +29,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="retentionPolicy">The retention policy.</param>
         /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retentionPolicy = null, TimeUnit precision = TimeUnit.Milliseconds);
+        Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
 
         /// <summary>
         /// Executes a query against the database.

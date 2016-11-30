@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using InfluxData.Net.InfluxDb;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Integration.Kapacitor;
+using InfluxData.Net.Common.Constants;
+using InfluxData.Net.InfluxDb.Models.Responses;
 
 namespace InfluxData.Net.Integration.InfluxDb
 {
@@ -27,7 +29,9 @@ namespace InfluxData.Net.Integration.InfluxDb
         /// Checks if the point is in the database. (checks by serie name and timestamp).
         /// </summary>
         /// <param name="expectedPoint">Expected point.</param>
-        Task EnsurePointExists(Point expectedPoint);
+        /// <param name="precision">Precision (optional, defaults to milliseconds)</param>
+        /// <returns>Task with the expected serie.</returns>
+        Task<Serie> EnsurePointExists(Point expectedPoint, string precision = TimeUnit.Milliseconds);
 
         #endregion Validation
 

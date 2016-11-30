@@ -10,32 +10,59 @@ namespace InfluxData.Net.Kapacitor
 {
     public class KapacitorClient : IKapacitorClient
     {
-        private readonly IKapacitorRequestClient _requestClient;
+        private IKapacitorRequestClient _requestClient;
 
-        private readonly Lazy<ITaskClientModule> _taskClientModule;
+        private Lazy<ITaskClientModule> _taskClientModule;
 
         public ITaskClientModule Task
         {
             get { return _taskClientModule.Value; }
         }
 
-        public KapacitorClient(string uri, KapacitorVersion kapacitorVersion, HttpClient httpClient = null)
-            : this(new KapacitorClientConfiguration(new Uri(uri), null, null, kapacitorVersion, httpClient))
+        public KapacitorClient(string uri, KapacitorVersion kapacitorVersion, HttpClient httpClient = null, bool throwOnWarning = false)
+            : this(new KapacitorClientConfiguration(new Uri(uri), null, null, kapacitorVersion, httpClient, throwOnWarning))
         {
         }
 
-        //public KapacitorClient(string uri, string username, string password, KapacitorVersion kapacitorVersion)
-        //     : this(new KapacitorClientConfiguration(new Uri(uri), username, password, kapacitorVersion))
-        //{
-        //}
-
         public KapacitorClient(IKapacitorClientConfiguration configuration)
         {
-            var requestClientFactory = new KapacitorClientBootstrap(configuration);
-            var dependencies = requestClientFactory.GetRequestClient();
-            _requestClient = dependencies.KapacitorRequestClient;
+            switch (configuration.KapacitorVersion)
+            {
+                case KapacitorVersion.Latest:
+                case KapacitorVersion.v_1_0_0:
+                    this.BootstrapKapacitorLatest(configuration);
+                    break;
+                case KapacitorVersion.v_0_10_1:
+                    this.BootstrapKapacitorLatest(configuration);
+                    this.BootstrapKapacitorLatest_v_0_10_1(configuration);
+                    break;
+                case KapacitorVersion.v_0_10_0:
+                    this.BootstrapKapacitorLatest(configuration);
+                    this.BootstrapKapacitorLatest_v_0_10_1(configuration);
+                    this.BootstrapKapacitorLatest_v_0_10_0(configuration);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("kapacitorClientConfiguration", String.Format("Unknown version {0}.", configuration.KapacitorVersion));
+            }
+        }
 
-            _taskClientModule = new Lazy<ITaskClientModule>(() => dependencies.TaskClientModule);
+        protected virtual void BootstrapKapacitorLatest(IKapacitorClientConfiguration configuration)
+        {
+            _requestClient = new KapacitorRequestClient(configuration);
+
+            _taskClientModule = new Lazy<ITaskClientModule>(() => new TaskClientModule(_requestClient));
+        }
+
+        protected virtual void BootstrapKapacitorLatest_v_0_10_1(IKapacitorClientConfiguration configuration)
+        {
+            _requestClient = new KapacitorRequestClient_v_0_10_1(configuration);
+
+            _taskClientModule = new Lazy<ITaskClientModule>(() => new TaskClientModule_v_0_10_1(_requestClient));
+        }
+
+        protected virtual void BootstrapKapacitorLatest_v_0_10_0(IKapacitorClientConfiguration configuration)
+        {
+            _requestClient = new KapacitorRequestClient_v_0_10_0(configuration);
         }
     }
 }

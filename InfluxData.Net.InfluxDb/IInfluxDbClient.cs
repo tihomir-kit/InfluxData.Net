@@ -1,5 +1,6 @@
 using InfluxData.Net.InfluxDb.ClientModules;
 using InfluxData.Net.InfluxDb.Formatters;
+using InfluxData.Net.InfluxDb.RequestClients;
 
 namespace InfluxData.Net.InfluxDb
 {
@@ -19,6 +20,8 @@ namespace InfluxData.Net.InfluxDb
 
         IDiagnosticsClientModule Diagnostics { get; }
 
-        IPointFormatter GetPointFormatter();
+        IUserClientModule User { get; }
+
+        IInfluxDbRequestClient RequestClient { get; }
     }
 }
