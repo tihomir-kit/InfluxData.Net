@@ -19,10 +19,6 @@ namespace InfluxData.Net.Kapacitor.Helpers
         {
             // TODO: implement kapacitor task warning validation
 
-
-
-
-
             //Common.Helpers.Validate.IsNotNull(kapacitorTask, "queryResponse");
             //Common.Helpers.Validate.IsNotNull(kapacitorTask.Results, "queryResponse.Results");
 
