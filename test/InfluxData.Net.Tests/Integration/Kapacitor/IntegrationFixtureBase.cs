@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Threading.Tasks;
 using FluentAssertions;
 using InfluxData.Net.Common.Enums;

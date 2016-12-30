@@ -8,7 +8,6 @@ using InfluxData.Net.InfluxDb;
 using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Integration.Kapacitor;
-using Ploeh.AutoFixture;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Constants;
 using InfluxData.Net.InfluxDb.Models.Responses;
@@ -126,24 +125,28 @@ namespace InfluxData.Net.Integration.InfluxDb
 
         public IEnumerable<Point> MockPoints(int amount)
         {
-            var rnd = new Random();
-            var fixture = new Fixture();
+            // TODO: code below commented because it relies on AutoFixture, which is not dotnet-core compatible (yet)
+            // Should find another way to generate mocked point
+            return new List<Point>();
 
-            fixture.Customize<Point>(c => c
-                .With(p => p.Name, CreateRandomMeasurementName())
-                .Do(p => p.Tags = MockPointTags(rnd))
-                .Do(p => p.Fields = MockPointFields(rnd))
-                .OmitAutoProperties());
+            //var rnd = new Random();
+            //var fixture = new Fixture();
 
-            var points = fixture.CreateMany<Point>(amount).ToArray();
-            var timestamp = DateTime.UtcNow.AddDays(-5);
-            foreach (var point in points)
-            {
-                timestamp = timestamp.AddMinutes(1);
-                point.Timestamp = timestamp;
-            }
+            //fixture.Customize<Point>(c => c
+            //    .With(p => p.Name, CreateRandomMeasurementName())
+            //    .Do(p => p.Tags = MockPointTags(rnd))
+            //    .Do(p => p.Fields = MockPointFields(rnd))
+            //    .OmitAutoProperties());
 
-            return points;
+            //var points = fixture.CreateMany<Point>(amount).ToArray();
+            //var timestamp = DateTime.UtcNow.AddDays(-5);
+            //foreach (var point in points)
+            //{
+            //    timestamp = timestamp.AddMinutes(1);
+            //    point.Timestamp = timestamp;
+            //}
+
+            //return points;
         }
 
         public Dictionary<string, object> MockPointTags(Random rnd)
