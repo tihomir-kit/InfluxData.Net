@@ -6,6 +6,7 @@ using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.Kapacitor;
 using InfluxData.Net.Kapacitor.Models;
+using InfluxData.Net.Tests.Common.AppSettings;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {
@@ -23,7 +24,7 @@ namespace InfluxData.Net.Integration.Kapacitor
             : base("FakeKapacitorDb", influxDbEndpointUriKey, influxDbVersion)
         {
             this.Sut = new KapacitorClient(
-                ConfigurationManager.AppSettings.Get(kapacitorEndpointUriKey),
+                ConfigurationManager.Get(kapacitorEndpointUriKey),
                 kapacitorVersion);
 
             this.Sut.Should().NotBeNull();

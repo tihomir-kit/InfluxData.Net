@@ -125,11 +125,30 @@ namespace InfluxData.Net.Integration.InfluxDb
 
         public IEnumerable<Point> MockPoints(int amount)
         {
-            // TODO: code below commented because it relies on AutoFixture, which is not dotnet-core compatible (yet)
-            // Should find another way to generate mocked point
-            return new List<Point>();
+            // TODO: code below commented because it relies on AutoFixture, 
+            // which is not dotnet - core compatible(yet), and has therefor
+            // been replaced with a "poor man's" variant on this.
 
-            //var rnd = new Random();
+            var response = new List<Point>();
+            var rnd = new Random();
+            var timestamp = DateTime.UtcNow.AddDays(-5);
+
+            for (var i = 0; i < amount; i++)
+            {
+                timestamp = timestamp.AddMinutes(1);
+
+                var p = new Point()
+                {
+                    Fields = MockPointFields(rnd),
+                    Tags = MockPointTags(rnd),
+                    Name = CreateRandomMeasurementName(),
+                    Timestamp = timestamp
+                };
+                response.Add(p);
+            }
+
+            return response;
+
             //var fixture = new Fixture();
 
             //fixture.Customize<Point>(c => c
