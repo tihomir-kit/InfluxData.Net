@@ -67,5 +67,20 @@ namespace InfluxData.Net.InfluxDb.ClientModules
 
             return resultSeries;
         }
+
+        public virtual async Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, string query)
+        {
+            var series = await base.ResolveSingleGetSeriesResultChunkedAsync(dbName, query).ConfigureAwait(false);
+
+            return series;
+        }
+
+        public virtual async Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, IEnumerable<string> queries)
+        {
+            var results = await base.ResolveGetSeriesResultChunkedAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
+            var series = _basicResponseParser.FlattenResultsSeries(results);
+
+            return series;
+        }
     }
 }

@@ -21,6 +21,15 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         Task<IInfluxDataApiResponse> GetQueryAsync(string query);
 
         /// <summary>
+        /// Executes a GET query against the InfluxDb API in a single request. Multiple queries can be 
+        /// passed in in the form of semicolon-delimited string.
+        /// </summary>
+        /// <param name="query">Queries to execute. For language specification please see
+        /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
+        /// <returns></returns>
+        Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string query);
+
+        /// <summary>
         /// Executes a POST query against the InfluxDb API in a single request. Multiple queries can be 
         /// passed in in the form of semicolon-delimited string.
         /// </summary>
@@ -48,6 +57,16 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
         /// <returns></returns>
         Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query);
+
+        /// <summary>
+        /// Executes a GET query against the database in a single request. Multiple queries can be 
+        /// passed in in the form of semicolon-delimited string.
+        /// </summary>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="query">Queries to execute. For language specification please see
+        /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
+        /// <returns></returns>
+        Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string dbName, string query);
 
         /// <summary>
         /// Executes a POST query against the database in a single request. Multiple queries can be 

@@ -40,6 +40,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         Task<IEnumerable<Serie>> QueryAsync(string dbName, string query);
 
         /// <summary>
+        /// Executes a query against the database.
+        /// </summary>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="query">Query to execute.</param>
+        /// <returns></returns>
+        Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, string query);
+
+        /// <summary>
         /// Executes multiple queries against the database in a single request and extracts and flattens
         /// the series from all results into a single <see cref="Serie"/> collection.
         /// </summary>
@@ -47,6 +55,15 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="queries">Queries to execute.</param>
         /// <returns></returns>
         Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries);
+
+        /// <summary>
+        /// Executes multiple queries against the database in a single request and extracts and flattens
+        /// the series from all results into a single <see cref="Serie"/> collection.
+        /// </summary>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="queries">Queries to execute.</param>
+        /// <returns></returns>
+        Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, IEnumerable<string> queries);
 
         /// <summary>
         /// Executes multiple queries against the database in a single request.

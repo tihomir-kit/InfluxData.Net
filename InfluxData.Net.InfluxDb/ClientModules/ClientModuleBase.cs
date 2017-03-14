@@ -90,5 +90,51 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var response = await this.RequestClient.GetQueryAsync(dbName, query).ConfigureAwait(false);
             return response.ReadAs<QueryResponse>().Validate(this.RequestClient.Configuration.ThrowOnWarning).Results;
         }
+        
+        protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultChunkedAsync(string dbName, string query)
+        {
+            var response = await this.RequestClient.GetQueryChunkedAsync(dbName, query).ConfigureAwait(false);
+            var series = ResolveSingleGetSeriesResultChunked(response);
+
+            return series;
+        }
+
+        protected virtual IEnumerable<Serie> ResolveSingleGetSeriesResultChunked(IInfluxDataApiResponse response)
+        {
+            //Split chunks to make it valid json
+            var queryBodies = response.Body.Split('\n');
+            var series = new List<Serie>();
+            foreach (var queryBody in queryBodies)
+            {
+                if (!string.IsNullOrWhiteSpace(queryBody))
+                {
+                    var queryResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<QueryResponse>(queryBody).Validate(this.RequestClient.Configuration.ThrowOnWarning);
+                    var result = queryResponse.Results.Single();
+                    Validate.IsNotNull(result, "result");
+                    if (result != null)
+                    {
+                        series.AddRange(result.Series.ToList());
+                    }
+                }
+            }
+            return series;
+        }
+
+
+        protected virtual async Task<IEnumerable<SeriesResult>> ResolveGetSeriesResultChunkedAsync(string dbName, string query)
+        {
+            var response = await this.RequestClient.GetQueryChunkedAsync(dbName, query).ConfigureAwait(false);
+            var queryBodies = response.Body.Split('\n');
+            var results = new List<SeriesResult>();
+            foreach (var queryBody in queryBodies)
+            {
+                if (!string.IsNullOrWhiteSpace(queryBody))
+                {
+                    var queryResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<QueryResponse>(queryBody).Validate(this.RequestClient.Configuration.ThrowOnWarning);
+                    results.AddRange(queryResponse.Results);
+                }
+            }
+            return results;
+        }
     }
 }
