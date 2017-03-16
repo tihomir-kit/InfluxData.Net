@@ -19,6 +19,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         private int _interval;
         private bool _continueOnError;
         private bool _isRunning;
+        private long _maximumPointsPerBatch = long.MaxValue;
 
         /// <summary>
         /// Concurrent readings queue.
@@ -89,6 +90,11 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             _isRunning = false;
         }
 
+        public void SetMaximumBatchSize(long numPoints)
+        {
+            _maximumPointsPerBatch = numPoints;
+        }
+
         /// <summary>
         /// Waits for the "interval" amount of time then writes all the current
         /// blocking collection points to InfluxDb and calls itself again.
@@ -113,10 +119,10 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// <returns>Task.</returns>
         protected virtual async Task WriteBatchedPointsAsync()
         {
-            var pointCount = _pointCollection.Count;
+            var pointsToSendCount = Math.Min(_pointCollection.Count, _maximumPointsPerBatch);
             IList<Point> points = new List<Point>();
 
-            for (var i = 0; i < pointCount; i++)
+            for (var i = 0; i < pointsToSendCount; i++)
             {
                 Point point;
                 var dequeueSuccess = _pointCollection.TryTake(out point);
@@ -134,7 +140,8 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
 
             if (points.Count > 0)
             {
-                await _basicClientModule.WriteAsync(_dbName, points, _retentionPolicy, _precision).ContinueWith(p => {
+                await _basicClientModule.WriteAsync(_dbName, points, _retentionPolicy, _precision).ContinueWith(p =>
+                {
                     RaiseError(p.Exception);
                 }, TaskContinuationOptions.OnlyOnFaulted).ConfigureAwait(false);
             }

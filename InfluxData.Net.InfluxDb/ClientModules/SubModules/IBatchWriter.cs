@@ -45,6 +45,11 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         void Stop();
 
         /// <summary>
+        /// Sets the maximum size of a batch.
+        /// </summary>
+        void SetMaximumBatchSize(long numPoints);
+
+        /// <summary>
         /// On batch writing error event handler.
         /// </summary>
         event EventHandler<Exception> OnError;
