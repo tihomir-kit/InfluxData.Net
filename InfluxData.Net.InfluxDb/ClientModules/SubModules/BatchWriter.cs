@@ -19,7 +19,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         private int _interval;
         private bool _continueOnError;
         private bool _isRunning;
-        private long _maximumPointsPerBatch = long.MaxValue;
+        private long _maximumPointsPerBatch;
 
         /// <summary>
         /// Concurrent readings queue.
@@ -58,7 +58,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             return new BatchWriter(_basicClientModule, dbName, retenionPolicy, precision);
         }
 
-        public virtual void Start(int interval = 1000, bool continueOnError = false)
+        public virtual void Start(int interval = 1000, bool continueOnError = false, long maximumPointsPerBatch = long.MaxValue)
         {
             if (interval <= 0)
                 throw new ArgumentException("Interval must be a positive value (milliseconds)");
@@ -67,6 +67,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
 
             _interval = interval;
             _isRunning = true;
+            _maximumPointsPerBatch = maximumPointsPerBatch
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.EnqueueBatchWritingAsync();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
