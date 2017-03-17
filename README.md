@@ -12,6 +12,8 @@ Kapacitor is a data processing engine. It can process both stream (subscribe rea
 
 Support for other TICK stack layers is also planned and will be implemented in the future when they become stable from InfluxData side.
 
+Sponsored by [Dovetail Technologies](http://www.dovetail.ie/).
+
 **Original Lib**
 This is a fork of [InfluxDb.Net](https://github.com/pootzko/InfluxDB.Net/), (which is in turn a fork of [InfluxDb.Net](https://github.com/ziyasal/InfluxDb.Net/)). Those NuGet libraries are only suitable for InfluxDB versions lower than v0.9.5.
 
@@ -22,20 +24,18 @@ Currently older supported versions:
  - InfluxDB: v0.9.2, v0.9.6
  - Kapacitor: v0.10.0, v0.10.1
 
-**Installation**
-You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) package to install the latest version of InfluxData.Net Lib.
-
 ## Table of contents
 
- - [Contributing](#contributing)
+ - [Installation](#installation)
  - [Usage](#usage)
    - [API reference](#api-reference)
+ - [InfluxDbStudio management tool](#influxdbstudio-management-tool)
  - [Bugs & feature requests](#bugs--feature-requests)
+ - [Contributing](#contributing)
  - [License](#license)
 
-## Contributing
-
-Please apply your changes to the [develop branch](https://github.com/pootzko/InfluxData.Net/tree/develop) it makes it a bit easier and cleaner for me to keep everything in order. For extra points in the FLOSS hall of fame, write a few tests for your awesome contribution as well. :) Thanks for your help!
+## Installation
+You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) package to install the latest version of InfluxData.Net Lib.
 
 ## Usage
 
@@ -647,11 +647,17 @@ To disable a Kapacitor task, execute the following:
 var response = await kapacitorClient.Task.DisableTaskAsync("taskId");
 ```
 
+## InfluxDbStudio management tool
 
+For easier administration, check this neat UI management tool for InfluxDB called [InfluxDbStudio](https://github.com/CymaticLabs/InfluxDBStudio).
 
 ## Bugs & feature requests
 
 If you encounter a bug, performance issue, a malfunction or would like a feature to be implemented, please open a new [issue](https://github.com/pootzko/InfluxData.Net/issues).
+
+## Contributing
+
+Please apply your changes to the [develop branch](https://github.com/pootzko/InfluxData.Net/tree/develop) it makes it a bit easier and cleaner for me to keep everything in order. For extra points in the FLOSS hall of fame, write a few tests for your awesome contribution as well. :) Thanks for your help!
 
 ## License
 
