@@ -68,18 +68,16 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return resultSeries;
         }
 
-        public virtual async Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, string query)
+        public virtual async Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, string query, long chunkSize = 10000)
         {
-            var series = await base.ResolveSingleGetSeriesResultChunkedAsync(dbName, query).ConfigureAwait(false);
-
+            var series = await base.ResolveSingleGetSeriesResultChunkedAsync(dbName, query, chunkSize).ConfigureAwait(false);
             return series;
         }
 
-        public virtual async Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, IEnumerable<string> queries)
+        public virtual async Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, IEnumerable<string> queries, long chunkSize = 10000)
         {
-            var results = await base.ResolveGetSeriesResultChunkedAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
+            var results = await base.ResolveGetSeriesResultChunkedAsync(dbName, queries.ToSemicolonSpaceSeparatedString(), chunkSize).ConfigureAwait(false);
             var series = _basicResponseParser.FlattenResultsSeries(results);
-
             return series;
         }
     }
