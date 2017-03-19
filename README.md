@@ -96,6 +96,7 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
     - _[AddPoints()](#bw-addpoints)_
     - _[Stop()](#bw-stop)_
     - _[OnError()](#bw-onerror)_
+    - _[SetMaxBatchSize()](#bw-setmaxbatchsize)_
 - [Retention](#retention-module)
  - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
  - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
@@ -502,6 +503,14 @@ private void BatchWriter_OnError(object sender, Exception e)
 {
     // Handle the error here
 }
+```
+
+##### SetMaxBatchSize <a name="bw-setmaxbatchsize"></a>
+
+Sets the maximum size (point count) of a batch to commit to InfluxDB. If the collection currently holds more than the `maxBatchSize` points, any overflow will be commited in future requests on FIFO principle.
+
+```cs
+batchWriter.SetMaxBatchSize(10000);
 ```
 
 

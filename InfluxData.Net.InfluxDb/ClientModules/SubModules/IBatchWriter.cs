@@ -45,9 +45,11 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         void Stop();
 
         /// <summary>
-        /// Sets the maximum size of a batch.
+        /// Sets the maximum size (point count) of a batch to commit to InfluxDB. If the collection currently 
+        /// holds more than the `pointCount` points, any overflow will be commited in future requests on FIFO principle.
         /// </summary>
-        void SetMaximumBatchSize(long numPoints);
+        /// <param name="pointCount">Max batch point coint.</param>
+        void SetMaxBatchSize(long pointCount);
 
         /// <summary>
         /// On batch writing error event handler.
