@@ -37,7 +37,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="query">Query to execute.</param>
         /// <returns></returns>
-        Task<IEnumerable<Serie>> QueryAsync(string dbName, string query);
+        Task<IEnumerable<Serie>> QueryAsync(string dbName, string query, string epochFormat = null);
 
         /// <summary>
         /// Executes multiple queries against the database in a single request and extracts and flattens
@@ -46,7 +46,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="queries">Queries to execute.</param>
         /// <returns></returns>
-        Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries);
+        Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries, string epochFormat = null);
 
         /// <summary>
         /// Executes multiple queries against the database in a single request.
@@ -54,6 +54,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="queries">Queries to execute.</param>
         /// <returns></returns>
-        Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries);
+        Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries, string epochFormat = null);
     }
 }

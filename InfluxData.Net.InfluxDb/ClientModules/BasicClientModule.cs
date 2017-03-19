@@ -45,24 +45,24 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query)
+        public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query, string epochFormat = null)
         {
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query, epochFormat).ConfigureAwait(false);
 
             return series;
         }
 
-        public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries)
+        public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries, string epochFormat = null)
         {
-            var results = await base.ResolveGetSeriesResultAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
+            var results = await base.ResolveGetSeriesResultAsync(dbName, queries.ToSemicolonSpaceSeparatedString(), epochFormat).ConfigureAwait(false);
             var series = _basicResponseParser.FlattenResultsSeries(results);
 
             return series;
         }
 
-        public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries)
+        public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries, string epochFormat = null)
         {
-            var results = await base.ResolveGetSeriesResultAsync(dbName, queries.ToSemicolonSpaceSeparatedString()).ConfigureAwait(false);
+            var results = await base.ResolveGetSeriesResultAsync(dbName, queries.ToSemicolonSpaceSeparatedString(), epochFormat).ConfigureAwait(false);
             var resultSeries = _basicResponseParser.MapResultsSeries(results);
 
             return resultSeries;

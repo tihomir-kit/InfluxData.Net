@@ -36,19 +36,19 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query)
+        public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query, string epochFormat)
         {
-            return await this.QueryAsync(dbName, query, HttpMethod.Get).ConfigureAwait(false);
+            return await this.QueryAsync(dbName, query, epochFormat, HttpMethod.Get).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string dbName, string query)
         {
-            return await this.QueryAsync(dbName, query, HttpMethod.Post).ConfigureAwait(false);
+            return await this.QueryAsync(dbName, query, null, HttpMethod.Post).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, HttpMethod method)
+        public virtual async Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, string epochFormat, HttpMethod method)
         {
-            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
+            var requestParams = RequestParamsBuilder.BuildRequestParams(dbName, QueryParams.Query, query, QueryParams.Epoch, epochFormat);
             return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
         }
 

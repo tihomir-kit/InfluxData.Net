@@ -24,7 +24,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IInfluxDataApiResponse> CreateContinuousQueryAsync(CqParams cqParams)
         {
             var query = _cqQueryBuilder.CreateContinuousQuery(cqParams);
-            var response = await base.PostAndValidateQueryAsync(cqParams.DbName, query).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(cqParams.DbName, query, null).ConfigureAwait(false);
 
             return response;
         }
@@ -32,7 +32,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<ContinuousQuery>> GetContinuousQueriesAsync(string dbName)
         {
             var query = _cqQueryBuilder.GetContinuousQueries();
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query).ConfigureAwait(false);
+            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query, null).ConfigureAwait(false);
             var cqs = _cqResponseParser.GetContinuousQueries(dbName, series);
 
             return cqs;
@@ -41,7 +41,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IInfluxDataApiResponse> DeleteContinuousQueryAsync(string dbName, string cqName)
         {
             var query = _cqQueryBuilder.DeleteContinuousQuery(dbName, cqName);
-            var response = await base.PostAndValidateQueryAsync(dbName, query).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(dbName, query, null).ConfigureAwait(false);
 
             return response;
         }
@@ -49,7 +49,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IInfluxDataApiResponse> BackfillAsync(string dbName, BackfillParams backfillParams)
         {
             var query = _cqQueryBuilder.Backfill(dbName, backfillParams);
-            var response = await base.PostAndValidateQueryAsync(dbName, query).ConfigureAwait(false);
+            var response = await base.PostAndValidateQueryAsync(dbName, query, null).ConfigureAwait(false);
 
             return response;
         }

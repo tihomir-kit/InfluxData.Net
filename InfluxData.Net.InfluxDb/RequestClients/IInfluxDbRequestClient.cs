@@ -47,7 +47,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         /// <param name="query">Queries to execute. For language specification please see
         /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query);
+        Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query, string epochFormat);
 
         /// <summary>
         /// Executes a POST query against the database in a single request. Multiple queries can be 
@@ -68,7 +68,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
         /// <param name="method">The HTTP method to use when executing the query.</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, HttpMethod method);
+        Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, string epochFormat, HttpMethod method);
 
         /// <summary>
         /// Writes series to the database based on <see cref="{WriteRequest}"/> object.
