@@ -21,7 +21,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// <param name="interval">Interval between writes (milliseconds).</param>
         /// <param param name="continueOnError">Should continue running on write error? (defaults to false)</param>
         /// </summary>
-        void Start(int interval = 1000, bool continueOnError = false);
+        void Start(int interval = 1000, bool continueOnError = false, long maximumPointsPerBatch = long.MaxValue);
 
         /// <summary>
         /// Adds a single point to the BatchWriter points collection (uses BlockingCollection 
@@ -43,6 +43,13 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// Stops the batch writer.
         /// </summary>
         void Stop();
+
+        /// <summary>
+        /// Sets the maximum size (point count) of a batch to commit to InfluxDB. If the collection currently 
+        /// holds more than the `pointCount` points, any overflow will be commited in future requests on FIFO principle.
+        /// </summary>
+        /// <param name="pointCount">Max batch point coint.</param>
+        void SetMaxBatchSize(long pointCount);
 
         /// <summary>
         /// On batch writing error event handler.
