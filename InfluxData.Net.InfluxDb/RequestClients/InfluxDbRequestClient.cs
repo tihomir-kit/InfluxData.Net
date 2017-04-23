@@ -10,6 +10,7 @@ using InfluxData.Net.InfluxDb.Models;
 using System;
 using System.Linq;
 using InfluxData.Net.Common.Enums;
+using System.Collections.Generic;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
@@ -25,6 +26,11 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await this.QueryAsync(query, HttpMethod.Get).ConfigureAwait(false);
         }
 
+        public virtual async Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string query, long chunkSize)
+        {
+            return await this.QueryChunkedAsync(query, chunkSize, HttpMethod.Get).ConfigureAwait(false);
+        }
+
         public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string query)
         {
             return await this.QueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
@@ -35,10 +41,22 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             var requestParams = RequestParamsBuilder.BuildQueryRequestParams(query);
             return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
         }
+        public virtual async Task<IInfluxDataApiResponse> QueryChunkedAsync(string query, long chunkSize, HttpMethod method)
+        {
+            var requestParams = (Dictionary<string, string>)RequestParamsBuilder.BuildQueryRequestParams(query);
+            requestParams.Add(QueryParams.Chunked, "true");
+            requestParams.Add(QueryParams.ChunkSize, chunkSize.ToString());
+            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
+        }
 
         public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query)
         {
             return await this.QueryAsync(dbName, query, HttpMethod.Get).ConfigureAwait(false);
+        }
+        
+        public virtual async Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string dbName, string query, long chunkSize)
+        {
+            return await this.QueryChunkedAsync(dbName, query, chunkSize, HttpMethod.Get).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string dbName, string query)
@@ -49,6 +67,14 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         public virtual async Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, HttpMethod method)
         {
             var requestParams = RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
+            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> QueryChunkedAsync(string dbName, string query, long chunkSize, HttpMethod method)
+        {
+            var requestParams = (Dictionary<string,string>)RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
+            requestParams.Add(QueryParams.Chunked, "true");
+            requestParams.Add(QueryParams.ChunkSize, chunkSize.ToString());
             return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
         }
 

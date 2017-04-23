@@ -8,5 +8,7 @@
         public const string Name = "name";
         public const string Precision = "precision";
         public const string RetentionPolicy = "rp";
+        public const string Chunked = "chunked";
+        public const string ChunkSize = "chunk_size";
     }
 }
