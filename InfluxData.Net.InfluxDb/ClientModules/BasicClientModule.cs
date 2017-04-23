@@ -71,6 +71,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, string query, long chunkSize = 10000)
         {
             var series = await base.ResolveSingleGetSeriesResultChunkedAsync(dbName, query, chunkSize).ConfigureAwait(false);
+
             return series;
         }
 
@@ -78,7 +79,16 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         {
             var results = await base.ResolveGetSeriesResultChunkedAsync(dbName, queries.ToSemicolonSpaceSeparatedString(), chunkSize).ConfigureAwait(false);
             var series = _basicResponseParser.FlattenResultsSeries(results);
+
             return series;
+        }
+
+        public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryChunkedAsync(string dbName, IEnumerable<string> queries, long chunkSize = 10000)
+        {
+            var results = await base.ResolveGetSeriesResultChunkedAsync(dbName, queries.ToSemicolonSpaceSeparatedString(), chunkSize).ConfigureAwait(false);
+            var resultSeries = _basicResponseParser.MapResultsSeries(results);
+
+            return resultSeries;
         }
     }
 }

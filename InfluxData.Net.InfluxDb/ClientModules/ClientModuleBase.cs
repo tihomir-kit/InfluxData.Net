@@ -105,30 +105,38 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             //Split response body for individual chunks
             var responseBodies = response.Body.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var series = new List<Serie>();
+
             foreach (var responseBody in responseBodies)
             {
-                var queryResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<QueryResponse>(responseBody).Validate(this.RequestClient.Configuration.ThrowOnWarning);
+                var queryResponse = responseBody.ReadAs<QueryResponse>().Validate(this.RequestClient.Configuration.ThrowOnWarning);
                 var result = queryResponse.Results.Single();
                 Validate.IsNotNull(result, "result");
+
                 if (result.Series != null)
                 {
                     series.AddRange(result.Series.ToList());
                 }
             }
+
             return series;
         }
-
 
         protected virtual async Task<IEnumerable<SeriesResult>> ResolveGetSeriesResultChunkedAsync(string dbName, string query, long chunkSize)
         {
             var response = await this.RequestClient.GetQueryChunkedAsync(dbName, query, chunkSize).ConfigureAwait(false);
             var responseBodies = response.Body.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var results = new List<SeriesResult>();
+
             foreach (var responseBody in responseBodies)
             {
-                var queryResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<QueryResponse>(responseBody).Validate(this.RequestClient.Configuration.ThrowOnWarning);
-                results.AddRange(queryResponse.Results);
+                var queryResponse = responseBody.ReadAs<QueryResponse>().Validate(this.RequestClient.Configuration.ThrowOnWarning);
+
+                if (queryResponse.Results != null)
+                {
+                    results.AddRange(queryResponse.Results);
+                }
             }
+
             return results;
         }
     }
