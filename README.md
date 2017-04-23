@@ -12,6 +12,8 @@ Kapacitor is a data processing engine. It can process both stream (subscribe rea
 
 Support for other TICK stack layers is also planned and will be implemented in the future when they become stable from InfluxData side.
 
+Sponsored by [Dovetail Technologies](http://www.dovetail.ie/).
+
 **Original Lib**
 This is a fork of [InfluxDb.Net](https://github.com/pootzko/InfluxDB.Net/), (which is in turn a fork of [InfluxDb.Net](https://github.com/ziyasal/InfluxDb.Net/)). Those NuGet libraries are only suitable for InfluxDB versions lower than v0.9.5.
 
@@ -22,20 +24,18 @@ Currently older supported versions:
  - InfluxDB: v0.9.2, v0.9.6
  - Kapacitor: v0.10.0, v0.10.1
 
-**Installation**
-You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) package to install the latest version of InfluxData.Net Lib.
-
 ## Table of contents
 
- - [Contributing](#contributing)
+ - [Installation](#installation)
  - [Usage](#usage)
    - [API reference](#api-reference)
+ - [InfluxDbStudio management tool](#influxdbstudio-management-tool)
  - [Bugs & feature requests](#bugs--feature-requests)
+ - [Contributing](#contributing)
  - [License](#license)
 
-## Contributing
-
-Please apply your changes to the [develop branch](https://github.com/pootzko/InfluxData.Net/tree/develop) it makes it a bit easier and cleaner for me to keep everything in order. For extra points in the FLOSS hall of fame, write a few tests for your awesome contribution as well. :) Thanks for your help!
+## Installation
+You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) package to install the latest version of InfluxData.Net Lib.
 
 ## Usage
 
@@ -60,61 +60,64 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
 **Supported InfluxDbClient modules and API calls <a name="api-reference"></a>**
 
 - [Client](#client-module)
- - _[WriteAsync()](#writeasync)_
- - _[QueryAsync()](#queryasync)_
- - _[MultiQueryAsync()](#multiqueryasync)_
+  - _[WriteAsync()](#writeasync)_
+  - _[QueryAsync()](#queryasync)_
+  - _[QueryChunkedAsync()](#querychunkedasync)_
+  - _[MultiQueryAsync()](#multiqueryasync)_
+  - _[MultiQueryChunkedAsync()](#multiquerychunkedasync)_
 - [Database](#database-module)
- - _[CreateDatabaseAsync()](#createdatabaseasync)_
- - _[GetDatabasesAsync()](#getdatabasesasync)_
- - _[DropDatabaseAsync()](#dropdatabaseasync)_
+  - _[CreateDatabaseAsync()](#createdatabaseasync)_
+  - _[GetDatabasesAsync()](#getdatabasesasync)_
+  - _[DropDatabaseAsync()](#dropdatabaseasync)_
 - [User](#user-module)
- - _[CreateUserAsync()](#createuserasync)_
- - _[GetUsersAsync()](#getusersasync)_
- - _[DropUserAsync()](#dropuserasync)_
- - _[SetPasswordAsync()](#setpasswordasync)_
- - _[GetPrivilegesAsync()](#getprivilegesasync)_
- - _[GrantAdministratorAsync()](#grantadministratorasync)_
- - _[RevokeAdministratorAsync()](#revokeadministratorasync)_
- - _[GrantPrivilegeAsync()](#grantprivilegeasync)_
- - _[RevokePrivilegeAsync()](#revokeprivilegeasync)_
+  - _[CreateUserAsync()](#createuserasync)_
+  - _[GetUsersAsync()](#getusersasync)_
+  - _[DropUserAsync()](#dropuserasync)_
+  - _[SetPasswordAsync()](#setpasswordasync)_
+  - _[GetPrivilegesAsync()](#getprivilegesasync)_
+  - _[GrantAdministratorAsync()](#grantadministratorasync)_
+  - _[RevokeAdministratorAsync()](#revokeadministratorasync)_
+  - _[GrantPrivilegeAsync()](#grantprivilegeasync)_
+  - _[RevokePrivilegeAsync()](#revokeprivilegeasync)_
 - [ContinuousQuery](#continuous-query-module)
- - _[CreateContinuousQueryAsync()](#createcontinuousqueryasync)_
- - _[GetContinuousQueriesAsync()](#getcontinuousqueriesasync)_
- - _[DeleteContinuousQueryAsync()](#deletecontinuousqueryasync)_
- - _[BackfillAsync()](#backfillasync)_
+  - _[CreateContinuousQueryAsync()](#createcontinuousqueryasync)_
+  - _[GetContinuousQueriesAsync()](#getcontinuousqueriesasync)_
+  - _[DeleteContinuousQueryAsync()](#deletecontinuousqueryasync)_
+  - _[BackfillAsync()](#backfillasync)_
 - [Serie](#serie-module)
- - _[GetSeriesAsync()](#getseriesasync)_
- - _[DropSeriesAsync()](#dropseriesasync)_
- - _[GetMeasurementsAsync()](#getmeasurementsasync)_
- - _[DropMeasurementAsync()](#dropmeasurementasync)_
- - _[GetTagKeysAsync()](#gettagkeysasync)_
- - _[GetTagValuesAsync()](#gettagvaluesasync)_
- - _[GetFieldKeysAsync()](#getfieldkeysasync)_
- - _[CreateBatchWriter()](#createbatchwriter)_
+  - _[GetSeriesAsync()](#getseriesasync)_
+  - _[DropSeriesAsync()](#dropseriesasync)_
+  - _[GetMeasurementsAsync()](#getmeasurementsasync)_
+  - _[DropMeasurementAsync()](#dropmeasurementasync)_
+  - _[GetTagKeysAsync()](#gettagkeysasync)_
+  - _[GetTagValuesAsync()](#gettagvaluesasync)_
+  - _[GetFieldKeysAsync()](#getfieldkeysasync)_
+  - _[CreateBatchWriter()](#createbatchwriter)_
     - _[Start()](#bw-start)_
     - _[AddPoint()](#bw-addpoint)_
     - _[AddPoints()](#bw-addpoints)_
     - _[Stop()](#bw-stop)_
     - _[OnError()](#bw-onerror)_
+    - _[SetMaxBatchSize()](#bw-setmaxbatchsize)_
 - [Retention](#retention-module)
- - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
- - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
- - _[AlterRetentionPolicyAsync()](#alterretentionpolicyasync)_
- - _[DropRetentionPolicyAsync()](#dropretentionpolicyasync)_
+  - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
+  - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
+  - _[AlterRetentionPolicyAsync()](#alterretentionpolicyasync)_
+  - _[DropRetentionPolicyAsync()](#dropretentionpolicyasync)_
 - [Diagnostics](#diagnostics-module)
- - _[PingAsync()](#pingasync)_
- - _[GetStatsAsync()](#getstatsasync)_
- - _[GetDiagnosticsAsync()](#getdiagnosticsasync)_
+  - _[PingAsync()](#pingasync)_
+  - _[GetStatsAsync()](#getstatsasync)_
+  - _[GetDiagnosticsAsync()](#getdiagnosticsasync)_
 
 **Supported KapacitorClient modules and API calls**
 
 - [Task](#task-module)
- - _[GetTaskAsync()](#gettaskasync)_
- - _[GetTasksAsync()](#gettasksasync)_
- - _[DefineTaskAsync()](#definetaskasync)_
- - _[DeleteTaskAsync()](#deletetaskasync)_
- - _[EnableTaskAsync()](#enabletaskasync)_
- - _[DisableTaskAsync()](#disabletaskasync)_
+  - _[GetTaskAsync()](#gettaskasync)_
+  - _[GetTasksAsync()](#gettasksasync)_
+  - _[DefineTaskAsync()](#definetaskasync)_
+  - _[DeleteTaskAsync()](#deletetaskasync)_
+  - _[EnableTaskAsync()](#enabletaskasync)_
+  - _[DisableTaskAsync()](#disabletaskasync)_
 
 ## InfluxDbClient
 
@@ -178,6 +181,10 @@ var queries = new []
 var response = await influxDbClient.Client.QueryAsync("yourDbName", queries);
 ```
 
+#### QueryChunkedAsync
+
+Check the usage [here](https://github.com/pootzko/InfluxData.Net/pull/39#issuecomment-287722949).
+
 #### MultiQueryAsync
 
 `MultiQueryAsync` also returns the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. Unlike the second `QueryAsync` overload, the results *will not be flattened*. This method will return a collection of results where each result contains the series of a corresponding query.
@@ -190,6 +197,10 @@ var queries = new []
 }
 var response = await influxDbClient.Client.MultiQueryAsync("yourDbName", queries);
 ```
+
+#### MultiQueryChunkedAsync
+
+Check the usage [here](https://github.com/pootzko/InfluxData.Net/pull/39#issuecomment-287722949).
 
 ### Database Module
 
@@ -504,6 +515,14 @@ private void BatchWriter_OnError(object sender, Exception e)
 }
 ```
 
+##### SetMaxBatchSize <a name="bw-setmaxbatchsize"></a>
+
+Sets the maximum size (point count) of a batch to commit to InfluxDB. If the collection currently holds more than the `maxBatchSize` points, any overflow will be commited in future requests on FIFO principle.
+
+```cs
+batchWriter.SetMaxBatchSize(10000);
+```
+
 
 ### Retention Module
 
@@ -647,11 +666,17 @@ To disable a Kapacitor task, execute the following:
 var response = await kapacitorClient.Task.DisableTaskAsync("taskId");
 ```
 
+## InfluxDbStudio management tool
 
+For easier administration, check this neat UI management tool for InfluxDB called [InfluxDbStudio](https://github.com/CymaticLabs/InfluxDBStudio).
 
 ## Bugs & feature requests
 
 If you encounter a bug, performance issue, a malfunction or would like a feature to be implemented, please open a new [issue](https://github.com/pootzko/InfluxData.Net/issues).
+
+## Contributing
+
+Please apply your changes to the [develop branch](https://github.com/pootzko/InfluxData.Net/tree/develop) it makes it a bit easier and cleaner for me to keep everything in order. For extra points in the FLOSS hall of fame, write a few tests for your awesome contribution as well. :) Thanks for your help!
 
 ## License
 

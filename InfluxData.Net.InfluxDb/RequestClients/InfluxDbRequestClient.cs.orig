@@ -36,25 +36,35 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await this.QueryAsync(dbName, query, HttpMethod.Get).ConfigureAwait(false);
         }
 
+<<<<<<< HEAD
         public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query, string epochFormat)
-        public virtual async Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string dbName, string query, long chunkSize)
         {
             return await this.QueryAsync(dbName, query, epochFormat, HttpMethod.Get).ConfigureAwait(false);
+=======
+        public virtual async Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string dbName, string query, long chunkSize)
+        {
             return await this.QueryChunkedAsync(dbName, query, chunkSize, HttpMethod.Get).ConfigureAwait(false);
+>>>>>>> develop
         }
 
         public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string query)
         {
+<<<<<<< HEAD
             return await this.QueryAsync(dbName, query, null, HttpMethod.Post).ConfigureAwait(false);
-            return await this.QueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, string epochFormat, HttpMethod method)
-        public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string dbName, string query)
         {
             var requestParams = RequestParamsBuilder.BuildRequestParams(dbName, QueryParams.Query, query, QueryParams.Epoch, epochFormat);
             return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
+=======
+            return await this.QueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string dbName, string query)
+        {
             return await this.QueryAsync(dbName, query, HttpMethod.Post).ConfigureAwait(false);
+>>>>>>> develop
         }
 
         public virtual async Task<IInfluxDataApiResponse> PostAsync(WriteRequest writeRequest)

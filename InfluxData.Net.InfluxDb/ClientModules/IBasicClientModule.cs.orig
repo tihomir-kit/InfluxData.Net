@@ -54,7 +54,10 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="dbName">Database name.</param>
         /// <param name="queries">Queries to execute.</param>
         /// <returns></returns>
+<<<<<<< HEAD
         Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries, string epochFormat = null);
+=======
+        Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries);
 
         /// <summary>
         /// Executes a query against the database using a chunked response.
@@ -84,5 +87,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="chunkSize">Maximum number of rows in each chunk (defaults to 10000)</param>
         /// <returns></returns>
         Task<IEnumerable<IEnumerable<Serie>>> MultiQueryChunkedAsync(string dbName, IEnumerable<string> queries, long chunkSize = 10000);
+>>>>>>> develop
     }
 }

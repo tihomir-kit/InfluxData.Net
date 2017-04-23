@@ -19,6 +19,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         private int _interval;
         private bool _continueOnError;
         private bool _isRunning;
+        private long _maxPointsPerBatch;
 
         /// <summary>
         /// Concurrent readings queue.
@@ -57,7 +58,13 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             return new BatchWriter(_basicClientModule, dbName, retenionPolicy, precision);
         }
 
-        public virtual void Start(int interval = 1000, bool continueOnError = false)
+        /// <summary>
+        /// Starts the batch writer.
+        /// <param name="interval">Interval between writes (milliseconds).</param>
+        /// <param param name="continueOnError">Should continue running on write error? (defaults to false)</param>
+        /// <param name="maxPointsPerBatch">Max batch point count (long max by default).</param>
+        /// </summary>
+        public virtual void Start(int interval = 1000, bool continueOnError = false, long maxPointsPerBatch = long.MaxValue)
         {
             if (interval <= 0)
                 throw new ArgumentException("Interval must be a positive value (milliseconds)");
@@ -66,16 +73,29 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
 
             _interval = interval;
             _isRunning = true;
+            _maxPointsPerBatch = maxPointsPerBatch;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             this.EnqueueBatchWritingAsync();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
+        /// <summary>
+        /// Adds a single point to the BatchWriter points collection (uses BlockingCollection 
+        /// internally for thread safety).
+        /// </summary>
+        /// <see cref="http://www.codethinked.com/blockingcollection-and-iproducerconsumercollection"/>
+        /// <param name="point">Point to write.</param>
         public virtual void AddPoint(Point point)
         {
             _pointCollection.Add(point);
         }
 
+        /// <summary>
+        /// Adds multiple points to the BatchWriter points collection (uses BlockingCollection 
+        /// internally for thread safety).
+        /// </summary>
+        /// <see cref="http://www.codethinked.com/blockingcollection-and-iproducerconsumercollection"/>
+        /// <param name="points">Points to write.</param>
         public virtual void AddPoints(IEnumerable<Point> points)
         {
             foreach (var point in points)
@@ -84,9 +104,22 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             }
         }
 
+        /// <summary>
+        /// Stops the batch writer.
+        /// </summary>
         public virtual void Stop()
         {
             _isRunning = false;
+        }
+
+        /// <summary>
+        /// Sets the maximum size (point count) of a batch to commit to InfluxDB. If the collection currently 
+        /// holds more than the `pointCount` points, any overflow will be commited in future requests on FIFO principle.
+        /// </summary>
+        /// <param name="pointCount">Max batch point count (long max by default).</param>
+        public void SetMaxBatchSize(long pointCount)
+        {
+            _maxPointsPerBatch = pointCount;
         }
 
         /// <summary>
@@ -113,10 +146,10 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// <returns>Task.</returns>
         protected virtual async Task WriteBatchedPointsAsync()
         {
-            var pointCount = _pointCollection.Count;
+            var pointsToSendCount = Math.Min(_pointCollection.Count, _maxPointsPerBatch);
             IList<Point> points = new List<Point>();
 
-            for (var i = 0; i < pointCount; i++)
+            for (var i = 0; i < pointsToSendCount; i++)
             {
                 Point point;
                 var dequeueSuccess = _pointCollection.TryTake(out point);
@@ -134,7 +167,8 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
 
             if (points.Count > 0)
             {
-                await _basicClientModule.WriteAsync(_dbName, points, _retentionPolicy, _precision).ContinueWith(p => {
+                await _basicClientModule.WriteAsync(_dbName, points, _retentionPolicy, _precision).ContinueWith(p =>
+                {
                     RaiseError(p.Exception);
                 }, TaskContinuationOptions.OnlyOnFaulted).ConfigureAwait(false);
             }

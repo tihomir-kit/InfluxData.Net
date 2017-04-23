@@ -10,7 +10,12 @@ namespace InfluxData.Net.InfluxData.Helpers
     {
         public static T ReadAs<T>(this IInfluxDataApiResponse response)
         {
-            return JsonConvert.DeserializeObject<T>(response.Body);
+            return response.Body.ReadAs<T>();
+        }
+
+        public static T ReadAs<T>(this string responseBody)
+        {
+            return JsonConvert.DeserializeObject<T>(responseBody);
         }
     }
 }
