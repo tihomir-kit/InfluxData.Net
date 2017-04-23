@@ -23,56 +23,42 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             this.RequestClient = requestClient;
         }
 
-        protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string query)
+        protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string query, string dbName = null, string epochFormat = null)
         {
-            return await this.RequestAndValidateQueryAsync(query, HttpMethod.Get).ConfigureAwait(false);
+            return await this.RequestAndValidateQueryAsync(query, HttpMethod.Get, dbName, epochFormat).ConfigureAwait(false);
         }
 
-        protected virtual async Task<IInfluxDataApiResponse> PostAndValidateQueryAsync(string query)
+        protected virtual async Task<IInfluxDataApiResponse> PostAndValidateQueryAsync(string query, string dbName = null)
         {
-            return await this.RequestAndValidateQueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+            return await this.RequestAndValidateQueryAsync(query, HttpMethod.Post, dbName).ConfigureAwait(false);
         }
 
-        protected virtual async Task<IInfluxDataApiResponse> RequestAndValidateQueryAsync(string query, HttpMethod method)
+        protected virtual async Task<IInfluxDataApiResponse> RequestAndValidateQueryAsync(string query, HttpMethod method, string dbName = null, string epochFormat = null)
         {
-            var response = await this.RequestClient.QueryAsync(query, method).ConfigureAwait(false);
+            var response = await this.RequestClient.QueryAsync(query, method, dbName, epochFormat).ConfigureAwait(false);
             response.ValidateQueryResponse(this.RequestClient.Configuration.ThrowOnWarning);
 
             return response;
         }
 
-        protected virtual async Task<IInfluxDataApiResponse> GetAndValidateQueryAsync(string dbName, string query, string epochFormat)
+        protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            return await this.RequestAndValidateQueryAsync(dbName, query, epochFormat, HttpMethod.Get).ConfigureAwait(false);
+            var response = await this.RequestClient.GetQueryAsync(query, dbName, epochFormat, chunkSize).ConfigureAwait(false);
+
+            if (chunkSize == null)
+                return ResolveSingleGetSeriesResult(response);
+            else
+                return ResolveSingleGetSeriesResultChunked(response);
         }
 
-        protected virtual async Task<IInfluxDataApiResponse> PostAndValidateQueryAsync(string dbName, string query, string epochFormat)
+        protected virtual async Task<IEnumerable<SeriesResult>> ResolveGetSeriesResultAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            return await this.RequestAndValidateQueryAsync(dbName, query, epochFormat, HttpMethod.Post).ConfigureAwait(false);
-        }
+            var response = await this.RequestClient.GetQueryAsync(query, dbName, epochFormat, chunkSize).ConfigureAwait(false);
 
-        protected virtual async Task<IInfluxDataApiResponse> RequestAndValidateQueryAsync(string dbName, string query, string epochFormat, HttpMethod method)
-        {
-            var response = await this.RequestClient.QueryAsync(dbName, query, epochFormat, method).ConfigureAwait(false);
-            response.ValidateQueryResponse(this.RequestClient.Configuration.ThrowOnWarning);
-
-            return response;
-        }
-
-        protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string query)
-        {
-            var response = await this.RequestClient.GetQueryAsync(query).ConfigureAwait(false);
-            var series = ResolveSingleGetSeriesResult(response);
-
-            return series;
-        }
-
-        protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultAsync(string dbName, string query, string epochFormat)
-        {
-            var response = await this.RequestClient.GetQueryAsync(dbName, query, epochFormat).ConfigureAwait(false);
-            var series = ResolveSingleGetSeriesResult(response);
-
-            return series;
+            if (chunkSize == null)
+                return this.ResolveGetSeriesResult(response);
+            else
+                return this.ResolveGetSeriesResultChunked(response);
         }
 
         protected virtual IEnumerable<Serie> ResolveSingleGetSeriesResult(IInfluxDataApiResponse response)
@@ -86,24 +72,9 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series;
         }
 
-        protected virtual async Task<IEnumerable<SeriesResult>> ResolveGetSeriesResultAsync(string dbName, string query, string epochFormat)
-        {
-            var response = await this.RequestClient.GetQueryAsync(dbName, query, epochFormat).ConfigureAwait(false);
-            return response.ReadAs<QueryResponse>().Validate(this.RequestClient.Configuration.ThrowOnWarning).Results;
-        }
-
-        protected virtual async Task<IEnumerable<Serie>> ResolveSingleGetSeriesResultChunkedAsync(string dbName, string query, long chunkSize)
-        {
-            var response = await this.RequestClient.GetQueryChunkedAsync(dbName, query, chunkSize).ConfigureAwait(false);
-            var series = ResolveSingleGetSeriesResultChunked(response);
-
-            return series;
-        }
-
         protected virtual IEnumerable<Serie> ResolveSingleGetSeriesResultChunked(IInfluxDataApiResponse response)
         {
-            //Split response body for individual chunks
-            var responseBodies = response.Body.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] responseBodies = SplitChunkedResponse(response);
             var series = new List<Serie>();
 
             foreach (var responseBody in responseBodies)
@@ -121,10 +92,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series;
         }
 
-        protected virtual async Task<IEnumerable<SeriesResult>> ResolveGetSeriesResultChunkedAsync(string dbName, string query, long chunkSize)
+        protected virtual IEnumerable<SeriesResult> ResolveGetSeriesResult(IInfluxDataApiResponse response)
         {
-            var response = await this.RequestClient.GetQueryChunkedAsync(dbName, query, chunkSize).ConfigureAwait(false);
-            var responseBodies = response.Body.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            return response.ReadAs<QueryResponse>().Validate(this.RequestClient.Configuration.ThrowOnWarning).Results;
+        }
+
+        protected virtual IEnumerable<SeriesResult> ResolveGetSeriesResultChunked(IInfluxDataApiResponse response)
+        {
+            string[] responseBodies = SplitChunkedResponse(response);
             var results = new List<SeriesResult>();
 
             foreach (var responseBody in responseBodies)
@@ -138,6 +113,12 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             }
 
             return results;
+        }
+
+        protected virtual string[] SplitChunkedResponse(IInfluxDataApiResponse response)
+        {
+            //Split response body for individual chunks
+            return response.Body.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

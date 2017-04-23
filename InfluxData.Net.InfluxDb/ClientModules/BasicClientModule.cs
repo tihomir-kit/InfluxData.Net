@@ -23,14 +23,14 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             _basicResponseParser = basicResponseParser;
         }
 
-        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retentionPolicy = null, string precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDataApiResponse> WriteAsync(Point point, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds)
         {
-            var response = await WriteAsync(dbName, new [] { point }, retentionPolicy, precision).ConfigureAwait(false);
+            var response = await WriteAsync(new [] { point }, dbName, retentionPolicy, precision).ConfigureAwait(false);
 
             return response;
         }
 
-        public virtual async Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retentionPolicy = null, string precision = TimeUnit.Milliseconds)
+        public virtual async Task<IInfluxDataApiResponse> WriteAsync(IEnumerable<Point> points, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds)
         {
             var request = new WriteRequest(base.RequestClient.GetPointFormatter())
             {
@@ -45,47 +45,24 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return response;
         }
 
-        public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, string query, string epochFormat = null)
+        public virtual async Task<IEnumerable<Serie>> QueryAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query, epochFormat).ConfigureAwait(false);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query, dbName, epochFormat, chunkSize).ConfigureAwait(false);
 
             return series;
         }
 
-        public virtual async Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries, string epochFormat = null)
+        public virtual async Task<IEnumerable<Serie>> QueryAsync(IEnumerable<string> queries, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            var results = await base.ResolveGetSeriesResultAsync(dbName, queries.ToSemicolonSpaceSeparatedString(), epochFormat).ConfigureAwait(false);
+            var results = await base.ResolveGetSeriesResultAsync(queries.ToSemicolonSpaceSeparatedString(), dbName, epochFormat, chunkSize).ConfigureAwait(false);
             var series = _basicResponseParser.FlattenResultsSeries(results);
 
             return series;
         }
 
-        public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries, string epochFormat = null)
+        public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(IEnumerable<string> queries, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            var results = await base.ResolveGetSeriesResultAsync(dbName, queries.ToSemicolonSpaceSeparatedString(), epochFormat).ConfigureAwait(false);
-            var resultSeries = _basicResponseParser.MapResultsSeries(results);
-
-            return resultSeries;
-        }
-
-        public virtual async Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, string query, long chunkSize = 10000)
-        {
-            var series = await base.ResolveSingleGetSeriesResultChunkedAsync(dbName, query, chunkSize).ConfigureAwait(false);
-
-            return series;
-        }
-
-        public virtual async Task<IEnumerable<Serie>> QueryChunkedAsync(string dbName, IEnumerable<string> queries, long chunkSize = 10000)
-        {
-            var results = await base.ResolveGetSeriesResultChunkedAsync(dbName, queries.ToSemicolonSpaceSeparatedString(), chunkSize).ConfigureAwait(false);
-            var series = _basicResponseParser.FlattenResultsSeries(results);
-
-            return series;
-        }
-
-        public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryChunkedAsync(string dbName, IEnumerable<string> queries, long chunkSize = 10000)
-        {
-            var results = await base.ResolveGetSeriesResultChunkedAsync(dbName, queries.ToSemicolonSpaceSeparatedString(), chunkSize).ConfigureAwait(false);
+            var results = await base.ResolveGetSeriesResultAsync(queries.ToSemicolonSpaceSeparatedString(), dbName, epochFormat, chunkSize).ConfigureAwait(false);
             var resultSeries = _basicResponseParser.MapResultsSeries(results);
 
             return resultSeries;

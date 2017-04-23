@@ -43,7 +43,7 @@ namespace InfluxData.Net.Integration.InfluxDb
         /// <param name="expectedPoints">Expected number of saved points.</param>
         public async Task EnsureValidPointCount(string serieName, string countField, int expectedPoints)
         {
-            var response = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select count({0}) from \"{1}\"", countField, serieName));
+            var response = await this.Sut.Client.QueryAsync(String.Format("select count({0}) from \"{1}\"", countField, serieName), this.DbName);
             response.Should().NotBeNull();
             response.Count().Should().Be(1);
             var countIndex = Array.IndexOf(response.First().Columns.ToArray(), "count");
@@ -60,7 +60,7 @@ namespace InfluxData.Net.Integration.InfluxDb
         {
             var expectedSerie = this.Sut.RequestClient.GetPointFormatter().PointToSerie(expectedPoint);
 
-            var response = await this.Sut.Client.QueryAsync(this.DbName, String.Format("select * from \"{0}\" group by * order by time desc", expectedPoint.Name));
+            var response = await this.Sut.Client.QueryAsync(String.Format("select * from \"{0}\" group by * order by time desc", expectedPoint.Name), this.DbName);
             response.Should().NotBeNull();
             response.Count().Should().BeGreaterOrEqualTo(1);
 
@@ -104,7 +104,7 @@ namespace InfluxData.Net.Integration.InfluxDb
                 points = points.Concat(MockPoints(amount)).ToArray();
             }
 
-            var writeResponse = await Sut.Client.WriteAsync(dbName ?? this.DbName, points.ToArray());
+            var writeResponse = await Sut.Client.WriteAsync(points.ToArray(), dbName ?? this.DbName);
             writeResponse.Success.Should().BeTrue();
 
             return points;

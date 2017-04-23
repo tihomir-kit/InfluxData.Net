@@ -167,7 +167,7 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
 
             if (points.Count > 0)
             {
-                await _basicClientModule.WriteAsync(_dbName, points, _retentionPolicy, _precision).ContinueWith(p =>
+                await _basicClientModule.WriteAsync(points, _dbName, _retentionPolicy, _precision).ContinueWith(p =>
                 {
                     RaiseError(p.Exception);
                 }, TaskContinuationOptions.OnlyOnFaulted).ConfigureAwait(false);

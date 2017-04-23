@@ -28,7 +28,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<SerieSet>> GetSeriesAsync(string dbName, string measurementName = null, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetSeries(dbName, measurementName, filters);
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query, null).ConfigureAwait(false);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query, dbName).ConfigureAwait(false);
             var serieSets = _serieResponseParser.GetSerieSets(series);
 
             return serieSets;
@@ -42,7 +42,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IInfluxDataApiResponse> DropSeriesAsync(string dbName, IEnumerable<string> measurementNames, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.DropSeries(dbName, measurementNames, filters);
-            var response = await base.GetAndValidateQueryAsync(dbName, query, null).ConfigureAwait(false);
+            var response = await base.GetAndValidateQueryAsync(query, dbName).ConfigureAwait(false);
 
             return response;
         }
@@ -50,7 +50,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<Measurement>> GetMeasurementsAsync(string dbName, IEnumerable<string> filters = null)
         {
             var query = _serieQueryBuilder.GetMeasurements(dbName, filters);
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query, null).ConfigureAwait(false);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query, dbName).ConfigureAwait(false);
             var measurements = _serieResponseParser.GetMeasurements(series);
 
             return measurements;
@@ -59,7 +59,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IInfluxDataApiResponse> DropMeasurementAsync(string dbName, string measurementName)
         {
             var query = _serieQueryBuilder.DropMeasurement(dbName, measurementName);
-            var response = await base.GetAndValidateQueryAsync(dbName, query, null).ConfigureAwait(false);
+            var response = await base.GetAndValidateQueryAsync(query, dbName).ConfigureAwait(false);
 
             return response;
         }
@@ -67,7 +67,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<string>> GetTagKeysAsync(string dbName, string measurementName)
         {
             var query = _serieQueryBuilder.GetTagKeys(dbName, measurementName);
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query, null).ConfigureAwait(false);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query, dbName).ConfigureAwait(false);
             var tagKeys = _serieResponseParser.GetTagKeys(series);
 
             return tagKeys;
@@ -76,7 +76,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<TagValue>> GetTagValuesAsync(string dbName, string measurementName, string tagName)
         {
             var query = _serieQueryBuilder.GetTagValues(dbName, measurementName, tagName);
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query, null).ConfigureAwait(false);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query, dbName).ConfigureAwait(false);
             var tagValues = _serieResponseParser.GetTagValues(series);
 
             return tagValues;
@@ -85,7 +85,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         public virtual async Task<IEnumerable<FieldKey>> GetFieldKeysAsync(string dbName, string measurementName)
         {
             var query = _serieQueryBuilder.GetFieldKeys(dbName, measurementName);
-            var series = await base.ResolveSingleGetSeriesResultAsync(dbName, query, null).ConfigureAwait(false);
+            var series = await base.ResolveSingleGetSeriesResultAsync(query, dbName).ConfigureAwait(false);
             var fieldKeys = _serieResponseParser.GetFieldKeys(series);
 
             return fieldKeys;

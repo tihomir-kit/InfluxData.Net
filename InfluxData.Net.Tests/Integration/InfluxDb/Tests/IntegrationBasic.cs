@@ -69,7 +69,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         {
             var points = _fixture.MockPoints(5);
 
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points);
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(points, _fixture.DbName);
 
             writeResponse.Success.Should().BeTrue();
             await _fixture.EnsureValidPointCount(points.First().Name, points.First().Fields.First().Key, 5);
@@ -90,7 +90,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
                 Timestamp = DateTime.UtcNow
             };
 
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point);
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName);
 
             writeResponse.Success.Should().BeTrue();
             Thread.Sleep(1000); // Without this, the test often fails because Influx doesn't flush the new point fast enough
@@ -104,7 +104,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         {
             var point = _fixture.MockPoints(1).Single();
 
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point, precision: TimeUnit.Hours);
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName, precision: TimeUnit.Hours);
             writeResponse.Success.Should().BeTrue();
             await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
             var serie = await _fixture.EnsurePointExists(point, TimeUnit.Hours);
@@ -119,7 +119,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         {
             var point = _fixture.MockPoints(1).Single();
 
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point, precision: TimeUnit.Minutes);
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName, precision: TimeUnit.Minutes);
             writeResponse.Success.Should().BeTrue();
             await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
             var serie = await _fixture.EnsurePointExists(point, TimeUnit.Minutes);
@@ -136,7 +136,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         {
             var point = _fixture.MockPoints(1).Single();
 
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point, precision: TimeUnit.Seconds);
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName, precision: TimeUnit.Seconds);
             writeResponse.Success.Should().BeTrue();
             await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
             var serie = await _fixture.EnsurePointExists(point, TimeUnit.Seconds);
@@ -154,7 +154,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         {
             var point = _fixture.MockPoints(1).Single();
 
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(_fixture.DbName, point, precision: TimeUnit.Milliseconds);
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName, precision: TimeUnit.Milliseconds);
             writeResponse.Success.Should().BeTrue();
             await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
             var serie = await _fixture.EnsurePointExists(point, TimeUnit.Milliseconds);
@@ -191,7 +191,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             points.Single().Timestamp = null;
             points.Single().Fields.Clear();
 
-            Func<Task> act = async () => { await _fixture.Sut.Client.WriteAsync(_fixture.DbName, points); };
+            Func<Task> act = async () => { await _fixture.Sut.Client.WriteAsync(points, _fixture.DbName); };
 
             act.ShouldThrow<InfluxDataApiException>();
         }
@@ -207,7 +207,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         [Fact]
         public virtual async Task ClientQuery_OnNonExistantSeries_ShouldReturnEmptySerieCollection()
         {
-            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, "select * from nonexistingseries");
+            var result = await _fixture.Sut.Client.QueryAsync("select * from nonexistingseries", _fixture.DbName);
 
             result.Should().NotBeNull();
             result.Should().BeEmpty();
@@ -219,7 +219,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             var points = await _fixture.MockAndWritePoints(3);
 
             var query = String.Format("select * from {0}", points.First().Name);
-            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, query);
+            var result = await _fixture.Sut.Client.QueryAsync(query, _fixture.DbName);
 
             result.Should().NotBeNull();
             result.Should().HaveCount(1);
@@ -240,7 +240,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
                 String.Format("select * from {0}", pointNames.First()),
                 String.Format("select * from {0}", pointNames.Last())
             };
-            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, queries);
+            var result = await _fixture.Sut.Client.QueryAsync(queries, _fixture.DbName);
 
             result.Should().NotBeNull();
             result.Should().HaveCount(2);
@@ -260,7 +260,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
                 String.Format("select * from {0}", "nonexistingseries"),
                 String.Format("select * from {0}", points.First().Name)
             };
-            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, queries);
+            var result = await _fixture.Sut.Client.QueryAsync(queries, _fixture.DbName);
 
             result.Should().NotBeNull();
             result.Should().HaveCount(1);
@@ -281,7 +281,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
                 String.Format("select * from {0}", pointNames.First()),
                 String.Format("select * from {0}", pointNames.Last())
             };
-            var result = await _fixture.Sut.Client.MultiQueryAsync(_fixture.DbName, queries);
+            var result = await _fixture.Sut.Client.MultiQueryAsync(queries, _fixture.DbName);
 
             result.Should().NotBeNull();
             result.Should().HaveCount(2);
@@ -301,7 +301,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
                 String.Format("select * from {0}", "nonexistingseries"),
                 String.Format("select * from {0}", points.First().Name)
             };
-            var result = await _fixture.Sut.Client.MultiQueryAsync(_fixture.DbName, queries);
+            var result = await _fixture.Sut.Client.MultiQueryAsync(queries, _fixture.DbName);
 
             result.Should().NotBeNull();
             result.Should().HaveCount(2);
@@ -316,7 +316,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             var points = await _fixture.MockAndWritePoints(1);
 
             var query = String.Format("select nonexistentfield from \"{0}\"", points.Single().Name);
-            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, query);
+            var result = await _fixture.Sut.Client.QueryAsync(query, _fixture.DbName);
 
             result.Should().NotBeNull();
             result.Should().BeEmpty();
@@ -328,7 +328,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             var points = await _fixture.MockAndWritePoints(1);
 
             var query = String.Format("select * from \"{0}\" where 0=1", points.Single().Name);
-            var result = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, query);
+            var result = await _fixture.Sut.Client.QueryAsync(query, _fixture.DbName);
 
             result.Should().NotBeNull();
             result.Should().BeEmpty();

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Models;
+using System;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
@@ -13,43 +14,16 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 
         /// <summary>
         /// Executes a GET query against the InfluxDb API in a single request. Multiple queries can be 
-        /// passed in in the form of semicolon-delimited string.
+        /// passed in in the form of semicolon-delimited string. If chunkSize is specified, responses 
+        /// will be broken down by number of returned rows. 
         /// </summary>
         /// <param name="query">Queries to execute. For language specification please see
         /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
+        /// <param name="dbName">Database name. (OPTIONAL)</param>
+        /// <param name="epochFormat">Epoch timestamp format. (OPTIONAL)</param>
+        /// <param name="chunkSize">Maximum number of rows per chunk. (OPTIONAL)</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> GetQueryAsync(string query);
-
-        /// <summary>
-        /// Executes a GET query against the database in a single request. Multiple queries can be 
-        /// passed in in the form of semicolon-delimited string.
-        /// </summary>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="query">Queries to execute. For language specification please see
-        /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
-        /// <returns></returns>
-        Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query);
-
-        /// <summary>
-        /// Executes a GET query against the InfluxDb API in a single request with chunked response. Multiple queries can be 
-        /// passed in in the form of semicolon-delimited string.
-        /// </summary>
-        /// <param name="query">Queries to execute. For language specification please see
-        /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
-        /// <param name="chunkSize">Maximum number of rows in each chunk</param>/// <returns></returns>
-        Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string query, long chunkSize);
-
-        /// <summary>
-        /// Executes a GET query against the database in a single request. Multiple queries can be 
-        /// passed in in the form of semicolon-delimited string.
-        /// </summary>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="query">Queries to execute. For language specification please see
-        /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
-        /// <param name="chunkSize">Maximum number of rows in each chunk</param>
-        /// <returns></returns>
-        Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query, string epochFormat);
-        Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string dbName, string query, long chunkSize);
+        Task<IInfluxDataApiResponse> GetQueryAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null);
 
         /// <summary>
         /// Executes a POST query against the InfluxDb API in a single request. Multiple queries can be 
@@ -57,19 +31,9 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         /// </summary>
         /// <param name="query">Queries to execute. For language specification please see
         /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
-        /// <returns></returns>
-        Task<IInfluxDataApiResponse> PostQueryAsync(string query);
-
-        /// <summary>
-        /// Executes a POST query against the database in a single request. Multiple queries can be 
-        /// passed in in the form of semicolon-delimited string.
-        /// </summary>
         /// <param name="dbName">Database name.</param>
-        /// <param name="query">Queries to execute. For language specification please see
-        /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, string epochFormat, HttpMethod method);
-        Task<IInfluxDataApiResponse> PostQueryAsync(string dbName, string query);
+        Task<IInfluxDataApiResponse> PostQueryAsync(string query, string dbName = null);
 
         /// <summary>
         /// Writes series to the database based on <see cref="{WriteRequest}"/> object.
@@ -80,24 +44,17 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 
         /// <summary>
         /// Executes a query against the InfluxDb API in a single request. Multiple queries can be 
-        /// passed in in the form of semicolon-delimited string.
+        /// passed in in the form of semicolon-delimited string. If chunkSize is specified, responses 
+        /// will be broken down by number of returned rows. 
         /// </summary>
         /// <param name="query">Queries to execute. For language specification please see
         /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
         /// <param name="method">The HTTP method to use when executing the query.</param>
+        /// <param name="dbName">Database name. (OPTIONAL)</param>
+        /// /// <param name="epochFormat">Epoch timestamp format. (OPTIONAL)</param>
+        /// <param name="chunkSize">Maximum number of rows per chunk. (OPTIONAL)</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method);
-
-        /// <summary>
-        /// Executes a query against the database in a single request. Multiple queries can be 
-        /// passed in in the form of semicolon-delimited string.
-        /// </summary>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="query">Queries to execute. For language specification please see
-        /// <a href="https://influxdb.com/docs/v0.9/concepts/reading_and_writing_data.html">InfluxDb documentation</a>.</param>
-        /// <param name="method">The HTTP method to use when executing the query.</param>
-        /// <returns></returns>
-        Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, HttpMethod method);
+        Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method, string dbName = null, string epochFormat = null, long? chunkSize = null);
 
         IPointFormatter GetPointFormatter();
 

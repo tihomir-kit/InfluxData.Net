@@ -67,7 +67,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         //    result.Success.Should().BeTrue();
 
         //    var query = String.Format("select * from {0}", points.First().Name);
-        //    var series = await _fixture.Sut.Client.QueryAsync(_fixture.DbName, query);
+        //    var series = await _fixture.Sut.Client.QueryAsync(query, _fixture.DbName);
         //    series.Should().HaveCount(0);
 
         //    var serieSets = await _fixture.Sut.Serie.GetSeriesAsync(_fixture.DbName);

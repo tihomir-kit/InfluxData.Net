@@ -21,40 +21,14 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         {
         }
 
-        public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string query)
+        public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            return await this.QueryAsync(query, HttpMethod.Get).ConfigureAwait(false);
+            return await this.QueryAsync(query, HttpMethod.Get, dbName, epochFormat, chunkSize).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string query, long chunkSize)
+        public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string query, string dbName = null)
         {
-            return await this.QueryChunkedAsync(query, chunkSize, HttpMethod.Get).ConfigureAwait(false);
-        }
-
-        public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query)
-        {
-            return await this.QueryAsync(dbName, query, HttpMethod.Get).ConfigureAwait(false);
-        }
-
-        public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query, string epochFormat)
-        public virtual async Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string dbName, string query, long chunkSize)
-        {
-            return await this.QueryAsync(dbName, query, epochFormat, HttpMethod.Get).ConfigureAwait(false);
-            return await this.QueryChunkedAsync(dbName, query, chunkSize, HttpMethod.Get).ConfigureAwait(false);
-        }
-
-        public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string query)
-        {
-            return await this.QueryAsync(dbName, query, null, HttpMethod.Post).ConfigureAwait(false);
-            return await this.QueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
-        }
-
-        public virtual async Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, string epochFormat, HttpMethod method)
-        public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string dbName, string query)
-        {
-            var requestParams = RequestParamsBuilder.BuildRequestParams(dbName, QueryParams.Query, query, QueryParams.Epoch, epochFormat);
-            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
-            return await this.QueryAsync(dbName, query, HttpMethod.Post).ConfigureAwait(false);
+            return await this.QueryAsync(query, HttpMethod.Post, dbName).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> PostAsync(WriteRequest writeRequest)
@@ -70,31 +44,21 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return new InfluxDataApiWriteResponse(result.StatusCode, result.Body);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method)
+        public virtual async Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(query);
-            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
-        }
-        public virtual async Task<IInfluxDataApiResponse> QueryChunkedAsync(string query, long chunkSize, HttpMethod method)
-        {
-            var requestParams = (Dictionary<string, string>)RequestParamsBuilder.BuildQueryRequestParams(query);
-            requestParams.Add(QueryParams.Chunked, "true");
-            requestParams.Add(QueryParams.ChunkSize, chunkSize.ToString());
+            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(query, dbName, epochFormat);
+            SetChunkSize(chunkSize, requestParams);
+
             return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, HttpMethod method)
+        protected virtual void SetChunkSize(long? chunkSize, IDictionary<string, string> requestParams)
         {
-            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
-            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
-        }
-
-        public virtual async Task<IInfluxDataApiResponse> QueryChunkedAsync(string dbName, string query, long chunkSize, HttpMethod method)
-        {
-            var requestParams = (Dictionary<string,string>)RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
-            requestParams.Add(QueryParams.Chunked, "true");
-            requestParams.Add(QueryParams.ChunkSize, chunkSize.ToString());
-            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
+            if (chunkSize != null)
+            {
+                requestParams.Add(QueryParams.Chunked, "true");
+                requestParams.Add(QueryParams.ChunkSize, chunkSize.ToString());
+            }
         }
 
         public virtual IPointFormatter GetPointFormatter()

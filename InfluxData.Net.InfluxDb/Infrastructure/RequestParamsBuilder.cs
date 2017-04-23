@@ -1,42 +1,40 @@
 ﻿using System.Collections.Generic;
 using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.Common.Helpers;
+using System;
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
 {
     internal static class RequestParamsBuilder
     {
-        public static IDictionary<string, string> BuildQueryRequestParams(string query)
+        public static IDictionary<string, string> BuildQueryRequestParams(string query = null, string dbName = null, string epochFormat = null)
         {
-            return new Dictionary<string, string>
-            {
-                { QueryParams.Query, HttpUtility.UrlEncode(query) }
-            };
-        }
+            var requestParams = new Dictionary<string, string>();
 
-        public static IDictionary<string, string> BuildQueryRequestParams(string dbName, string query)
-        {
-            return BuildRequestParams(dbName, QueryParams.Query, query);
-        }
+            if (!String.IsNullOrEmpty(dbName))
+                requestParams.Add(QueryParams.Db, HttpUtility.UrlEncode(dbName));
 
-        public static IDictionary<string, string> BuildRequestParams(string dbName, string paramKey, string paramValue)
-        {
-            return BuildRequestParams(dbName, paramKey, paramValue, null, null);
+            if (!String.IsNullOrEmpty(query))
+                requestParams.Add(QueryParams.Query, HttpUtility.UrlEncode(query));
+
+            if (!String.IsNullOrEmpty(epochFormat))
+                requestParams.Add(QueryParams.Epoch, HttpUtility.UrlEncode(epochFormat));
+
+            return requestParams;
         }
 
         public static IDictionary<string, string> BuildRequestParams(string dbName, string paramKey1, string paramValue1, string paramKey2, string paramValue2)
         {
-            var dict = new Dictionary<string, string>
-            {
-                {QueryParams.Db, dbName}
-            };
+            var requestParams = new Dictionary<string, string>();
 
+            if (!String.IsNullOrEmpty(dbName))
+                requestParams.Add(QueryParams.Db, HttpUtility.UrlEncode(dbName));
             if (paramKey1 != null && paramValue1 != null)
-                dict.Add(paramKey1, HttpUtility.UrlEncode(paramValue1));
+                requestParams.Add(paramKey1, HttpUtility.UrlEncode(paramValue1));
             if (paramKey2 != null && paramValue2 != null)
-                dict.Add(paramKey2, HttpUtility.UrlEncode(paramValue2));
+                requestParams.Add(paramKey2, HttpUtility.UrlEncode(paramValue2));
 
-            return dict;
+            return requestParams;
         }
     }
 }
