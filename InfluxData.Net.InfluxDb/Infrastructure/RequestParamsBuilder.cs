@@ -7,7 +7,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 {
     internal static class RequestParamsBuilder
     {
-        public static IDictionary<string, string> BuildQueryRequestParams(string query = null, string dbName = null, string epochFormat = null)
+        public static IDictionary<string, string> BuildQueryRequestParams(string query = null, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
             var requestParams = new Dictionary<string, string>();
 
@@ -19,6 +19,12 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 
             if (!String.IsNullOrEmpty(epochFormat))
                 requestParams.Add(QueryParams.Epoch, HttpUtility.UrlEncode(epochFormat));
+
+            if (chunkSize != null)
+            {
+                requestParams.Add(QueryParams.Chunked, "true");
+                requestParams.Add(QueryParams.ChunkSize, chunkSize.ToString());
+            }
 
             return requestParams;
         }

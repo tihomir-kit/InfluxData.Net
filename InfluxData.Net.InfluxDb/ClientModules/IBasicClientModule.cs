@@ -12,26 +12,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
     public interface IBasicClientModule
     {
         /// <summary>
-        /// Writes a single serie point to the database.
-        /// </summary>
-        /// <param name="point">A serie <see cref="{Point}" />.</param>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="retentionPolicy">The retention policy.</param>
-        /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
-        /// <returns></returns>
-        Task<IInfluxDataApiResponse> WriteAsync(Point point, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
-
-        /// <summary>
-        /// Writes multiple serie points to the database.
-        /// </summary>
-        /// <param name="points">A serie <see cref="Array" />.</param>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="retentionPolicy">The retention policy.</param>
-        /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
-        /// <returns></returns>
-        Task<IInfluxDataApiResponse> WriteAsync(IEnumerable<Point> points, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
-
-        /// <summary>
         /// Executes a query against the database. If chunkSize is specified, responses 
         /// will be broken down by number of returned rows. 
         /// </summary>
@@ -64,5 +44,25 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="chunkSize">Maximum number of rows per chunk. (OPTIONAL)</param>
         /// <returns></returns>
         Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(IEnumerable<string> queries, string dbName = null, string epochFormat = null, long? chunkSize = null);
+
+        /// <summary>
+        /// Writes a single serie point to the database.
+        /// </summary>
+        /// <param name="point">A serie <see cref="{Point}" />.</param>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="retentionPolicy">The retention policy.</param>
+        /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
+        /// <returns></returns>
+        Task<IInfluxDataApiResponse> WriteAsync(Point point, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
+
+        /// <summary>
+        /// Writes multiple serie points to the database.
+        /// </summary>
+        /// <param name="points">A serie <see cref="Array" />.</param>
+        /// <param name="dbName">Database name.</param>
+        /// <param name="retentionPolicy">The retention policy.</param>
+        /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
+        /// <returns></returns>
+        Task<IInfluxDataApiResponse> WriteAsync(IEnumerable<Point> points, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
     }
 }

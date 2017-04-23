@@ -152,13 +152,13 @@ var pointToWrite = new Point()
 Point is then passed into `Client.WriteAsync` method together with the database name:
 
 ```cs
-var response = await influxDbClient.Client.WriteAsync("yourDbName", pointToWrite);
+var response = await influxDbClient.Client.WriteAsync(pointToWrite, "yourDbName");
 ```
 
 If you would like to write multiple points at once, simply create an `IEnumerable` collection of `Point` objects and pass it into the second `WriteAsync` overload:
 
 ```cs
-var response = await influxDbClient.Client.WriteAsync("yourDbName", pointsToWrite);
+var response = await influxDbClient.Client.WriteAsync(pointsToWrite, "yourDbName");
 ```
 
 #### QueryAsync
@@ -167,7 +167,7 @@ The `Client.QueryAsync` can be used to execute any officially supported [InfluxD
 
 ```cs
 var query = "SELECT * FROM reading WHERE time > now() - 1h";
-var response = await influxDbClient.Client.QueryAsync("yourDbName", query);
+var response = await influxDbClient.Client.QueryAsync(query, "yourDbName");
 ```
 
 The second `QueryAsync` overload will return the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. The response will be a _flattened_ collection of multi-results series. This means that the resulting series from all queries will be extracted into a single collection. This has been implemented to make it easier on the developer in case he is querying the same measurement with different params multiple times at once.
@@ -178,7 +178,7 @@ var queries = new []
     "SELECT * FROM reading WHERE time > now() - 1h",
     "SELECT * FROM reading WHERE time > now() - 2h"
 }
-var response = await influxDbClient.Client.QueryAsync("yourDbName", queries);
+var response = await influxDbClient.Client.QueryAsync(queries, "yourDbName");
 ```
 
 #### QueryChunkedAsync
@@ -195,7 +195,7 @@ var queries = new []
     "SELECT * FROM reading WHERE time > now() - 1h",
     "SELECT * FROM reading WHERE time > now() - 2h"
 }
-var response = await influxDbClient.Client.MultiQueryAsync("yourDbName", queries);
+var response = await influxDbClient.Client.MultiQueryAsync(queries, "yourDbName");
 ```
 
 #### MultiQueryChunkedAsync
