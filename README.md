@@ -60,37 +60,39 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
 **Supported InfluxDbClient modules and API calls <a name="api-reference"></a>**
 
 - [Client](#client-module)
- - _[WriteAsync()](#writeasync)_
- - _[QueryAsync()](#queryasync)_
- - _[MultiQueryAsync()](#multiqueryasync)_
+  - _[WriteAsync()](#writeasync)_
+  - _[QueryAsync()](#queryasync)_
+  - _[QueryChunkedAsync()](#querychunkedasync)_
+  - _[MultiQueryAsync()](#multiqueryasync)_
+  - _[MultiQueryChunkedAsync()](#multiquerychunkedasync)_
 - [Database](#database-module)
- - _[CreateDatabaseAsync()](#createdatabaseasync)_
- - _[GetDatabasesAsync()](#getdatabasesasync)_
- - _[DropDatabaseAsync()](#dropdatabaseasync)_
+  - _[CreateDatabaseAsync()](#createdatabaseasync)_
+  - _[GetDatabasesAsync()](#getdatabasesasync)_
+  - _[DropDatabaseAsync()](#dropdatabaseasync)_
 - [User](#user-module)
- - _[CreateUserAsync()](#createuserasync)_
- - _[GetUsersAsync()](#getusersasync)_
- - _[DropUserAsync()](#dropuserasync)_
- - _[SetPasswordAsync()](#setpasswordasync)_
- - _[GetPrivilegesAsync()](#getprivilegesasync)_
- - _[GrantAdministratorAsync()](#grantadministratorasync)_
- - _[RevokeAdministratorAsync()](#revokeadministratorasync)_
- - _[GrantPrivilegeAsync()](#grantprivilegeasync)_
- - _[RevokePrivilegeAsync()](#revokeprivilegeasync)_
+  - _[CreateUserAsync()](#createuserasync)_
+  - _[GetUsersAsync()](#getusersasync)_
+  - _[DropUserAsync()](#dropuserasync)_
+  - _[SetPasswordAsync()](#setpasswordasync)_
+  - _[GetPrivilegesAsync()](#getprivilegesasync)_
+  - _[GrantAdministratorAsync()](#grantadministratorasync)_
+  - _[RevokeAdministratorAsync()](#revokeadministratorasync)_
+  - _[GrantPrivilegeAsync()](#grantprivilegeasync)_
+  - _[RevokePrivilegeAsync()](#revokeprivilegeasync)_
 - [ContinuousQuery](#continuous-query-module)
- - _[CreateContinuousQueryAsync()](#createcontinuousqueryasync)_
- - _[GetContinuousQueriesAsync()](#getcontinuousqueriesasync)_
- - _[DeleteContinuousQueryAsync()](#deletecontinuousqueryasync)_
- - _[BackfillAsync()](#backfillasync)_
+  - _[CreateContinuousQueryAsync()](#createcontinuousqueryasync)_
+  - _[GetContinuousQueriesAsync()](#getcontinuousqueriesasync)_
+  - _[DeleteContinuousQueryAsync()](#deletecontinuousqueryasync)_
+  - _[BackfillAsync()](#backfillasync)_
 - [Serie](#serie-module)
- - _[GetSeriesAsync()](#getseriesasync)_
- - _[DropSeriesAsync()](#dropseriesasync)_
- - _[GetMeasurementsAsync()](#getmeasurementsasync)_
- - _[DropMeasurementAsync()](#dropmeasurementasync)_
- - _[GetTagKeysAsync()](#gettagkeysasync)_
- - _[GetTagValuesAsync()](#gettagvaluesasync)_
- - _[GetFieldKeysAsync()](#getfieldkeysasync)_
- - _[CreateBatchWriter()](#createbatchwriter)_
+  - _[GetSeriesAsync()](#getseriesasync)_
+  - _[DropSeriesAsync()](#dropseriesasync)_
+  - _[GetMeasurementsAsync()](#getmeasurementsasync)_
+  - _[DropMeasurementAsync()](#dropmeasurementasync)_
+  - _[GetTagKeysAsync()](#gettagkeysasync)_
+  - _[GetTagValuesAsync()](#gettagvaluesasync)_
+  - _[GetFieldKeysAsync()](#getfieldkeysasync)_
+  - _[CreateBatchWriter()](#createbatchwriter)_
     - _[Start()](#bw-start)_
     - _[AddPoint()](#bw-addpoint)_
     - _[AddPoints()](#bw-addpoints)_
@@ -98,24 +100,24 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
     - _[OnError()](#bw-onerror)_
     - _[SetMaxBatchSize()](#bw-setmaxbatchsize)_
 - [Retention](#retention-module)
- - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
- - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
- - _[AlterRetentionPolicyAsync()](#alterretentionpolicyasync)_
- - _[DropRetentionPolicyAsync()](#dropretentionpolicyasync)_
+  - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
+  - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
+  - _[AlterRetentionPolicyAsync()](#alterretentionpolicyasync)_
+  - _[DropRetentionPolicyAsync()](#dropretentionpolicyasync)_
 - [Diagnostics](#diagnostics-module)
- - _[PingAsync()](#pingasync)_
- - _[GetStatsAsync()](#getstatsasync)_
- - _[GetDiagnosticsAsync()](#getdiagnosticsasync)_
+  - _[PingAsync()](#pingasync)_
+  - _[GetStatsAsync()](#getstatsasync)_
+  - _[GetDiagnosticsAsync()](#getdiagnosticsasync)_
 
 **Supported KapacitorClient modules and API calls**
 
 - [Task](#task-module)
- - _[GetTaskAsync()](#gettaskasync)_
- - _[GetTasksAsync()](#gettasksasync)_
- - _[DefineTaskAsync()](#definetaskasync)_
- - _[DeleteTaskAsync()](#deletetaskasync)_
- - _[EnableTaskAsync()](#enabletaskasync)_
- - _[DisableTaskAsync()](#disabletaskasync)_
+  - _[GetTaskAsync()](#gettaskasync)_
+  - _[GetTasksAsync()](#gettasksasync)_
+  - _[DefineTaskAsync()](#definetaskasync)_
+  - _[DeleteTaskAsync()](#deletetaskasync)_
+  - _[EnableTaskAsync()](#enabletaskasync)_
+  - _[DisableTaskAsync()](#disabletaskasync)_
 
 ## InfluxDbClient
 
@@ -179,6 +181,10 @@ var queries = new []
 var response = await influxDbClient.Client.QueryAsync("yourDbName", queries);
 ```
 
+#### QueryChunkedAsync
+
+Check the usage [here](https://github.com/pootzko/InfluxData.Net/pull/39#issuecomment-287722949).
+
 #### MultiQueryAsync
 
 `MultiQueryAsync` also returns the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. Unlike the second `QueryAsync` overload, the results *will not be flattened*. This method will return a collection of results where each result contains the series of a corresponding query.
@@ -191,6 +197,10 @@ var queries = new []
 }
 var response = await influxDbClient.Client.MultiQueryAsync("yourDbName", queries);
 ```
+
+#### MultiQueryChunkedAsync
+
+Check the usage [here](https://github.com/pootzko/InfluxData.Net/pull/39#issuecomment-287722949).
 
 ### Database Module
 

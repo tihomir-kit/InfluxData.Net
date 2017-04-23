@@ -31,9 +31,37 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await this.QueryChunkedAsync(query, chunkSize, HttpMethod.Get).ConfigureAwait(false);
         }
 
+        public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query)
+        {
+            return await this.QueryAsync(dbName, query, HttpMethod.Get).ConfigureAwait(false);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string dbName, string query, long chunkSize)
+        {
+            return await this.QueryChunkedAsync(dbName, query, chunkSize, HttpMethod.Get).ConfigureAwait(false);
+        }
+
         public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string query)
         {
             return await this.QueryAsync(query, HttpMethod.Post).ConfigureAwait(false);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string dbName, string query)
+        {
+            return await this.QueryAsync(dbName, query, HttpMethod.Post).ConfigureAwait(false);
+        }
+
+        public virtual async Task<IInfluxDataApiResponse> PostAsync(WriteRequest writeRequest)
+        {
+            var httpContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
+            var requestParams = RequestParamsBuilder.BuildRequestParams(
+                writeRequest.DbName,
+                QueryParams.Precision, writeRequest.Precision,
+                QueryParams.RetentionPolicy, writeRequest.RetentionPolicy);
+
+            var result = await base.RequestAsync(HttpMethod.Post, RequestPaths.Write, requestParams, httpContent).ConfigureAwait(false);
+
+            return new InfluxDataApiWriteResponse(result.StatusCode, result.Body);
         }
 
         public virtual async Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method)
@@ -49,21 +77,6 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
         }
 
-        public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string dbName, string query)
-        {
-            return await this.QueryAsync(dbName, query, HttpMethod.Get).ConfigureAwait(false);
-        }
-        
-        public virtual async Task<IInfluxDataApiResponse> GetQueryChunkedAsync(string dbName, string query, long chunkSize)
-        {
-            return await this.QueryChunkedAsync(dbName, query, chunkSize, HttpMethod.Get).ConfigureAwait(false);
-        }
-
-        public virtual async Task<IInfluxDataApiResponse> PostQueryAsync(string dbName, string query)
-        {
-            return await this.QueryAsync(dbName, query, HttpMethod.Post).ConfigureAwait(false);
-        }
-
         public virtual async Task<IInfluxDataApiResponse> QueryAsync(string dbName, string query, HttpMethod method)
         {
             var requestParams = RequestParamsBuilder.BuildQueryRequestParams(dbName, query);
@@ -76,19 +89,6 @@ namespace InfluxData.Net.InfluxDb.RequestClients
             requestParams.Add(QueryParams.Chunked, "true");
             requestParams.Add(QueryParams.ChunkSize, chunkSize.ToString());
             return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
-        }
-
-        public virtual async Task<IInfluxDataApiResponse> PostAsync(WriteRequest writeRequest)
-        {
-            var httpContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
-            var requestParams = RequestParamsBuilder.BuildRequestParams(
-                writeRequest.DbName, 
-                QueryParams.Precision, writeRequest.Precision, 
-                QueryParams.RetentionPolicy, writeRequest.RetentionPolicy);
-
-            var result = await base.RequestAsync(HttpMethod.Post, RequestPaths.Write, requestParams, httpContent).ConfigureAwait(false);
-
-            return new InfluxDataApiWriteResponse(result.StatusCode, result.Body);
         }
 
         public virtual IPointFormatter GetPointFormatter()
