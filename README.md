@@ -1,4 +1,4 @@
-InfluxData.Net test
+InfluxData.Net
 ============
 **Compatible with InfluxDB v1.0.0-beta and Kapacitor v1.0.0-beta API's**
 
