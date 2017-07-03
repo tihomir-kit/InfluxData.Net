@@ -119,8 +119,8 @@ namespace InfluxData.Net.Common.RequestClients
             if (includeAuthToQuery)
             {
                 urlBuilder.AppendFormat("?{0}={1}&{2}={3}", 
-                    QueryParams.Username, HttpUtility.UrlEncode(this.Configuration.Username), 
-                    QueryParams.Password, HttpUtility.UrlEncode(this.Configuration.Password)
+                    QueryParams.Username, Uri.EscapeDataString(this.Configuration.Username), 
+                    QueryParams.Password, Uri.EscapeDataString(this.Configuration.Password)
                 );
             }
 
