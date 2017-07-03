@@ -12,13 +12,13 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             var requestParams = new Dictionary<string, string>();
 
             if (!String.IsNullOrEmpty(dbName))
-                requestParams.Add(QueryParams.Db, HttpUtility.UrlEncode(dbName));
+                requestParams.Add(QueryParams.Db, Uri.EscapeDataString(dbName));
 
             if (!String.IsNullOrEmpty(query))
-                requestParams.Add(QueryParams.Query, HttpUtility.UrlEncode(query));
+                requestParams.Add(QueryParams.Query, Uri.EscapeDataString(query));
 
             if (!String.IsNullOrEmpty(epochFormat))
-                requestParams.Add(QueryParams.Epoch, HttpUtility.UrlEncode(epochFormat));
+                requestParams.Add(QueryParams.Epoch, Uri.EscapeDataString(epochFormat));
 
             if (chunkSize != null)
             {
@@ -34,11 +34,11 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             var requestParams = new Dictionary<string, string>();
 
             if (!String.IsNullOrEmpty(dbName))
-                requestParams.Add(QueryParams.Db, HttpUtility.UrlEncode(dbName));
+                requestParams.Add(QueryParams.Db, Uri.EscapeDataString(dbName));
             if (paramKey1 != null && paramValue1 != null)
-                requestParams.Add(paramKey1, HttpUtility.UrlEncode(paramValue1));
+                requestParams.Add(paramKey1, Uri.EscapeDataString(paramValue1));
             if (paramKey2 != null && paramValue2 != null)
-                requestParams.Add(paramKey2, HttpUtility.UrlEncode(paramValue2));
+                requestParams.Add(paramKey2, Uri.EscapeDataString(paramValue2));
 
             return requestParams;
         }
