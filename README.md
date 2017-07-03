@@ -461,7 +461,7 @@ to InfluxDb. The `BatchWriter` will keep checking the collection for new points 
 out until stopped. For thread safety, the `BatchWriter` uses the `BlockingCollection` internally.
 
 ```cs
-var batchWriter = await influxDbClient.Serie.CreateBatchWriter("yourDbName");
+var batchWriter = influxDbClient.Serie.CreateBatchWriter("yourDbName");
 ```
 
 ##### Start <a name="bw-start"></a>
