@@ -15,7 +15,9 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
+#pragma warning disable xUnit1024 // Test methods cannot have overloads
         public virtual async Task GetSeries_OnExistingSeries_ShouldReturnSerieSetCollection()
+#pragma warning restore xUnit1024 // Test methods cannot have overloads
         {
             var dbName = _fixture.CreateRandomDbName();
             await _fixture.CreateEmptyDatabase(dbName);
