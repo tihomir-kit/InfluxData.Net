@@ -1,26 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3262E701-D5C4-4FAE-BFF6-CCEB800C72F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfluxData.Net", "InfluxData.Net\InfluxData.Net.csproj", "{2DAEFD4B-3972-4FCE-87CE-01D74F445018}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{05A6F179-559E-47F7-837B-B24E875DC88B}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfluxData.Net.Common", "InfluxData.Net.Common\InfluxData.Net.Common.csproj", "{62D1A686-8ED2-4B70-8842-27F9145AEF4B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "InfluxData.Net", "src\InfluxData.Net\InfluxData.Net.xproj", "{F91DA6D0-152D-4891-BD54-7EBECD11C55F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfluxData.Net.InfluxDb", "InfluxData.Net.InfluxDb\InfluxData.Net.InfluxDb.csproj", "{E1CBC2FD-4FE1-4F18-9395-739718D5F581}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "InfluxData.Net.Common", "src\InfluxData.Net.Common\InfluxData.Net.Common.xproj", "{A1C51BEE-305F-4B85-AC09-24D766EB0FDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfluxData.Net.Kapacitor", "InfluxData.Net.Kapacitor\InfluxData.Net.Kapacitor.csproj", "{CD6EAF08-8D9B-443B-A617-00AF3F529548}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "InfluxData.Net.InfluxDb", "src\InfluxData.Net.InfluxDb\InfluxData.Net.InfluxDb.xproj", "{B8D98B6E-CF9F-464F-995D-9528062AED7A}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "InfluxData.Net.Kapacitor", "src\InfluxData.Net.Kapacitor\InfluxData.Net.Kapacitor.xproj", "{3BD397A3-D8E8-4342-999E-106611B975B7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3CABB2F1-2B89-406F-8439-3B196ABB18E2}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "InfluxData.Net.Tests", "test\InfluxData.Net.Tests\InfluxData.Net.Tests.xproj", "{5F9B20B7-51D1-4076-8926-EB5B7E6A203F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxData.Net.Tests", "InfluxData.Net.Tests\InfluxData.Net.Tests.csproj", "{F3AAC2B8-A5F7-4943-971C-0546779B90E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,35 +19,28 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F91DA6D0-152D-4891-BD54-7EBECD11C55F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F91DA6D0-152D-4891-BD54-7EBECD11C55F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F91DA6D0-152D-4891-BD54-7EBECD11C55F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F91DA6D0-152D-4891-BD54-7EBECD11C55F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1C51BEE-305F-4B85-AC09-24D766EB0FDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1C51BEE-305F-4B85-AC09-24D766EB0FDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1C51BEE-305F-4B85-AC09-24D766EB0FDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1C51BEE-305F-4B85-AC09-24D766EB0FDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8D98B6E-CF9F-464F-995D-9528062AED7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8D98B6E-CF9F-464F-995D-9528062AED7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8D98B6E-CF9F-464F-995D-9528062AED7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8D98B6E-CF9F-464F-995D-9528062AED7A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3BD397A3-D8E8-4342-999E-106611B975B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3BD397A3-D8E8-4342-999E-106611B975B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3BD397A3-D8E8-4342-999E-106611B975B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3BD397A3-D8E8-4342-999E-106611B975B7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F9B20B7-51D1-4076-8926-EB5B7E6A203F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F9B20B7-51D1-4076-8926-EB5B7E6A203F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F9B20B7-51D1-4076-8926-EB5B7E6A203F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F9B20B7-51D1-4076-8926-EB5B7E6A203F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DAEFD4B-3972-4FCE-87CE-01D74F445018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DAEFD4B-3972-4FCE-87CE-01D74F445018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DAEFD4B-3972-4FCE-87CE-01D74F445018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DAEFD4B-3972-4FCE-87CE-01D74F445018}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D1A686-8ED2-4B70-8842-27F9145AEF4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D1A686-8ED2-4B70-8842-27F9145AEF4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D1A686-8ED2-4B70-8842-27F9145AEF4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D1A686-8ED2-4B70-8842-27F9145AEF4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1CBC2FD-4FE1-4F18-9395-739718D5F581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1CBC2FD-4FE1-4F18-9395-739718D5F581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1CBC2FD-4FE1-4F18-9395-739718D5F581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1CBC2FD-4FE1-4F18-9395-739718D5F581}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD6EAF08-8D9B-443B-A617-00AF3F529548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD6EAF08-8D9B-443B-A617-00AF3F529548}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD6EAF08-8D9B-443B-A617-00AF3F529548}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD6EAF08-8D9B-443B-A617-00AF3F529548}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3AAC2B8-A5F7-4943-971C-0546779B90E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3AAC2B8-A5F7-4943-971C-0546779B90E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3AAC2B8-A5F7-4943-971C-0546779B90E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3AAC2B8-A5F7-4943-971C-0546779B90E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{F91DA6D0-152D-4891-BD54-7EBECD11C55F} = {3262E701-D5C4-4FAE-BFF6-CCEB800C72F5}
-		{A1C51BEE-305F-4B85-AC09-24D766EB0FDD} = {3262E701-D5C4-4FAE-BFF6-CCEB800C72F5}
-		{B8D98B6E-CF9F-464F-995D-9528062AED7A} = {3262E701-D5C4-4FAE-BFF6-CCEB800C72F5}
-		{3BD397A3-D8E8-4342-999E-106611B975B7} = {3262E701-D5C4-4FAE-BFF6-CCEB800C72F5}
-		{5F9B20B7-51D1-4076-8926-EB5B7E6A203F} = {3CABB2F1-2B89-406F-8439-3B196ABB18E2}
 	EndGlobalSection
 EndGlobal
