@@ -12,7 +12,7 @@ namespace InfluxData.Net.InfluxDb.ResponseParsers
         {
             var users = new List<User>();
 
-            if (series == null || series.Count() == 0)
+            if (series == null || series.Count() == 0 || series.Single().Values == null)
                 return users;
 
             users.AddRange(series.Single().Values.Select(p => new User()

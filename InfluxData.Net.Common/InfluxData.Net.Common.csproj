@@ -40,7 +40,6 @@
     <Compile Include="Enums\KapacitorVersion.cs" />
     <Compile Include="Enums\InfluxDbVersion.cs" />
     <Compile Include="Constants\TimeUnit.cs" />
-    <Compile Include="Helpers\HttpUtility.cs" />
     <Compile Include="Helpers\ObjectExtensions.cs" />
     <Compile Include="Helpers\ResponseExtensions.cs" />
     <Compile Include="Helpers\Stopwatch.cs" />

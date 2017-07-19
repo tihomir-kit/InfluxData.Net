@@ -34,7 +34,7 @@ namespace InfluxData.Net.Integration.Kapacitor
                 ConfigurationManager.AppSettings.Get("influxDbUsername"),
                 ConfigurationManager.AppSettings.Get("influxDbPassword"),
                 influxDbVersion, 
-                throwOnWarning: true);
+                throwOnWarning: false);
 
             Task.Run(() => this.PurgeFakeDatabases()).Wait();
             Task.Run(() => this.CreateEmptyDatabase()).Wait();

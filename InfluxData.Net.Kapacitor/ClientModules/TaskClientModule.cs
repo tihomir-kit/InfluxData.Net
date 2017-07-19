@@ -21,7 +21,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
         public virtual async Task<KapacitorTask> GetTaskAsync(string taskId)
         {
-            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId)).ConfigureAwait(false);
+            var response = await base.RequestClient.GetAsync(RequestPaths.Tasks, Uri.EscapeDataString(taskId)).ConfigureAwait(false);
             var task = response.ReadAs<KapacitorTask>();
 
             return task;
@@ -73,7 +73,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
         public virtual async Task<IInfluxDataApiResponse> DeleteTaskAsync(string taskId)
         {
-            return await base.RequestClient.DeleteAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId)).ConfigureAwait(false);
+            return await base.RequestClient.DeleteAsync(RequestPaths.Tasks, Uri.EscapeDataString(taskId)).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> EnableTaskAsync(string taskId)
@@ -83,7 +83,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                 { BodyParams.Status, "enabled" },
             });
 
-            return await base.RequestClient.PatchAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId), content).ConfigureAwait(false);
+            return await base.RequestClient.PatchAsync(RequestPaths.Tasks, Uri.EscapeDataString(taskId), content).ConfigureAwait(false);
         }
 
         public virtual async Task<IInfluxDataApiResponse> DisableTaskAsync(string taskId)
@@ -93,7 +93,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
                 { BodyParams.Status, "disabled" },
             });
 
-            return await base.RequestClient.PatchAsync(RequestPaths.Tasks, HttpUtility.UrlEncode(taskId), content).ConfigureAwait(false);
+            return await base.RequestClient.PatchAsync(RequestPaths.Tasks, Uri.EscapeDataString(taskId), content).ConfigureAwait(false);
         }
     }
 }

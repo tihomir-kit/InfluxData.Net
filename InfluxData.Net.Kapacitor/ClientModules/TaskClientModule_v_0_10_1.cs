@@ -22,7 +22,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
         {
             var requestParams = new Dictionary<string, string>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
+                { QueryParams.Name, Uri.EscapeDataString(taskName) }
             };
             var response = await base.RequestClient.GetAsync(RequestPaths.Task, requestParams).ConfigureAwait(false);
             var task = response.ReadAs<KapacitorTask>();
@@ -49,9 +49,9 @@ namespace InfluxData.Net.Kapacitor.ClientModules
 
             var requestParams  = new Dictionary<string, string>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskParams.TaskId) },
+                { QueryParams.Name, Uri.EscapeDataString(taskParams.TaskId) },
                 { QueryParams.Type, taskParams.TaskType.ToString().ToLower() },
-                { QueryParams.Dbrps, HttpUtility.UrlEncode(dbrps) }
+                { QueryParams.Dbrps, Uri.EscapeDataString(dbrps) }
             };
 
             return await base.RequestClient.PostAsync(RequestPaths.Task, requestParams, taskParams.TickScript).ConfigureAwait(false);
@@ -68,7 +68,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
         {
             var requestParams = new Dictionary<string, string>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
+                { QueryParams.Name, Uri.EscapeDataString(taskName) }
             };
 
             return await base.RequestClient.DeleteAsync(RequestPaths.Task, requestParams).ConfigureAwait(false);
@@ -78,7 +78,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
         {
             var requestParams = new Dictionary<string, string>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
+                { QueryParams.Name, Uri.EscapeDataString(taskName) }
             };
 
             return await base.RequestClient.PostAsync(RequestPaths.Enable, requestParams, String.Empty).ConfigureAwait(false);
@@ -88,7 +88,7 @@ namespace InfluxData.Net.Kapacitor.ClientModules
         {
             var requestParams = new Dictionary<string, string>
             {
-                { QueryParams.Name, HttpUtility.UrlEncode(taskName) }
+                { QueryParams.Name, Uri.EscapeDataString(taskName) }
             };
 
             return await base.RequestClient.PostAsync(RequestPaths.Disable, requestParams, String.Empty).ConfigureAwait(false);

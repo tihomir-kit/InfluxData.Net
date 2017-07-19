@@ -27,19 +27,10 @@ namespace InfluxData.Net.Tests.InfluxDb.Infrastructure
         [Fact]
         public void BuildQueryRequestParams_OnUnencodedDbQuery_ShouldUrlEncodeIt()
         {
-            var result = RequestParamsBuilder.BuildQueryRequestParams("dbName", _unencodedString);
+            var result = RequestParamsBuilder.BuildQueryRequestParams(_unencodedString, "dbName");
             result.Keys.Count.Should().Be(2);
             result["db"].Should().Be("dbName");
             result["q"].Should().Be(_encodedString);
-        }
-
-        [Fact]
-        public void BuildRequestParams_OnUnencodedParam_ShouldUrlEncodeIt()
-        {
-            var result = RequestParamsBuilder.BuildRequestParams("dbName", "param1", _unencodedString);
-            result.Keys.Count.Should().Be(2);
-            result["db"].Should().Be("dbName");
-            result["param1"].Should().Be(_encodedString);
         }
 
         [Fact]
@@ -50,6 +41,16 @@ namespace InfluxData.Net.Tests.InfluxDb.Infrastructure
             result["db"].Should().Be("dbName");
             result["param1"].Should().Be(_encodedString);
             result["param2"].Should().Be(_encodedString);
+        }
+
+        [Fact]
+        public void BuildRequestParams_OnUnencodedParam_ShouldUrlEncodeIt()
+        {
+            var result = RequestParamsBuilder.BuildQueryRequestParams(_unencodedString, _unencodedString, _unencodedString);
+            result.Keys.Count.Should().Be(3);
+            result["q"].Should().Be(_encodedString);
+            result["db"].Should().Be(_encodedString);
+            result["epoch"].Should().Be(_encodedString);
         }
     }
 }

@@ -12,8 +12,6 @@ Kapacitor is a data processing engine. It can process both stream (subscribe rea
 
 Support for other TICK stack layers is also planned and will be implemented in the future when they become stable from InfluxData side.
 
-Sponsored by [Dovetail Technologies](http://www.dovetail.ie/).
-
 **Original Lib**
 This is a fork of [InfluxDb.Net](https://github.com/pootzko/InfluxDB.Net/), (which is in turn a fork of [InfluxDb.Net](https://github.com/ziyasal/InfluxDb.Net/)). Those NuGet libraries are only suitable for InfluxDB versions lower than v0.9.5.
 
@@ -60,61 +58,64 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
 **Supported InfluxDbClient modules and API calls <a name="api-reference"></a>**
 
 - [Client](#client-module)
- - _[WriteAsync()](#writeasync)_
- - _[QueryAsync()](#queryasync)_
- - _[MultiQueryAsync()](#multiqueryasync)_
+  - _[WriteAsync()](#writeasync)_
+  - _[QueryAsync()](#queryasync)_
+  - _[QueryChunkedAsync()](#querychunkedasync)_
+  - _[MultiQueryAsync()](#multiqueryasync)_
+  - _[MultiQueryChunkedAsync()](#multiquerychunkedasync)_
 - [Database](#database-module)
- - _[CreateDatabaseAsync()](#createdatabaseasync)_
- - _[GetDatabasesAsync()](#getdatabasesasync)_
- - _[DropDatabaseAsync()](#dropdatabaseasync)_
+  - _[CreateDatabaseAsync()](#createdatabaseasync)_
+  - _[GetDatabasesAsync()](#getdatabasesasync)_
+  - _[DropDatabaseAsync()](#dropdatabaseasync)_
 - [User](#user-module)
- - _[CreateUserAsync()](#createuserasync)_
- - _[GetUsersAsync()](#getusersasync)_
- - _[DropUserAsync()](#dropuserasync)_
- - _[SetPasswordAsync()](#setpasswordasync)_
- - _[GetPrivilegesAsync()](#getprivilegesasync)_
- - _[GrantAdministratorAsync()](#grantadministratorasync)_
- - _[RevokeAdministratorAsync()](#revokeadministratorasync)_
- - _[GrantPrivilegeAsync()](#grantprivilegeasync)_
- - _[RevokePrivilegeAsync()](#revokeprivilegeasync)_
+  - _[CreateUserAsync()](#createuserasync)_
+  - _[GetUsersAsync()](#getusersasync)_
+  - _[DropUserAsync()](#dropuserasync)_
+  - _[SetPasswordAsync()](#setpasswordasync)_
+  - _[GetPrivilegesAsync()](#getprivilegesasync)_
+  - _[GrantAdministratorAsync()](#grantadministratorasync)_
+  - _[RevokeAdministratorAsync()](#revokeadministratorasync)_
+  - _[GrantPrivilegeAsync()](#grantprivilegeasync)_
+  - _[RevokePrivilegeAsync()](#revokeprivilegeasync)_
 - [ContinuousQuery](#continuous-query-module)
- - _[CreateContinuousQueryAsync()](#createcontinuousqueryasync)_
- - _[GetContinuousQueriesAsync()](#getcontinuousqueriesasync)_
- - _[DeleteContinuousQueryAsync()](#deletecontinuousqueryasync)_
- - _[BackfillAsync()](#backfillasync)_
+  - _[CreateContinuousQueryAsync()](#createcontinuousqueryasync)_
+  - _[GetContinuousQueriesAsync()](#getcontinuousqueriesasync)_
+  - _[DeleteContinuousQueryAsync()](#deletecontinuousqueryasync)_
+  - _[BackfillAsync()](#backfillasync)_
 - [Serie](#serie-module)
- - _[GetSeriesAsync()](#getseriesasync)_
- - _[DropSeriesAsync()](#dropseriesasync)_
- - _[GetMeasurementsAsync()](#getmeasurementsasync)_
- - _[DropMeasurementAsync()](#dropmeasurementasync)_
- - _[GetTagKeysAsync()](#gettagkeysasync)_
- - _[GetTagValuesAsync()](#gettagvaluesasync)_
- - _[GetFieldKeysAsync()](#getfieldkeysasync)_
- - _[CreateBatchWriter()](#createbatchwriter)_
+  - _[GetSeriesAsync()](#getseriesasync)_
+  - _[DropSeriesAsync()](#dropseriesasync)_
+  - _[GetMeasurementsAsync()](#getmeasurementsasync)_
+  - _[DropMeasurementAsync()](#dropmeasurementasync)_
+  - _[GetTagKeysAsync()](#gettagkeysasync)_
+  - _[GetTagValuesAsync()](#gettagvaluesasync)_
+  - _[GetFieldKeysAsync()](#getfieldkeysasync)_
+  - _[CreateBatchWriter()](#createbatchwriter)_
     - _[Start()](#bw-start)_
     - _[AddPoint()](#bw-addpoint)_
     - _[AddPoints()](#bw-addpoints)_
     - _[Stop()](#bw-stop)_
     - _[OnError()](#bw-onerror)_
+    - _[SetMaxBatchSize()](#bw-setmaxbatchsize)_
 - [Retention](#retention-module)
- - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
- - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
- - _[AlterRetentionPolicyAsync()](#alterretentionpolicyasync)_
- - _[DropRetentionPolicyAsync()](#dropretentionpolicyasync)_
+  - _[CreateRetentionPolicyAsync()](#createretentionpolicyasync)_
+  - _[GetRetentionPoliciesAsync()](#getretentionpoliciesasync)_
+  - _[AlterRetentionPolicyAsync()](#alterretentionpolicyasync)_
+  - _[DropRetentionPolicyAsync()](#dropretentionpolicyasync)_
 - [Diagnostics](#diagnostics-module)
- - _[PingAsync()](#pingasync)_
- - _[GetStatsAsync()](#getstatsasync)_
- - _[GetDiagnosticsAsync()](#getdiagnosticsasync)_
+  - _[PingAsync()](#pingasync)_
+  - _[GetStatsAsync()](#getstatsasync)_
+  - _[GetDiagnosticsAsync()](#getdiagnosticsasync)_
 
 **Supported KapacitorClient modules and API calls**
 
 - [Task](#task-module)
- - _[GetTaskAsync()](#gettaskasync)_
- - _[GetTasksAsync()](#gettasksasync)_
- - _[DefineTaskAsync()](#definetaskasync)_
- - _[DeleteTaskAsync()](#deletetaskasync)_
- - _[EnableTaskAsync()](#enabletaskasync)_
- - _[DisableTaskAsync()](#disabletaskasync)_
+  - _[GetTaskAsync()](#gettaskasync)_
+  - _[GetTasksAsync()](#gettasksasync)_
+  - _[DefineTaskAsync()](#definetaskasync)_
+  - _[DeleteTaskAsync()](#deletetaskasync)_
+  - _[EnableTaskAsync()](#enabletaskasync)_
+  - _[DisableTaskAsync()](#disabletaskasync)_
 
 ## InfluxDbClient
 
@@ -149,13 +150,13 @@ var pointToWrite = new Point()
 Point is then passed into `Client.WriteAsync` method together with the database name:
 
 ```cs
-var response = await influxDbClient.Client.WriteAsync("yourDbName", pointToWrite);
+var response = await influxDbClient.Client.WriteAsync(pointToWrite, "yourDbName");
 ```
 
 If you would like to write multiple points at once, simply create an `IEnumerable` collection of `Point` objects and pass it into the second `WriteAsync` overload:
 
 ```cs
-var response = await influxDbClient.Client.WriteAsync("yourDbName", pointsToWrite);
+var response = await influxDbClient.Client.WriteAsync(pointsToWrite, "yourDbName");
 ```
 
 #### QueryAsync
@@ -164,7 +165,7 @@ The `Client.QueryAsync` can be used to execute any officially supported [InfluxD
 
 ```cs
 var query = "SELECT * FROM reading WHERE time > now() - 1h";
-var response = await influxDbClient.Client.QueryAsync("yourDbName", query);
+var response = await influxDbClient.Client.QueryAsync(query, "yourDbName");
 ```
 
 The second `QueryAsync` overload will return the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. The response will be a _flattened_ collection of multi-results series. This means that the resulting series from all queries will be extracted into a single collection. This has been implemented to make it easier on the developer in case he is querying the same measurement with different params multiple times at once.
@@ -175,8 +176,12 @@ var queries = new []
     "SELECT * FROM reading WHERE time > now() - 1h",
     "SELECT * FROM reading WHERE time > now() - 2h"
 }
-var response = await influxDbClient.Client.QueryAsync("yourDbName", queries);
+var response = await influxDbClient.Client.QueryAsync(queries, "yourDbName");
 ```
+
+#### QueryChunkedAsync
+
+Check the usage [here](https://github.com/pootzko/InfluxData.Net/pull/39#issuecomment-287722949).
 
 #### MultiQueryAsync
 
@@ -188,8 +193,12 @@ var queries = new []
     "SELECT * FROM reading WHERE time > now() - 1h",
     "SELECT * FROM reading WHERE time > now() - 2h"
 }
-var response = await influxDbClient.Client.MultiQueryAsync("yourDbName", queries);
+var response = await influxDbClient.Client.MultiQueryAsync(queries, "yourDbName");
 ```
+
+#### MultiQueryChunkedAsync
+
+Check the usage [here](https://github.com/pootzko/InfluxData.Net/pull/39#issuecomment-287722949).
 
 ### Database Module
 
@@ -450,7 +459,7 @@ to InfluxDb. The `BatchWriter` will keep checking the collection for new points 
 out until stopped. For thread safety, the `BatchWriter` uses the `BlockingCollection` internally.
 
 ```cs
-var batchWriter = await influxDbClient.Serie.CreateBatchWriter("yourDbName");
+var batchWriter = influxDbClient.Serie.CreateBatchWriter("yourDbName");
 ```
 
 ##### Start <a name="bw-start"></a>
@@ -502,6 +511,14 @@ private void BatchWriter_OnError(object sender, Exception e)
 {
     // Handle the error here
 }
+```
+
+##### SetMaxBatchSize <a name="bw-setmaxbatchsize"></a>
+
+Sets the maximum size (point count) of a batch to commit to InfluxDB. If the collection currently holds more than the `maxBatchSize` points, any overflow will be commited in future requests on FIFO principle.
+
+```cs
+batchWriter.SetMaxBatchSize(10000);
 ```
 
 

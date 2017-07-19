@@ -12,48 +12,57 @@ namespace InfluxData.Net.InfluxDb.ClientModules
     public interface IBasicClientModule
     {
         /// <summary>
+        /// Executes a query against the database. If chunkSize is specified, responses 
+        /// will be broken down by number of returned rows. 
+        /// </summary>
+        /// <param name="query">Query to execute.</param>
+        /// <param name="dbName">Database name. (OPTIONAL)</param>
+        /// <param name="epochFormat">Epoch timestamp format. (OPTIONAL)</param>
+        /// <param name="chunkSize">Maximum number of rows per chunk. (OPTIONAL)</param>
+        /// <returns></returns>
+        Task<IEnumerable<Serie>> QueryAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null);
+
+        /// <summary>
+        /// Executes multiple queries against the database in a single request and extracts and flattens
+        /// the series from all results into a single <see cref="Serie"/> collection. If chunkSize is specified, responses 
+        /// will be broken down by number of returned rows. 
+        /// </summary>
+        /// <param name="queries">Queries to execute.</param>
+        /// <param name="dbName">Database name. (OPTIONAL)</param>
+        /// <param name="epochFormat">Epoch timestamp format. (OPTIONAL)</param>
+        /// <param name="chunkSize">Maximum number of rows per chunk. (OPTIONAL)</param>
+        /// <returns></returns>
+        Task<IEnumerable<Serie>> QueryAsync(IEnumerable<string> queries, string dbName = null, string epochFormat = null, long? chunkSize = null);
+
+        /// <summary>
+        /// Executes multiple queries against the database in a single request. If chunkSize is specified, responses 
+        /// will be broken down by number of returned rows. 
+        /// </summary>
+        /// <param name="queries">Queries to execute.</param>
+        /// <param name="dbName">Database name. (OPTIONAL)</param>
+        /// <param name="epochFormat">Epoch timestamp format. (OPTIONAL)</param>
+        /// <param name="chunkSize">Maximum number of rows per chunk. (OPTIONAL)</param>
+        /// <returns></returns>
+        Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(IEnumerable<string> queries, string dbName = null, string epochFormat = null, long? chunkSize = null);
+
+        /// <summary>
         /// Writes a single serie point to the database.
         /// </summary>
-        /// <param name="dbName">Database name.</param>
         /// <param name="point">A serie <see cref="{Point}" />.</param>
+        /// <param name="dbName">Database name.</param>
         /// <param name="retentionPolicy">The retention policy.</param>
         /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> WriteAsync(string dbName, Point point, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
+        Task<IInfluxDataApiResponse> WriteAsync(Point point, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
 
         /// <summary>
         /// Writes multiple serie points to the database.
         /// </summary>
-        /// <param name="dbName">Database name.</param>
         /// <param name="points">A serie <see cref="Array" />.</param>
+        /// <param name="dbName">Database name.</param>
         /// <param name="retentionPolicy">The retention policy.</param>
         /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> WriteAsync(string dbName, IEnumerable<Point> points, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
-
-        /// <summary>
-        /// Executes a query against the database.
-        /// </summary>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="query">Query to execute.</param>
-        /// <returns></returns>
-        Task<IEnumerable<Serie>> QueryAsync(string dbName, string query);
-
-        /// <summary>
-        /// Executes multiple queries against the database in a single request and extracts and flattens
-        /// the series from all results into a single <see cref="Serie"/> collection.
-        /// </summary>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="queries">Queries to execute.</param>
-        /// <returns></returns>
-        Task<IEnumerable<Serie>> QueryAsync(string dbName, IEnumerable<string> queries);
-
-        /// <summary>
-        /// Executes multiple queries against the database in a single request.
-        /// </summary>
-        /// <param name="dbName">Database name.</param>
-        /// <param name="queries">Queries to execute.</param>
-        /// <returns></returns>
-        Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(string dbName, IEnumerable<string> queries);
+        Task<IInfluxDataApiResponse> WriteAsync(IEnumerable<Point> points, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
     }
 }
