@@ -46,9 +46,12 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 
         public virtual async Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(query, dbName, epochFormat, chunkSize);
+            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(null, dbName, epochFormat, chunkSize);
 
-            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
+            MultipartFormDataContent queryContent = new MultipartFormDataContent();
+            queryContent.Add(new StringContent(query), "q");
+
+            return await base.RequestAsync(method, RequestPaths.Query, requestParams, queryContent).ConfigureAwait(false);
         }
 
         public virtual IPointFormatter GetPointFormatter()
