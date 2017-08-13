@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using InfluxData.Net.Common.Infrastructure;
 using Xunit;
-using InfluxData.Net.Integration.Kapacitor;
 using InfluxData.Net.Tests.Common.AppSettings;
 using Newtonsoft.Json;
 

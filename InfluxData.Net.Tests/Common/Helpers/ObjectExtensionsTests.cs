@@ -2,10 +2,6 @@
 using InfluxData.Net.Common.Constants;
 using InfluxData.Net.Common.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace InfluxData.Net.Tests.Common.Helpers

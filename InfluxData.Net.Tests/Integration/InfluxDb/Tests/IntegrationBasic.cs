@@ -7,9 +7,7 @@ using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using Xunit;
-using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Constants;
-using System.Threading;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {

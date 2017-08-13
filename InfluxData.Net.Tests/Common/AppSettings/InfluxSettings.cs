@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace InfluxData.Net.Tests.Common.AppSettings
+﻿namespace InfluxData.Net.Tests.Common.AppSettings
 {
     public class InfluxSettings
     {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using FluentAssertions;
-using InfluxData.Net.Common.Enums;
-using InfluxData.Net.InfluxDb.Enums;
-using InfluxData.Net.Kapacitor;
-using InfluxData.Net.Kapacitor.Models;
+﻿using InfluxData.Net.Common.Enums;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {

@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FluentAssertions;
-using InfluxData.Net.Common.Enums;
-using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb;
-using Moq;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {

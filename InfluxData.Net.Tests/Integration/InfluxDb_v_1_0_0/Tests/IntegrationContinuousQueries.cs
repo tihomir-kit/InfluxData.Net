@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
-using InfluxData.Net.Common.Infrastructure;
-using Xunit;
+﻿using Xunit;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {

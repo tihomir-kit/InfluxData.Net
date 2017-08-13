@@ -6,6 +6,7 @@ using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb;
 using InfluxData.Net.Tests.Common.AppSettings;
 using Moq;
+using System.Diagnostics;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {
@@ -25,6 +26,7 @@ namespace InfluxData.Net.Integration.Kapacitor
 
         protected IntegrationFixtureFactory(string fakeDbPrefix, string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion)
         {
+            Debug.WriteLine(influxDbEndpointUriKey);
             _fakeDbPrefix = fakeDbPrefix;
 
             this.DbName = CreateRandomDbName();
