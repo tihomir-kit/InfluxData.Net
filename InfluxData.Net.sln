@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfluxData.Net", "InfluxData.Net\InfluxData.Net.csproj", "{2DAEFD4B-3972-4FCE-87CE-01D74F445018}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CD6EAF08-8D9B-443B-A617-00AF3F529548} = {CD6EAF08-8D9B-443B-A617-00AF3F529548}
+		{62D1A686-8ED2-4B70-8842-27F9145AEF4B} = {62D1A686-8ED2-4B70-8842-27F9145AEF4B}
+		{E1CBC2FD-4FE1-4F18-9395-739718D5F581} = {E1CBC2FD-4FE1-4F18-9395-739718D5F581}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfluxData.Net.Common", "InfluxData.Net.Common\InfluxData.Net.Common.csproj", "{62D1A686-8ED2-4B70-8842-27F9145AEF4B}"
 EndProject
@@ -11,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfluxData.Net.InfluxDb", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfluxData.Net.Kapacitor", "InfluxData.Net.Kapacitor\InfluxData.Net.Kapacitor.csproj", "{CD6EAF08-8D9B-443B-A617-00AF3F529548}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxData.Net.Tests", "InfluxData.Net.Tests\InfluxData.Net.Tests.csproj", "{F3AAC2B8-A5F7-4943-971C-0546779B90E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfluxData.Net.Tests", "InfluxData.Net.Tests\InfluxData.Net.Tests.csproj", "{F3AAC2B8-A5F7-4943-971C-0546779B90E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

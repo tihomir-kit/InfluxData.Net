@@ -4,4 +4,10 @@
     <TargetFrameworks>netstandard1.4;net461</TargetFrameworks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InfluxData.Net.Common\InfluxData.Net.Common.csproj" />
+    <ProjectReference Include="..\InfluxData.Net.InfluxDb\InfluxData.Net.InfluxDb.csproj" />
+    <ProjectReference Include="..\InfluxData.Net.Kapacitor\InfluxData.Net.Kapacitor.csproj" />
+  </ItemGroup>
+
 </Project>
