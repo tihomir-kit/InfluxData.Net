@@ -93,7 +93,7 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName);
 
             writeResponse.Success.Should().BeTrue();
-            Thread.Sleep(1000); // Without this, the test often fails because Influx doesn't flush the new point fast enough
+            await Task.Delay(1000); // Without this, the test often fails because Influx doesn't flush the new point fast enough
             await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
             var serie = await _fixture.EnsurePointExists(point);
             serie.Values[0][1].Should().Be(point.Fields.First().Value);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using FluentAssertions;
 using InfluxData.Net.Common.Infrastructure;
 using Xunit;
 using InfluxData.Net.Integration.Kapacitor;
+using InfluxData.Net.Tests.Common.AppSettings;
 using Newtonsoft.Json;
 
 namespace InfluxData.Net.Integration.Kapacitor.Tests
@@ -49,7 +49,7 @@ namespace InfluxData.Net.Integration.Kapacitor.Tests
                 }
             };
 
-            string kapacitorUrl = ConfigurationManager.AppSettings.Get("kapacitorEndpointUri_v_1_0_0");
+            string kapacitorUrl = ConfigurationManager.Get("InfluxSettings:KapacitorEndpointUri_v_1_0_0");
             var content = JsonConvert.SerializeObject(defineTemplateDictionary);
             HttpClient client = new HttpClient();
             client.PostAsync(String.Format("{0}/kapacitor/v1/templates", kapacitorUrl), new StringContent(content)).Wait();

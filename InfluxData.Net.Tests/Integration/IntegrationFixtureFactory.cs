@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Configuration;
 using System.Threading.Tasks;
 using FluentAssertions;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb;
+using InfluxData.Net.Tests.Common.AppSettings;
 using Moq;
 
 namespace InfluxData.Net.Integration.Kapacitor
@@ -30,9 +30,9 @@ namespace InfluxData.Net.Integration.Kapacitor
             this.DbName = CreateRandomDbName();
 
             this.InfluxDbClient = new InfluxDbClient(
-                ConfigurationManager.AppSettings.Get(influxDbEndpointUriKey),
-                ConfigurationManager.AppSettings.Get("influxDbUsername"),
-                ConfigurationManager.AppSettings.Get("influxDbPassword"),
+                ConfigurationManager.Get(influxDbEndpointUriKey),
+                ConfigurationManager.Get("InfluxSettings:InfluxDbUsername"),
+                ConfigurationManager.Get("InfluxSettings:InfluxDbPassword"),
                 influxDbVersion, 
                 throwOnWarning: false);
 
