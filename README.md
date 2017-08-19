@@ -34,6 +34,7 @@ Currently older supported versions:
  - [Bugs & feature requests](#bugs--feature-requests)
  - [Contributing](#contributing)
  - [License](#license)
+ - [Changelog](https://github.com/pootzko/InfluxData.Net/blob/master/CHANGELOG.md)
 
 ## Installation
 You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/InfluxData.Net/) package to install the latest version of InfluxData.Net Lib.
