@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxData.Helpers;
 using InfluxData.Net.Kapacitor.Constants;

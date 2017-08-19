@@ -1,5 +1,4 @@
 using System;
-using InfluxData.Net.Common.Enums;
 using System.Net.Http;
 
 namespace InfluxData.Net.Common.Infrastructure

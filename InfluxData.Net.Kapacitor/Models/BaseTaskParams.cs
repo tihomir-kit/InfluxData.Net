@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using InfluxData.Net.InfluxDb.Enums;
-using InfluxData.Net.Kapacitor.Constants;
-using Newtonsoft.Json;
 
 namespace InfluxData.Net.Kapacitor.Models
 {

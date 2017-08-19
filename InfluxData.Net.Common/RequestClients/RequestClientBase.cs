@@ -5,8 +5,6 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using InfluxData.Net.Common.Helpers;
-using System.Diagnostics;
 using System.Net.Http;
 using InfluxData.Net.Common.Constants;
 using InfluxData.Net.Common.Infrastructure;

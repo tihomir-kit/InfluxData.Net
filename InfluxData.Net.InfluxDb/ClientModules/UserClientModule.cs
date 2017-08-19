@@ -1,9 +1,6 @@
-﻿using System.Net.Http;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using InfluxData.Net.Common.Infrastructure;
-using InfluxData.Net.Common.Helpers;
-using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.QueryBuilders;

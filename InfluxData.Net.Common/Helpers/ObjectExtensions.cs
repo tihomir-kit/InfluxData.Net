@@ -1,10 +1,7 @@
 ﻿using InfluxData.Net.Common.Constants;
-using InfluxData.Net.Common.Enums;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace InfluxData.Net.Common.Helpers
 {

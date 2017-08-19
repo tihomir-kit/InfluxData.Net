@@ -1,5 +1,4 @@
 using InfluxData.Net.InfluxDb.ClientModules;
-using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.RequestClients;
 
 namespace InfluxData.Net.InfluxDb

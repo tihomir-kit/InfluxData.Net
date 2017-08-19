@@ -1,5 +1,4 @@
 using InfluxData.Net.Common.Constants;
-using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 

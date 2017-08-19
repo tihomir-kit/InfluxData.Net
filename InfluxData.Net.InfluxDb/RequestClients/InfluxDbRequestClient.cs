@@ -7,10 +7,6 @@ using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
-using System;
-using System.Linq;
-using InfluxData.Net.Common.Enums;
-using System.Collections.Generic;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {

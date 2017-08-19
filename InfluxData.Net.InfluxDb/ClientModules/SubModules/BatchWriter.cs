@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.Models;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System;
 using InfluxData.Net.InfluxDb.ClientModules;
-using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.ClientSubModules

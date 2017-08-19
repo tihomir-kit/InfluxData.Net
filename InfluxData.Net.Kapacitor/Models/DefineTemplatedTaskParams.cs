@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using InfluxData.Net.Kapacitor.Constants;
-using Newtonsoft.Json;
-
-namespace InfluxData.Net.Kapacitor.Models
+﻿namespace InfluxData.Net.Kapacitor.Models
 {
     /// <summary>
     /// Task definition object. Used for creating tasks in Kapacitor. Uses a task template.
