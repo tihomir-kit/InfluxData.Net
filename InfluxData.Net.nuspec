@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>InfluxData.Net</id>
+        <version>7.0.3</version>
+        <title>InfluxData.Net</title>
+        <authors>Tihomir Kit (pootzko)</authors>
+        <owners>pootzko</owners>
+        <licenseUrl>https://github.com/pootzko/InfluxData.Net/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/pootzko/InfluxData.Net</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/pootzko/InfluxData.Net/master/nuget-icon.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>InfluxData.Net is a fast, portable .NET library to access the REST API of an InfluxDB database and Kapacitor processing tool.
+
+The library supports .Net Framework v4.6.1 and .Net Standard v2.0.</description>
+        <releaseNotes>Added support for .Net Standard v2.0.</releaseNotes>
+        <tags>influx, influxdb, influxdata, kapacitor, TICK-stack</tags>
+        <dependencies>
+            <dependency id="Newtonsoft.Json" version="10.0.3" />
+            <dependency id="System.Net.Http" version="4.3.2" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.Common.dll" target="lib\net461\InfluxData.Net.Common.dll" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.Common.dll.config" target="lib\net461\InfluxData.Net.Common.dll.config" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.Common.pdb" target="lib\net461\InfluxData.Net.Common.pdb" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.dll" target="lib\net461\InfluxData.Net.dll" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.dll.config" target="lib\net461\InfluxData.Net.dll.config" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.InfluxDb.dll" target="lib\net461\InfluxData.Net.InfluxDb.dll" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.InfluxDb.dll.config" target="lib\net461\InfluxData.Net.InfluxDb.dll.config" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.InfluxDb.pdb" target="lib\net461\InfluxData.Net.InfluxDb.pdb" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.Kapacitor.dll" target="lib\net461\InfluxData.Net.Kapacitor.dll" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.Kapacitor.dll.config" target="lib\net461\InfluxData.Net.Kapacitor.dll.config" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.Kapacitor.pdb" target="lib\net461\InfluxData.Net.Kapacitor.pdb" />
+        <file src="InfluxData.Net\bin\Release\net461\InfluxData.Net.pdb" target="lib\net461\InfluxData.Net.pdb" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.Common.dll" target="lib\netstandard2.0\InfluxData.Net.Common.dll" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.Common.dll.config" target="lib\netstandard2.0\InfluxData.Net.Common.dll.config" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.Common.pdb" target="lib\netstandard2.0\InfluxData.Net.Common.pdb" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.deps.json" target="lib\netstandard2.0\InfluxData.Net.deps.json" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.dll" target="lib\netstandard2.0\InfluxData.Net.dll" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.dll.config" target="lib\netstandard2.0\InfluxData.Net.dll.config" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.InfluxDb.dll" target="lib\netstandard2.0\InfluxData.Net.InfluxDb.dll" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.InfluxDb.dll.config" target="lib\netstandard2.0\InfluxData.Net.InfluxDb.dll.config" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.InfluxDb.pdb" target="lib\netstandard2.0\InfluxData.Net.InfluxDb.pdb" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.Kapacitor.dll" target="lib\netstandard2.0\InfluxData.Net.Kapacitor.dll" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.Kapacitor.dll.config" target="lib\netstandard2.0\InfluxData.Net.Kapacitor.dll.config" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.Kapacitor.pdb" target="lib\netstandard2.0\InfluxData.Net.Kapacitor.pdb" />
+        <file src="InfluxData.Net\bin\Release\netstandard2.0\InfluxData.Net.pdb" target="lib\netstandard2.0\InfluxData.Net.pdb" />
+    </files>
+</package>
