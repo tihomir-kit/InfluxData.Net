@@ -99,8 +99,12 @@ namespace InfluxData.Net.InfluxDb
             switch (configuration.InfluxVersion)
             {
                 case InfluxDbVersion.Latest:
+                case InfluxDbVersion.v_1_3_0:
+                    this.BootstrapInfluxDbLatest(configuration);
+                    break;
                 case InfluxDbVersion.v_1_0_0:
                     this.BootstrapInfluxDbLatest(configuration);
+                    this.BootstrapInfluxDb_v_1_0_0(configuration);
                     break;
                 case InfluxDbVersion.v_0_9_6:
                 case InfluxDbVersion.v_0_9_5:
@@ -125,7 +129,7 @@ namespace InfluxData.Net.InfluxDb
         /// <param name="configuration">InfluxDb client configuration.</param>
         protected virtual void BootstrapInfluxDbLatest(IInfluxDbClientConfiguration configuration)
         {
-            _requestClient = new InfluxDbRequestClient(configuration);
+            _requestClient = new InfluxDbRequestClient_v_1_0_0(configuration);
 
             // NOTE: once a breaking change occures, QueryBuilders will need to be resolved with factories
             _serieQueryBuilder = new Lazy<ISerieQueryBuilder>(() => new SerieQueryBuilder(), true);
@@ -154,6 +158,15 @@ namespace InfluxData.Net.InfluxDb
             _cqClientModule = new Lazy<ICqClientModule>(() => new CqClientModule(_requestClient, _cqQueryBuilder.Value, _cqResponseParser.Value));
             _diagnosticsClientModule = new Lazy<IDiagnosticsClientModule>(() => new DiagnosticsClientModule(_requestClient, _diagnosticsQueryBuilder.Value, _diagnosticsResponseParser.Value));
             _userClientModule = new Lazy<IUserClientModule>(() => new UserClientModule(_requestClient, _userQueryBuilder.Value, _userResponseParser.Value));
+        }
+
+        /// <summary>
+        /// v1.0.0 and older dependency chain setup.
+        /// </summary>
+        /// <param name="configuration">InfluxDb client configuration.</param>
+        protected virtual void BootstrapInfluxDb_v_1_0_0(IInfluxDbClientConfiguration configuration)
+        {
+            _requestClient = new InfluxDbRequestClient_v_1_0_0(configuration);
         }
 
         /// <summary>

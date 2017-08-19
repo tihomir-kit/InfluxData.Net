@@ -7,6 +7,7 @@ using InfluxData.Net.InfluxDb.Constants;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
+using InfluxData.Net.Common.Helpers;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
@@ -29,11 +30,12 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 
         public virtual async Task<IInfluxDataApiResponse> PostAsync(WriteRequest writeRequest)
         {
-            var httpContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
             var requestParams = RequestParamsBuilder.BuildRequestParams(
                 writeRequest.DbName,
                 QueryParams.Precision, writeRequest.Precision,
-                QueryParams.RetentionPolicy, writeRequest.RetentionPolicy);
+                QueryParams.RetentionPolicy, writeRequest.RetentionPolicy
+            );
+            var httpContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");
 
             var result = await base.RequestAsync(HttpMethod.Post, RequestPaths.Write, requestParams, httpContent).ConfigureAwait(false);
 
@@ -42,12 +44,10 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 
         public virtual async Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(null, dbName, epochFormat, chunkSize);
+            var requestParams = RequestParamsBuilder.BuildRequestParams(dbName, epochFormat, chunkSize);
+            var httpContent = query.ToMultipartHttpContent(QueryParams.Query);
 
-            MultipartFormDataContent queryContent = new MultipartFormDataContent();
-            queryContent.Add(new StringContent(query), "q");
-
-            return await base.RequestAsync(method, RequestPaths.Query, requestParams, queryContent).ConfigureAwait(false);
+            return await base.RequestAsync(method, RequestPaths.Query, requestParams, httpContent).ConfigureAwait(false);
         }
 
         public virtual IPointFormatter GetPointFormatter()
