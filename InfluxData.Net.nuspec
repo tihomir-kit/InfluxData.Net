@@ -13,7 +13,10 @@
         <description>InfluxData.Net is a fast, portable .NET library to access the REST API of an InfluxDB database and Kapacitor processing tool.
 
 The library supports .Net Framework v4.6.1 and .Net Standard v2.0.</description>
-        <releaseNotes>Added support for .Net Standard v2.0.</releaseNotes>
+        <releaseNotes>Added support for .Net Standard v2.0.
+
+For a full list of changes, please see CHANGELOG:
+https://github.com/pootzko/InfluxData.Net/blob/master/CHANGELOG.md</releaseNotes>
         <tags>influx, influxdb, influxdata, kapacitor, TICK-stack</tags>
         <dependencies>
             <dependency id="Newtonsoft.Json" version="10.0.3" />
