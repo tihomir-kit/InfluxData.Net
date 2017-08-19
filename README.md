@@ -2,9 +2,11 @@ InfluxData.Net
 ============
 **Compatible with InfluxDB v1.0.0-beta and Kapacitor v1.0.0-beta API's**
 
-_NOTE: The library will most probably work just as fine with newer versions of the TICK stack as well but it hasn't been tested against them._
+_NOTE: The **library will most probably work just as fine with newer versions** of the TICK stack as well but it hasn't been tested against them._
 
 > InfluxData.Net is a portable .NET library to access the REST API of an [InfluxDB](https://influxdata.com/time-series-platform/influxdb/) database and [Kapacitor](https://influxdata.com/time-series-platform/kapacitor/) processing tool.
+
+**The library supports .Net Framework v4.6.1 and .Net Standard v2.0 (which implies .Net Core 2.0).**
 
 InfluxDB is the data storage layer in [InfluxData](https://influxdata.com/)'s [TICK stack](https://influxdata.com/get-started/#whats-the-tick-stack) which is an open-source end-to-end platform for managing time-series data at scale.
 
@@ -13,6 +15,7 @@ Kapacitor is a data processing engine. It can process both stream (subscribe rea
 Support for other TICK stack layers is also planned and will be implemented in the future when they become stable from InfluxData side.
 
 **Original Lib**
+
 This is a fork of [InfluxDb.Net](https://github.com/pootzko/InfluxDB.Net/), (which is in turn a fork of [InfluxDb.Net](https://github.com/ziyasal/InfluxDb.Net/)). Those NuGet libraries are only suitable for InfluxDB versions lower than v0.9.5.
 
 **Support for older versions**
