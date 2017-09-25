@@ -118,7 +118,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         protected virtual string[] SplitChunkedResponse(IInfluxDataApiResponse response)
         {
             //Split response body for individual chunks
-            return response.Body.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            return response.Body.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Replace(@"\\", "\a").Replace(@"\", string.Empty).Replace("\a", @"\")).ToArray();
         }
     }
 }
