@@ -9,6 +9,14 @@ using System.Net.Http;
 using InfluxData.Net.Common.Constants;
 using InfluxData.Net.Common.Infrastructure;
 
+
+#if DEBUG
+
+using InfluxData.Net.Common.Helpers;
+using System.Diagnostics;
+
+#endif
+
 namespace InfluxData.Net.Common.RequestClients
 {
     public abstract class RequestClientBase
