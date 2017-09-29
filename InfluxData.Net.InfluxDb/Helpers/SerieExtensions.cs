@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Models.Responses;
+using System.Reflection;
 
 namespace InfluxData.Net.InfluxDb.Helpers
 {
@@ -23,6 +24,53 @@ namespace InfluxData.Net.InfluxDb.Helpers
                 return default(T);
 
             return (T)(firstValue[serie.Columns.IndexOf(columnKey)]);
+        }
+
+        /// <summary>
+        /// Converts an ubiquitous enumeration of series to a strongly typed enumeration by matching property names.
+        /// </summary>
+        /// <typeparam name="T">Type to convert the enumeration of series to</typeparam>
+        /// <param name="series">Series to convert</param>
+        /// <returns>Strongly typed enumeration representing the series</returns>
+        public static IEnumerable<T> RecordsAs<T>(this IEnumerable<Serie> series)
+         where T : new()
+        {
+            if (series == null)
+                yield return default(T);
+
+            Type t = typeof(T);
+
+            foreach (var serie in series)
+            {
+                var properties = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).ToList();
+
+                var matchedProperties = serie.Columns
+                    .Select(columnName => properties.FirstOrDefault(
+                        property => string.Compare(property.Name, columnName, StringComparison.InvariantCultureIgnoreCase) == 0))
+                    .ToList();
+
+                var collection = new List<T>();
+                foreach (var value in serie.Values)
+                {
+                    var instance = new T();
+
+                    for (var columnIndex = 0; columnIndex < serie.Columns.Count(); columnIndex++)
+                    {
+                        var prop = matchedProperties[columnIndex];
+
+                        if (prop == null)
+                            continue;
+
+                        Type propType = prop.PropertyType;
+
+                        var convertedValue = Convert.ChangeType(value[columnIndex], prop.PropertyType);
+
+                        prop.SetValue(instance, convertedValue);
+                    }
+
+                    yield return instance;
+                }
+            }
         }
 
         /// <summary>
