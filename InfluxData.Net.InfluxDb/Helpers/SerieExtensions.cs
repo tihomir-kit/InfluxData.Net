@@ -49,7 +49,6 @@ namespace InfluxData.Net.InfluxDb.Helpers
                         property => string.Compare(property.Name, columnName, StringComparison.InvariantCultureIgnoreCase) == 0))
                     .ToList();
 
-                var collection = new List<T>();
                 foreach (var value in serie.Values)
                 {
                     var instance = new T();
