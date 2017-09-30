@@ -1,12 +1,11 @@
 ﻿using InfluxData.Net.InfluxDb.Models.Responses;
 using System.Collections.Generic;
-using InfluxData.Net.InfluxData.Helpers;
 using InfluxData.Net.InfluxDb.Helpers;
 using System;
 using System.Linq;
 using Xunit;
 
-namespace InfluxData.Net.Tests.InfluxDb.ResponseParsers
+namespace InfluxData.Net.Tests.InfluxDb.Helpers
 {
     [Trait("InfluxDb SerieExtensions", "Serie extensions")]
     public class SerieExtensionsTests
@@ -117,37 +116,8 @@ namespace InfluxData.Net.Tests.InfluxDb.ResponseParsers
 
             Assert.Throws(typeof(FormatException), () => series.RecordsAs<StronglyTypedSerie>().ToList());
         }
-
-        private IEnumerable<Serie> MockSeries(int amountOfSeries)
-        {
-            Random r = new Random();
-
-            for(var i = 0; i < amountOfSeries; i++)
-            {
-                var columns = new List<string> { "serialNumber", "cpuTemp" };
-
-                var randomTemp = r.NextDouble() * (30 - 60) + 30;
-                IList<IList<object>> values = new List<IList<object>>
-                {
-                    new List<object>
-                    {
-                        $"serialNumber1",
-                        randomTemp
-                    }
-                };
-
-                Serie serie = new Serie
-                {
-                    Name = "Example serie",
-                    Columns = new List<string> { "serialNumber", "value" },
-                    Values = values
-                };
-
-                yield return serie;
-            }
-        }
-
-        private class StronglyTypedSerie
+      
+        class StronglyTypedSerie
         {
             public string SerialNumber { get; set; }
             public double CpuTemp { get; set; }
