@@ -226,6 +226,38 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
+        public virtual async Task ClientQuery_Parameterized_OnExistingPoints_ShouldReturnSerieCollection()
+        {
+            var points = await _fixture.MockAndWritePoints(3);
+
+            var firstTag = points.First().Tags.First().Key;
+            var firstTagValue = points.First().Tags.First().Value;
+
+            var firstField = points.First().Fields.First().Key;
+            var firstFieldValue = points.First().Fields.First().Value;
+
+            var query = $"SELECT * FROM {points.First().Name} " +
+                        $@"WHERE {firstTag} = '@FirstTagValueParam' " +
+                        $@"AND {firstField} = @FirstFieldValueParam";
+
+
+            var result = await _fixture.Sut.Client.QueryAsync(
+                query,
+                new
+                {
+                    @FirstTagValueParam = firstTagValue,
+                    @FirstFieldValueParam = firstFieldValue
+                }, _fixture.DbName);
+
+            var t = result.First();
+
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Name.Should().Be(points.First().Name);
+            result.First().Values.Should().HaveCount(1);
+        }
+
+        [Fact]
         public virtual async Task ClientQueryMultiple_OnExistingPoints_ShouldReturnSerieCollection()
         {
             var points = await _fixture.MockAndWritePoints(5, 2);
