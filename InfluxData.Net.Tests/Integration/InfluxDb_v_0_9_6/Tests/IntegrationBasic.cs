@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.Threading.Tasks;
+using Xunit;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
@@ -8,6 +9,12 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
     {
         public IntegrationBasic_v_0_9_6(IntegrationFixture_v_0_9_6 fixture) : base(fixture)
         {
+        }
+
+        [Fact(Skip = "Test not applicable for this InfluxDB version")]
+        public override Task ClientWrite_OnWhitespaceInFieldValue_ShouldNotSaveEscapedWhitespace()
+        {
+            return null;
         }
     }
 }

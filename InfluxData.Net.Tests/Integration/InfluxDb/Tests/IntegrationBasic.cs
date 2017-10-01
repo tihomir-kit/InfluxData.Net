@@ -348,5 +348,36 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
 
             actual.Should().Be(expected);
         }
+
+        //[Fact]
+        //public virtual async Task ClientWrite_OnWhitespaceInFieldValue_ShouldNotSaveEscapedWhitespace()
+        //{
+        //    var fieldName = "field_with_whitespace";
+        //    var fieldValue = "some value with whitespace";
+
+        //    var point = new Point
+        //    {
+        //        Name = "test",
+        //        Fields = new Dictionary<string, object>
+        //        {
+        //            { fieldName, fieldValue },
+        //        },
+        //        Timestamp = DateTime.UtcNow
+        //    };
+        //    var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName);
+
+        //    writeResponse.Success.Should().BeTrue();
+
+        //    await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
+        //    var query = String.Format("select * from {0}", point.Name);
+        //    var result = await _fixture.Sut.Client.QueryAsync(query, _fixture.DbName);
+
+        //    result.Count().Should().Be(1);
+        //    var serie = result.First();
+        //    var fwwIndex = serie.Columns.IndexOf(fieldName);
+        //    var fwwValue = serie.Values.First()[fwwIndex];
+
+        //    fwwValue.Should().Be(fieldValue);
+        //}
     }
 }
