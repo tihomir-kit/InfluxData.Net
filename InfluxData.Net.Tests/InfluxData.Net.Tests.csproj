@@ -32,4 +32,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="InfluxDb\Helpers\" />
+  </ItemGroup>
 </Project>
