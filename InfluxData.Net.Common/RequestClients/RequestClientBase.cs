@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using InfluxData.Net.Common.Constants;
 using InfluxData.Net.Common.Infrastructure;
+using System.Diagnostics;
+using InfluxData.Net.Common.Helpers;
 
 namespace InfluxData.Net.Common.RequestClients
 {
