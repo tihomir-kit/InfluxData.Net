@@ -11,6 +11,14 @@ using InfluxData.Net.Common.Infrastructure;
 using System.Diagnostics;
 using InfluxData.Net.Common.Helpers;
 
+
+#if DEBUG
+
+using InfluxData.Net.Common.Helpers;
+using System.Diagnostics;
+
+#endif
+
 namespace InfluxData.Net.Common.RequestClients
 {
     public abstract class RequestClientBase
