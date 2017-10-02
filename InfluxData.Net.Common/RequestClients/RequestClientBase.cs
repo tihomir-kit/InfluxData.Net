@@ -139,7 +139,6 @@ namespace InfluxData.Net.Common.RequestClients
             var request = new HttpRequestMessage(method, urlBuilder.ToString());
             request.Headers.Add("User-Agent", _userAgent);
             request.Headers.Add("Accept", "application/json");
-
             request.Content = content;
 
             return request;
