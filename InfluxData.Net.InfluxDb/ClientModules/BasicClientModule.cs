@@ -7,12 +7,21 @@ using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
 using InfluxData.Net.Common.Constants;
+using InfluxData.Net.InfluxDb.Helpers;
+using System;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
     public class BasicClientModule : ClientModuleBase, IBasicClientModule
     {
         private readonly IBasicResponseParser _basicResponseParser;
+
+        public Task<IEnumerable<Serie>> QueryAsync(string query, object param = null, string dbName = null, string epochFormat = null, long? chunkSize = default(long?))
+        {
+            var buildQuery = QueryHelpers.BuildParameterizedQuery(query, param);
+
+            return this.QueryAsync(buildQuery, dbName, epochFormat, chunkSize);
+        }
 
         public virtual async Task<IEnumerable<Serie>> QueryAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
