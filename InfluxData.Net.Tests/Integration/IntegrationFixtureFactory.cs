@@ -24,7 +24,7 @@ namespace InfluxData.Net.Integration.Kapacitor
 
         public bool VerifyAll { get; set; }
 
-        protected IntegrationFixtureFactory(string fakeDbPrefix, string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion)
+        protected IntegrationFixtureFactory(string fakeDbPrefix, string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion, bool throwOnWarning)
         {
             Debug.WriteLine(influxDbEndpointUriKey);
             _fakeDbPrefix = fakeDbPrefix;
@@ -36,7 +36,7 @@ namespace InfluxData.Net.Integration.Kapacitor
                 ConfigurationManager.Get("InfluxSettings:InfluxDbUsername"),
                 ConfigurationManager.Get("InfluxSettings:InfluxDbPassword"),
                 influxDbVersion, 
-                throwOnWarning: false);
+                throwOnWarning: throwOnWarning);
 
             Task.Run(() => this.PurgeFakeDatabases()).Wait();
             Task.Run(() => this.CreateEmptyDatabase()).Wait();

@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using FluentAssertions;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
@@ -8,6 +10,21 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
     {
         public IntegrationContinuousQueries_v_1_0_0(IntegrationFixture_v_1_0_0 fixture) : base(fixture)
         {
+        }
+
+        [Fact]
+        public virtual async Task DeleteContinuousQuery_OnNonExistingCq_ShouldNotThrow()
+        {
+            var result = await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "nonexistingcqname");
+
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
+        }
+
+        [Fact(Skip = "Test not applicable for this InfluxDB version")]
+        public override async Task DeleteContinuousQuery_OnNonExistingCq_ShouldThrow()
+        {
+            return;
         }
     }
 }

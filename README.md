@@ -169,7 +169,7 @@ The `Client.QueryAsync` can be used to execute any officially supported [InfluxD
 
 ```cs
 var query = "SELECT * FROM reading WHERE time > now() - 1h";
-var response = await influxDbClient.Client.QueryAsync(query, "yourDbName");
+var response = await influxDbClient.Client.QueryAsync(query, "yourDbName"[, epochFormat = null][, ]);
 ```
 
 The second `QueryAsync` overload will return the result of [multiple queries](https://docs.influxdata.com/influxdb/v0.9/guides/querying_data/) executed at once. The response will be a _flattened_ collection of multi-results series. This means that the resulting series from all queries will be extracted into a single collection. This has been implemented to make it easier on the developer in case he is querying the same measurement with different params multiple times at once.
@@ -183,7 +183,7 @@ var queries = new []
 var response = await influxDbClient.Client.QueryAsync(queries, "yourDbName");
 ```
 
-#### QueryChunkedAsync
+#### Chunked QueryAsync and MultiQueryAsync
 
 Check the usage [here](https://github.com/pootzko/InfluxData.Net/pull/39#issuecomment-287722949).
 
