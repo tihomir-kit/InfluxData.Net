@@ -99,7 +99,7 @@ namespace InfluxData.Net.InfluxDb
             switch (configuration.InfluxVersion)
             {
                 case InfluxDbVersion.Latest:
-                case InfluxDbVersion.v_1_3_0:
+                case InfluxDbVersion.v_1_3:
                     this.BootstrapInfluxDbLatest(configuration);
                     break;
                 case InfluxDbVersion.v_1_0_0:
