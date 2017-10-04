@@ -27,14 +27,14 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public virtual void Formatter_OnGetLineTemplate_ShouldFormatPoint()
+        public virtual void Formatter_ShouldFormatPointProperly()
         {
             const string value = @"\=&,""*"" -";
             const string seriesName = @"x";
             const string tagName = @"tag_string";
             const string escapedTagValue = @"\\=&\,""*""\ -";
             const string fieldName = @"field_string";
-            const string escapedFieldValue = @"\\\=&\,\""*\""\ -";
+            const string escapedFieldValue = @"\=&,""*"" -";
             var dt = DateTime.Now;
 
             var point = new Point
@@ -52,10 +52,10 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             };
 
             var formatter = _fixture.Sut.RequestClient.GetPointFormatter();
-            var expected = String.Format(formatter.GetLineTemplate(),
-                /* key */ seriesName + "," + tagName + "=" + escapedTagValue,
-                /* fields */ fieldName + "=" + "\"" + escapedFieldValue + "\"",
-                /* timestamp */ dt.ToUnixTime());
+
+            var expected = $"{seriesName},{tagName}={escapedTagValue} " + // key
+                           $"{fieldName}=\"{escapedFieldValue}\" " +      // fields
+                           $"{dt.ToUnixTime()}";                          // timestamp
 
             var actual = formatter.PointToString(point);
 
@@ -72,29 +72,6 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             writeResponse.Success.Should().BeTrue();
             await _fixture.EnsureValidPointCount(points.First().Name, points.First().Fields.First().Key, 5);
             await _fixture.EnsurePointExists(points.ToArray()[2]);
-        }
-
-        /// <see cref="https://github.com/pootzko/InfluxData.Net/issues/26"/>
-        [Fact]
-        public virtual async Task ClientWrite_OnBackslashInPointField_ShouldWriteSuccessfully()
-        {
-            var point = new Point
-            {
-                Name = "test",
-                Fields = new Dictionary<string, object>
-                {
-                    { "test", @"backslash\" },
-                },
-                Timestamp = DateTime.UtcNow
-            };
-
-            var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName);
-
-            writeResponse.Success.Should().BeTrue();
-            await Task.Delay(1000); // Without this, the test often fails because Influx doesn't flush the new point fast enough
-            await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
-            var serie = await _fixture.EnsurePointExists(point);
-            serie.Values[0][1].Should().Be(point.Fields.First().Value);
         }
 
         [Fact]
@@ -384,32 +361,32 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         [Fact]
         public virtual async Task ClientWrite_OnWhitespaceInFieldValue_ShouldNotSaveEscapedWhitespace()
         {
-            //var fieldName = "field_with_whitespace";
-            //var fieldValue = "some value with whitespace";
+            var fieldName = "field_with_whitespace";
+            var fieldValue = "some value with whitespace";
 
-            //var point = new Point
-            //{
-            //    Name = "test",
-            //    Fields = new Dictionary<string, object>
-            //    {
-            //        { fieldName, fieldValue },
-            //    },
-            //    Timestamp = DateTime.UtcNow
-            //};
-            //var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName);
+            var point = new Point
+            {
+                Name = "whitespaceEscapeTest",
+                Fields = new Dictionary<string, object>
+                {
+                    { fieldName, fieldValue },
+                },
+                Timestamp = DateTime.UtcNow
+            };
+            var writeResponse = await _fixture.Sut.Client.WriteAsync(point, _fixture.DbName);
 
-            //writeResponse.Success.Should().BeTrue();
+            writeResponse.Success.Should().BeTrue();
 
-            //await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
-            //var query = String.Format("select * from {0}", point.Name);
-            //var result = await _fixture.Sut.Client.QueryAsync(query, _fixture.DbName);
+            await _fixture.EnsureValidPointCount(point.Name, point.Fields.First().Key, 1);
+            var query = String.Format("select * from {0}", point.Name);
+            var result = await _fixture.Sut.Client.QueryAsync(query, _fixture.DbName);
 
-            //result.Count().Should().Be(1);
-            //var serie = result.First();
-            //var fwwIndex = serie.Columns.IndexOf(fieldName);
-            //var fwwValue = serie.Values.First()[fwwIndex];
+            result.Count().Should().Be(1);
+            var serie = result.First();
+            var fwwIndex = serie.Columns.IndexOf(fieldName);
+            var fwwValue = serie.Values.First()[fwwIndex];
 
-            //fwwValue.Should().Be(fieldValue);
+            fwwValue.Should().Be(fieldValue);
         }
     }
 }

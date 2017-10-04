@@ -23,8 +23,8 @@ namespace InfluxData.Net.Tests
                        $"AND {firstField} = @FirstFieldValue";
 
             var expectedNewQuery = "SELECT * FROM fakeMeasurement " +
-                                   $"WHERE {firstTag} = {firstTagValue} " +
-                                   $"AND {firstField} = {firstFieldValue}";
+                                  $"WHERE {firstTag} = {firstTagValue} " +
+                                  $"AND {firstField} = {firstFieldValue}";
 
             var actualNewQuery = QueryHelpers.BuildParameterizedQuery(
             query,
