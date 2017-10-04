@@ -31,7 +31,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return series;
         }
 
-        public virtual async Task<IEnumerable<Serie>> QueryAsync(string query, object parameters = null, string dbName = null, string epochFormat = null, long? chunkSize = default(long?))
+        public virtual async Task<IEnumerable<Serie>> QueryAsync(string query, object parameters = null, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
             var buildQuery = QueryExtensions.BuildParameterizedQuery(query, parameters);
 
