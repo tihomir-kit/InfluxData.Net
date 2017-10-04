@@ -1,27 +1,24 @@
-﻿using System;
-using System.Reflection;
+﻿using InfluxData.Net.Common;
+using System;
 using System.Text.RegularExpressions;
-using InfluxData.Net.Common;
-using System.Linq;
 
 namespace InfluxData.Net.InfluxDb.Helpers
 {
-    public static class QueryHelpers
+    public static class QueryExtensions
     {
-        public static string BuildParameterizedQuery(string query, object param)
+        public static string BuildParameterizedQuery(string query, object parameters)
         {
-            Type t = param.GetType();
-            PropertyInfo[] pi = t.GetProperties();
+            var type = parameters.GetType();
+            var properties = type.GetProperties();
 
-
-            foreach (var propertyInfo in pi)
+            foreach (var propertyInfo in properties)
             {
                 var regex = $@"@{propertyInfo.Name}(?!\w)";
 
                 if(!Regex.IsMatch(query, regex) && Nullable.GetUnderlyingType(propertyInfo.GetType()) != null)
                     throw new ArgumentException($"Missing parameter identifier for @{propertyInfo.Name}");
 
-                var paramValue = propertyInfo.GetValue(param);
+                var paramValue = propertyInfo.GetValue(parameters);
                 if (paramValue == null)
                     continue;
 

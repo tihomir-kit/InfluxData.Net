@@ -6,11 +6,11 @@ using Xunit;
 
 namespace InfluxData.Net.Tests
 {
-    [Trait("InfluxDb SerieExtensions", "Serie extensions")]
-    public class QueryHelpersTests
+    [Trait("InfluxDb Helpers", "Query extensions")]
+    public class QueryExtensionsTests
     {
         [Fact]
-        public void Building_Parameterized_Query_Returns_Correct_String()
+        public void BuildingParameterizedQuery_OnEverythingValid_ReturnsCorrectString()
         {
             var firstTag = "firstTag";
             var firstTagValue = "firstTagValue";
@@ -26,20 +26,20 @@ namespace InfluxData.Net.Tests
                                   $"WHERE {firstTag} = {firstTagValue} " +
                                   $"AND {firstField} = {firstFieldValue}";
 
-            var actualNewQuery = QueryHelpers.BuildParameterizedQuery(
-            query,
-                new
-                {
-                    @FirstTagValue = firstTagValue,
-                    @FirstFieldValue = firstFieldValue
-                });
+            var param = new
+            {
+                @FirstTagValue = firstTagValue,
+                @FirstFieldValue = firstFieldValue
+            };
+
+            var actualNewQuery = QueryExtensions.BuildParameterizedQuery(query, param);
 
             Assert.Equal(expectedNewQuery, actualNewQuery);
         }
 
 
         [Fact]
-        public void Using_Non_Primitive_And_Non_String_Type_In_Parameters_Throws_NotSupportedException()
+        public void BuildingParameterizedQuery_UsingNonPrimitiveAndNonStringTypeParams_ThrowsNotSupportedException()
         {
             var firstTag = "firstTag";
             var firstTagValue = "firstTagValue";
@@ -50,22 +50,21 @@ namespace InfluxData.Net.Tests
                        $"WHERE {firstTag} = @FirstTagValue " +
                        $"AND {firstField} = @FirstFieldValue";
 
-            Func<string> func = new Func<string>(() =>
+            var param = new
             {
-                return QueryHelpers.BuildParameterizedQuery(
-                query,
-                new
-                {
-                    @FirstTagValue = firstTagValue,
-                    @FirstFieldValue = new List<string>() { "NOT ACCEPTED" }
-                });
-            });
+                @FirstTagValue = firstTagValue,
+                @FirstFieldValue = new List<string>() { "NOT ACCEPTED" }
+            };
 
-            Assert.Throws(typeof(NotSupportedException), func);
+            Func<string> act = () => { return QueryExtensions.BuildParameterizedQuery(query, param); };
+
+            // act.ShouldThrow<NotSupportedException>();
+
+            Assert.Throws(typeof(NotSupportedException), act);
         }
 
         [Fact]
-        public void Building_Parameterized_Query_With_Missing_Parameters_Throws_ArgumentException()
+        public void BuildingParameterizedQuery_WithMissingParameters_ThrowsArgumentException()
         {
             var firstTag = "firstTag";
             var firstTagValue = "firstTagValue";
@@ -76,17 +75,14 @@ namespace InfluxData.Net.Tests
                        $"WHERE {firstTag} = @FirstTagValue " +
                        $"AND {firstField} = @FirstFieldValue";
 
-            Func<string> func = new Func<string>(() =>
+            var param = new
             {
-                return QueryHelpers.BuildParameterizedQuery(
-                query,
-                new
-                {
-                    @FirstTagValue = firstTagValue
-                });
-            });
+                @FirstTagValue = firstTagValue
+            };
 
-            Assert.Throws(typeof(ArgumentException), func);
+            Func<string> act = () => { return QueryExtensions.BuildParameterizedQuery(query, param); };
+
+            Assert.Throws(typeof(ArgumentException), act);
         }
     }
 }

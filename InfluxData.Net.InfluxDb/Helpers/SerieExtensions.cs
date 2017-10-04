@@ -32,21 +32,20 @@ namespace InfluxData.Net.InfluxDb.Helpers
         /// <typeparam name="T">Type to convert the enumeration of series to</typeparam>
         /// <param name="series">Series to convert</param>
         /// <returns>Strongly typed enumeration representing the series</returns>
-        public static IEnumerable<T> RecordsAs<T>(this IEnumerable<Serie> series)
-         where T : new()
+        public static IEnumerable<T> As<T>(this IEnumerable<Serie> series) where T : new()
         {
             if (series == null)
                 yield return default(T);
 
-            Type t = typeof(T);
+            Type type = typeof(T);
 
             foreach (var serie in series)
             {
-                var properties = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).ToList();
+                var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public).ToList();
 
                 var matchedProperties = serie.Columns
                     .Select(columnName => properties.FirstOrDefault(
-                        property => string.Compare(property.Name, columnName, StringComparison.InvariantCultureIgnoreCase) == 0))
+                        property => String.Compare(property.Name, columnName, StringComparison.InvariantCultureIgnoreCase) == 0))
                     .ToList();
 
                 foreach (var value in serie.Values)
@@ -82,6 +81,7 @@ namespace InfluxData.Net.InfluxDb.Helpers
         {
             var serie = series.FirstOrDefault(p => p.Name == name);
             Validate.IsNotNull(serie, String.Format("serie.GetByName('{0}')", name));
+
             return serie;
         }
     }

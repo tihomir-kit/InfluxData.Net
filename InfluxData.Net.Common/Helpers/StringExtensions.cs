@@ -10,13 +10,13 @@ namespace InfluxData.Net.Common
         {
             if (null == stringValue)
                 return stringValue;
-            return stringValue
-                        .RegexReplace("-{2,}", "-")
-                        .RegexReplace(@"[*/]+", string.Empty)
-                        .RegexReplace(@"(;|\s)(exec|execute|select|insert|update|delete|create|alter|drop|rename|truncate|backup|restore)\s", 
-                                      string.Empty, RegexOptions.IgnoreCase);
-        }
 
+            return stringValue
+                .RegexReplace("-{2,}", "-")
+                .RegexReplace(@"[*/]+", String.Empty)
+                .RegexReplace(@"(;|\s)(exec|execute|select|insert|update|delete|create|alter|drop|rename|truncate|backup|restore)\s", 
+                    String.Empty, RegexOptions.IgnoreCase);
+        }
 
         private static string RegexReplace(this string stringValue, string matchPattern, string toReplaceWith)
         {

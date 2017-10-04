@@ -16,13 +16,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
     {
         private readonly IBasicResponseParser _basicResponseParser;
 
-        public Task<IEnumerable<Serie>> QueryAsync(string query, object param = null, string dbName = null, string epochFormat = null, long? chunkSize = default(long?))
-        {
-            var buildQuery = QueryHelpers.BuildParameterizedQuery(query, param);
-
-            return this.QueryAsync(buildQuery, dbName, epochFormat, chunkSize);
-        }
-
         public virtual async Task<IEnumerable<Serie>> QueryAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
             var series = await base.ResolveSingleGetSeriesResultAsync(query, dbName, epochFormat, chunkSize).ConfigureAwait(false);
@@ -36,6 +29,13 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var series = _basicResponseParser.FlattenResultsSeries(results);
 
             return series;
+        }
+
+        public virtual async Task<IEnumerable<Serie>> QueryAsync(string query, object parameters = null, string dbName = null, string epochFormat = null, long? chunkSize = default(long?))
+        {
+            var buildQuery = QueryExtensions.BuildParameterizedQuery(query, parameters);
+
+            return await this.QueryAsync(buildQuery, dbName, epochFormat, chunkSize);
         }
 
         public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(IEnumerable<string> queries, string dbName = null, string epochFormat = null, long? chunkSize = null)

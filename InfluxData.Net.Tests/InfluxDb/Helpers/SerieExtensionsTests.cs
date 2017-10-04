@@ -4,13 +4,13 @@ using InfluxData.Net.InfluxDb.Helpers;
 using System;
 using System.Linq;
 using Xunit;
+using FluentAssertions;
 
 namespace InfluxData.Net.Tests.InfluxDb.Helpers
 {
-    [Trait("InfluxDb SerieExtensions", "Serie extensions")]
+    [Trait("InfluxDb Helpers", "Serie extensions")]
     public class SerieExtensionsTests
     {
-
         [Fact]
         public void Can_Convert_Ubiquitous_Series_To_Strongly_Typed_Collection()
         {
@@ -20,16 +20,16 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             var firstCpuTemp = 54.14;
             var secondCpuTemp = 23.54;
 
-            IList<IList<object>> firstValues = new List<IList<object>>
+            var firstValues = new List<IList<object>>
+            {
+                new List<object>
                 {
-                    new List<object>
-                    {
-                        firstSerialNumber,
-                        firstCpuTemp
-                    }
-                };
+                    firstSerialNumber,
+                    firstCpuTemp
+                }
+            };
 
-            Serie firstSerie = new Serie
+            var firstSerie = new Serie
             {
                 Name = "Example serie",
                 Columns = new List<string> { "serialNumber", "cpuTemp" },
@@ -37,16 +37,16 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             };
 
 
-            IList<IList<object>> secondValues = new List<IList<object>>
+            var secondValues = new List<IList<object>>
+            {
+                new List<object>
                 {
-                    new List<object>
-                    {
-                        secondSerialNumber,
-                        secondCpuTemp
-                    }
-                };
+                    secondSerialNumber,
+                    secondCpuTemp
+                }
+            };
 
-            Serie secondSerie = new Serie
+            var secondSerie = new Serie
             {
                 Name = "Example serie",
                 Columns = new List<string> { "serialNumber", "cpuTemp" },
@@ -54,14 +54,14 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             };
 
 
-            List<Serie> series = new List<Serie>
+            var series = new List<Serie>
             {
                 firstSerie,
                 secondSerie
             };
 
 
-            var stronglyTyped = series.RecordsAs<StronglyTypedSerie>();
+            var stronglyTyped = series.As<StronglyTypedSerie>();
 
             var expectedNumberOfConvertedValues = 2;
             var actualNumberOfConvertedValues = stronglyTyped.Count();
@@ -78,11 +78,11 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             var expectedCpuTempOfLastStronglyTypedObject = secondCpuTemp;
             var actualCpuTempOfLastStronglyTypedOject = stronglyTyped.Last().CpuTemp;
 
-            Assert.Equal(expectedNumberOfConvertedValues, actualNumberOfConvertedValues);
-            Assert.Equal(expectedSerialNumberOfFirstStronglyTypedObject, actualSerialNumberOfFirstStronglyTypedObject);
-            Assert.Equal(expectedSerialNumberOfLastStronglyTypedObject, actualSerialNumberOfLastStronglyTypedOject);
-            Assert.Equal(expectedCpuTempOfFirstStronglyTypedObject, actualCpuTempOfFirstStronglyTypedObject);
-            Assert.Equal(expectedCpuTempOfLastStronglyTypedObject, actualCpuTempOfLastStronglyTypedOject);
+            expectedNumberOfConvertedValues.Should().Be(actualNumberOfConvertedValues);
+            expectedSerialNumberOfFirstStronglyTypedObject.Should().Be(actualSerialNumberOfFirstStronglyTypedObject);
+            expectedSerialNumberOfLastStronglyTypedObject.Should().Be(actualSerialNumberOfLastStronglyTypedOject);
+            expectedCpuTempOfFirstStronglyTypedObject.Should().Be(actualCpuTempOfFirstStronglyTypedObject);
+            expectedCpuTempOfLastStronglyTypedObject.Should().Be(actualCpuTempOfLastStronglyTypedOject);
         }
 
         [Fact]
@@ -92,16 +92,16 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
 
             var firstCpuTemp = "THIS CANNOT BE CONVERTED TO A DOUBLE";
 
-            IList<IList<object>> firstValues = new List<IList<object>>
+            var firstValues = new List<IList<object>>
+            {
+                new List<object>
                 {
-                    new List<object>
-                    {
-                        firstSerialNumber,
-                        firstCpuTemp
-                    }
-                };
+                    firstSerialNumber,
+                    firstCpuTemp
+                }
+            };
 
-            Serie firstSerie = new Serie
+            var firstSerie = new Serie
             {
                 Name = "Example serie",
                 Columns = new List<string> { "serialNumber", "cpuTemp" },
@@ -109,15 +109,15 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             };
 
 
-            List<Serie> series = new List<Serie>
+            var series = new List<Serie>
             {
                 firstSerie
             };
 
-            Assert.Throws(typeof(FormatException), () => series.RecordsAs<StronglyTypedSerie>().ToList());
+            Assert.Throws(typeof(FormatException), () => series.As<StronglyTypedSerie>().ToList());
         }
       
-        class StronglyTypedSerie
+        private class StronglyTypedSerie
         {
             public string SerialNumber { get; set; }
             public double CpuTemp { get; set; }
