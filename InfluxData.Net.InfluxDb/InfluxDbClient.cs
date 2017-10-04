@@ -129,7 +129,7 @@ namespace InfluxData.Net.InfluxDb
         /// <param name="configuration">InfluxDb client configuration.</param>
         protected virtual void BootstrapInfluxDbLatest(IInfluxDbClientConfiguration configuration)
         {
-            _requestClient = new InfluxDbRequestClient_v_1_0_0(configuration);
+            _requestClient = new InfluxDbRequestClient(configuration);
 
             // NOTE: once a breaking change occures, QueryBuilders will need to be resolved with factories
             _serieQueryBuilder = new Lazy<ISerieQueryBuilder>(() => new SerieQueryBuilder(), true);
