@@ -6,7 +6,13 @@ namespace InfluxData.Net.InfluxDb.Helpers
 {
     public static class QueryExtensions
     {
-        public static string BuildParameterizedQuery(string query, object parameters)
+        /// <summary>
+        /// Builds a parametarized query from a query template and parameters object (uses reflection).
+        /// </summary>
+        /// <param name="queryTemplate">Query template to use.</param>
+        /// <param name="parameters">Dynamic parameters object.</param>
+        /// <returns>Full query.</returns>
+        public static string BuildQuery(this string queryTemplate, object parameters)
         {
             var type = parameters.GetType();
             var properties = type.GetProperties();
@@ -15,7 +21,7 @@ namespace InfluxData.Net.InfluxDb.Helpers
             {
                 var regex = $@"@{propertyInfo.Name}(?!\w)";
 
-                if(!Regex.IsMatch(query, regex) && Nullable.GetUnderlyingType(propertyInfo.GetType()) != null)
+                if(!Regex.IsMatch(queryTemplate, regex) && Nullable.GetUnderlyingType(propertyInfo.GetType()) != null)
                     throw new ArgumentException($"Missing parameter identifier for @{propertyInfo.Name}");
 
                 var paramValue = propertyInfo.GetValue(parameters);
@@ -34,16 +40,16 @@ namespace InfluxData.Net.InfluxDb.Helpers
                     sanitizedParamValue = ((string)sanitizedParamValue).Sanitize();
                 }
 
-                while (Regex.IsMatch(query, regex))
+                while (Regex.IsMatch(queryTemplate, regex))
                 {
-                    var match = Regex.Match(query, regex);
+                    var match = Regex.Match(queryTemplate, regex);
 
-                    query = query.Remove(match.Index, match.Length);
-                    query = query.Insert(match.Index, $"{sanitizedParamValue}");
+                    queryTemplate = queryTemplate.Remove(match.Index, match.Length);
+                    queryTemplate = queryTemplate.Insert(match.Index, $"{sanitizedParamValue}");
                 }
             }
 
-            return query;
+            return queryTemplate;
         }
     }
 }

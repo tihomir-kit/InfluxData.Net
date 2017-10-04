@@ -36,13 +36,13 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// Executes a parameterized query against the database. If chunkSize is specified, responses 
         /// will be broken down by number of returned rows. 
         /// </summary>
-        /// <param name="query">Query to execute.</param>
-        /// <param name="parameters">The parameters to pass, if any. (OPTIONAL)</param>
+        /// <param name="queryTemplate">Query template to use to build a full query using params.</param>
+        /// <param name="parameters">The parameters to pass, if any.</param>
         /// <param name="dbName">Database name. (OPTIONAL)</param>
         /// <param name="epochFormat">Epoch timestamp format. (OPTIONAL)</param>
         /// <param name="chunkSize">Maximum number of rows per chunk. (OPTIONAL)</param>
         /// <returns></returns>
-        Task<IEnumerable<Serie>> QueryAsync(string query, object parameters = null, string dbName = null, string epochFormat = null, long? chunkSize = null);
+        Task<IEnumerable<Serie>> QueryAsync(string queryTemplate, object parameters, string dbName = null, string epochFormat = null, long? chunkSize = null);
 
         /// <summary>
         /// Executes multiple queries against the database in a single request. If chunkSize is specified, responses 

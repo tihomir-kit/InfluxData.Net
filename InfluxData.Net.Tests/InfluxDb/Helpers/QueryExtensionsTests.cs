@@ -10,7 +10,7 @@ namespace InfluxData.Net.Tests
     public class QueryExtensionsTests
     {
         [Fact]
-        public void BuildingParameterizedQuery_OnEverythingValid_ReturnsCorrectString()
+        public void BuildQuery_OnEverythingValid_ReturnsCorrectString()
         {
             var firstTag = "firstTag";
             var firstTagValue = "firstTagValue";
@@ -18,7 +18,7 @@ namespace InfluxData.Net.Tests
             var firstField = "firstField";
             var firstFieldValue = "firstFieldValue";
 
-            var query = "SELECT * FROM fakeMeasurement " +
+            var queryTemplate = "SELECT * FROM fakeMeasurement " +
                        $"WHERE {firstTag} = @FirstTagValue " +
                        $"AND {firstField} = @FirstFieldValue";
 
@@ -32,55 +32,53 @@ namespace InfluxData.Net.Tests
                 @FirstFieldValue = firstFieldValue
             };
 
-            var actualNewQuery = QueryExtensions.BuildParameterizedQuery(query, param);
+            var actualNewQuery = queryTemplate.BuildQuery(param);
 
             Assert.Equal(expectedNewQuery, actualNewQuery);
         }
 
 
         [Fact]
-        public void BuildingParameterizedQuery_UsingNonPrimitiveAndNonStringTypeParams_ThrowsNotSupportedException()
+        public void BuildQuery_UsingNonPrimitiveAndNonStringTypeParams_ThrowsNotSupportedException()
         {
             var firstTag = "firstTag";
             var firstTagValue = "firstTagValue";
 
             var firstField = "firstField";
 
-            var query = "SELECT * FROM fakeMeasurement " +
+            var queryTemplate = "SELECT * FROM fakeMeasurement " +
                        $"WHERE {firstTag} = @FirstTagValue " +
                        $"AND {firstField} = @FirstFieldValue";
 
-            var param = new
+            var parameters = new
             {
                 @FirstTagValue = firstTagValue,
                 @FirstFieldValue = new List<string>() { "NOT ACCEPTED" }
             };
 
-            Func<string> act = () => { return QueryExtensions.BuildParameterizedQuery(query, param); };
-
-            // act.ShouldThrow<NotSupportedException>();
+            Func<string> act = () => { return queryTemplate.BuildQuery(parameters); };
 
             Assert.Throws(typeof(NotSupportedException), act);
         }
 
         [Fact]
-        public void BuildingParameterizedQuery_WithMissingParameters_ThrowsArgumentException()
+        public void BuildQuery_WithMissingParameters_ThrowsArgumentException()
         {
             var firstTag = "firstTag";
             var firstTagValue = "firstTagValue";
 
             var firstField = "firstField";
 
-            var query = "SELECT * FROM fakeMeasurement " +
+            var queryTemplate = "SELECT * FROM fakeMeasurement " +
                        $"WHERE {firstTag} = @FirstTagValue " +
                        $"AND {firstField} = @FirstFieldValue";
 
-            var param = new
+            var parameters = new
             {
                 @FirstTagValue = firstTagValue
             };
 
-            Func<string> act = () => { return QueryExtensions.BuildParameterizedQuery(query, param); };
+            Func<string> act = () => { return queryTemplate.BuildQuery(parameters); };
 
             Assert.Throws(typeof(ArgumentException), act);
         }

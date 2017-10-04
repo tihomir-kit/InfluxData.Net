@@ -12,7 +12,7 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
     public class SerieExtensionsTests
     {
         [Fact]
-        public void Can_Convert_Ubiquitous_Series_To_Strongly_Typed_Collection()
+        public void SeriesAs_OnRightParams_ConvertsUbiquitousSeriesToStronglyTypedCollection()
         {
             var firstSerialNumber = "F6A2B2C5E1A6";
             var secondSerialNumber = "A2B4C2F5D3D1";
@@ -86,7 +86,7 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
         }
 
         [Fact]
-        public void Trying_To_Convert_With_Invalid_Format_Throws_Exception()
+        public void SeriesAs_OnInvalidFormat_ThrowsException()
         {
             var firstSerialNumber = "F6A2B2C5E1A6";
 
