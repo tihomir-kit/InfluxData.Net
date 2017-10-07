@@ -18,6 +18,8 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
 
         public InfluxDbVersion InfluxVersion { get; private set; }
 
+        public QueryLocation QueryLocation { get; private set; }
+
         public HttpClient HttpClient { get; private set; }
 
         /// <summary>
@@ -27,9 +29,17 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
         /// <param name="username">InfluxDb server username.</param>
         /// <param name="password">InfluxDb server password.</param>
         /// <param name="influxVersion">InfluxDb server version.</param>
+        /// <param name="queryLocation">Where queries are located in the request (URI params vs. Form Data) (optional).</param>
         /// <param name="httpClient">Custom HttpClient object (optional).</param>
-        /// <param name="throwOnWarning">Should throw exception upon InfluxDb warning message (for debugging).</param>
-        public InfluxDbClientConfiguration(Uri endpointUri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null, bool throwOnWarning = false)
+        /// <param name="throwOnWarning">Should throw exception upon InfluxDb warning message (for debugging) (optional).</param>
+        public InfluxDbClientConfiguration(
+            Uri endpointUri, 
+            string username, 
+            string password, 
+            InfluxDbVersion influxVersion,
+            QueryLocation queryLocation = QueryLocation.FormData,
+            HttpClient httpClient = null, 
+            bool throwOnWarning = false)
         {
             Validate.IsNotNull(endpointUri, "Endpoint may not be null or empty.");
 
@@ -37,6 +47,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             Username = username;
             Password = password;
             InfluxVersion = influxVersion;
+            QueryLocation = queryLocation;
             HttpClient = httpClient ?? new HttpClient();
             ThrowOnWarning = throwOnWarning;
         }
@@ -49,7 +60,7 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             {
                 builder.Scheme = "https";
             }
-            else if (builder.Scheme.Equals("tcp", StringComparison.CurrentCultureIgnoreCase)) //InvariantCultureIgnoreCase, not supported in PCL
+            else if (builder.Scheme.Equals("tcp", StringComparison.CurrentCultureIgnoreCase)) // InvariantCultureIgnoreCase, not supported in PCL
             {
                 builder.Scheme = "http";
             }

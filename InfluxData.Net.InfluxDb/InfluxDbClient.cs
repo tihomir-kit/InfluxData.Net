@@ -83,12 +83,28 @@ namespace InfluxData.Net.InfluxDb
         /// <param name="username">InfluxDb server username.</param>
         /// <param name="password">InfluxDb server password.</param>
         /// <param name="influxVersion">InfluxDb server version.</param>
+        /// <param name="queryLocation">Where queries are located in the request (URI params vs. Form Data) (optional).</param>
         /// <param name="httpClient">Custom HttpClient object (optional).</param>
-        /// <param name="throwOnWarning">Should throw exception upon InfluxDb warning message (for debugging).</param>
-        public InfluxDbClient(string endpointUri, string username, string password, InfluxDbVersion influxVersion, HttpClient httpClient = null, bool throwOnWarning = false)
-             : this(new InfluxDbClientConfiguration(new Uri(endpointUri), username, password, influxVersion, httpClient, throwOnWarning))
-        {
-        }
+        /// <param name="throwOnWarning">Should throw exception upon InfluxDb warning message (for debugging) (optional).</param>
+        public InfluxDbClient(
+            string endpointUri, 
+            string username, 
+            string password, 
+            InfluxDbVersion influxVersion,
+            QueryLocation queryLocation = QueryLocation.FormData,
+            HttpClient httpClient = null, 
+            bool throwOnWarning = false
+        ) : this(
+            new InfluxDbClientConfiguration(
+                new Uri(endpointUri),
+                username, 
+                password,
+                influxVersion,
+                queryLocation,
+                httpClient,
+                throwOnWarning
+            )
+        ) {}
 
         /// <summary>
         /// InfluxDb client.

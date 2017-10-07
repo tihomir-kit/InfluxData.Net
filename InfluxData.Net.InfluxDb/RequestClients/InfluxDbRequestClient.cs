@@ -8,14 +8,18 @@ using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Common.Helpers;
+using InfluxData.Net.Common.Enums;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
     public class InfluxDbRequestClient : RequestClientBase, IInfluxDbRequestClient
     {
+        private IInfluxDbClientConfiguration _influxDbConfiguration;
+
         public InfluxDbRequestClient(IInfluxDbClientConfiguration configuration)
             : base(configuration, "InfluxData.Net.InfluxDb")
         {
+            _influxDbConfiguration = configuration;
         }
 
         public virtual async Task<IInfluxDataApiResponse> GetQueryAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null)
@@ -43,6 +47,25 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         }
 
         public virtual async Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method, string dbName = null, string epochFormat = null, long? chunkSize = null)
+        {
+            if (_influxDbConfiguration.QueryLocation == QueryLocation.FormData)
+            {
+                return await this.QueryFormDataAsync(query, method, dbName, epochFormat, chunkSize).ConfigureAwait(false);
+            }
+            else
+            {
+                return await this.QueryUriAsync(query, method, dbName, epochFormat, chunkSize).ConfigureAwait(false);
+            }
+        }
+
+        protected virtual async Task<IInfluxDataApiResponse> QueryUriAsync(string query, HttpMethod method, string dbName = null, string epochFormat = null, long? chunkSize = null)
+        {
+            var requestParams = RequestParamsBuilder.BuildQueryRequestParams(query, dbName, epochFormat, chunkSize);
+
+            return await base.RequestAsync(method, RequestPaths.Query, requestParams).ConfigureAwait(false);
+        }
+
+        protected virtual async Task<IInfluxDataApiResponse> QueryFormDataAsync(string query, HttpMethod method, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
             var requestParams = RequestParamsBuilder.BuildRequestParams(dbName, epochFormat, chunkSize);
             var httpContent = query.ToMultipartHttpContent(QueryParams.Query);
