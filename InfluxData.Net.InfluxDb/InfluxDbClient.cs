@@ -87,12 +87,12 @@ namespace InfluxData.Net.InfluxDb
         /// <param name="httpClient">Custom HttpClient object (optional).</param>
         /// <param name="throwOnWarning">Should throw exception upon InfluxDb warning message (for debugging) (optional).</param>
         public InfluxDbClient(
-            string endpointUri, 
-            string username, 
-            string password, 
+            string endpointUri,
+            string username,
+            string password,
             InfluxDbVersion influxVersion,
             QueryLocation queryLocation = QueryLocation.FormData,
-            HttpClient httpClient = null, 
+            HttpClient httpClient = null,
             bool throwOnWarning = false
         ) : this(
             new InfluxDbClientConfiguration(

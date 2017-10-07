@@ -1,6 +1,6 @@
 InfluxData.Net
 ============
-**Compatible with InfluxDB v1.0.0-beta and Kapacitor v1.0.0-beta API's**
+**Compatible with InfluxDB v1.3.x and Kapacitor v1.0.0 API's**
 
 _NOTE: The **library will most probably work just as fine with newer versions** of the TICK stack as well but it hasn't been tested against them._
 
@@ -22,8 +22,8 @@ This is a fork of [InfluxDb.Net](https://github.com/pootzko/InfluxDB.Net/), (whi
 
 Currently older supported versions:
 
- - InfluxDB: v0.9.2, v0.9.6
- - Kapacitor: v0.10.0, v0.10.1
+ - InfluxDB: v0.9.2, v0.9.6, v1.0.0, v1.3.x
+ - Kapacitor: v0.10.0, v0.10.1, v1.0.0
 
 ## Table of contents
 
@@ -110,6 +110,8 @@ If needed, a custom HttpClient can be used for making requests. Simply pass it i
   - _[PingAsync()](#pingasync)_
   - _[GetStatsAsync()](#getstatsasync)_
   - _[GetDiagnosticsAsync()](#getdiagnosticsasync)_
+- [Helpers](#helpers)
+  - _[serie.As<T>()](#serieas)_
 
 **Supported KapacitorClient modules and API calls**
 
@@ -186,6 +188,27 @@ var response = await influxDbClient.Client.QueryAsync(queries, "yourDbName");
 #### Chunked QueryAsync and MultiQueryAsync
 
 Check the usage [here](https://github.com/pootzko/InfluxData.Net/pull/39#issuecomment-287722949).
+
+
+#### Parameterized
+
+With support for parameterized queries ([#61](https://github.com/pootzko/InfluxData.Net/pull/61)), InfluxDB can also be queried in the following manner:
+
+``` cs
+var serialNumber = "F2EA2B0CDFF";
+var queryTemplate = "SELECT * FROM cpuTemp WHERE \"serialNumber\" = @SerialNumber";
+
+var response = await influxDbClient.Client.QueryAsync(
+    queryTemplate: queryTemplate,
+    parameters: new
+    {
+        @SerialNumber = serialNumber
+    },
+    dbName: "yourDbName"
+);
+```
+
+
 
 #### MultiQueryAsync
 
@@ -588,6 +611,16 @@ var response = await influxDbClient.Diagnostics.GetStatsAsync();
 
 ```cs
 var response = await influxDbClient.Diagnostics.GetDiagnosticsAsync();
+```
+
+### Helpers
+
+#### serie.As<T>() <a name="serieas"></a>
+
+You can use it like:
+
+```cs
+var stronglyTypedCollection = serie.As<MyType>();
 ```
 
 ## KapacitorClient

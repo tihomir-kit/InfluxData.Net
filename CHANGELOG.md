@@ -1,5 +1,13 @@
 # Change Log
 
+## [v8.0.0](https://www.nuget.org/packages/InfluxData.Net/8.0.0) (2017-10-07)
+
+- added a `IEnumerable<Serie>` extension method for converting ubiquitous series to a strongly typed collection [\#60](https://github.com/pootzko/InfluxData.Net/issues/60) ([joakimhew](https://github.com/joakimhew))
+- added support for parameterized queries [\#61](https://github.com/pootzko/InfluxData.Net/issues/61) ([joakimhew](https://github.com/joakimhew))
+- added support for sending query data as form data of the request (this is the default now), rather then sending it through Uri params [\#53](https://github.com/pootzko/InfluxData.Net/issues/53) ([vgt](https://github.com/vgt))
+- fixed tag and field key and value escaping in the latest version of InfluxDB [\#49](https://github.com/pootzko/InfluxData.Net/issues/49)
+- added support for InfluxDB v1.3.x
+
 ## [v7.0.3](https://www.nuget.org/packages/InfluxData.Net/7.0.3) (2017-08-19)
 
 - added support for .Net Standard v2.0 [\#50](https://github.com/pootzko/InfluxData.Net/issues/50) ([hanssens](https://github.com/hanssens))
