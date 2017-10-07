@@ -190,7 +190,7 @@ var response = await influxDbClient.Client.QueryAsync(queries, "yourDbName");
 Check the usage [here](https://github.com/pootzko/InfluxData.Net/pull/39#issuecomment-287722949).
 
 
-#### Parameterized
+#### Parameterized QueryAsync
 
 With support for parameterized queries ([#61](https://github.com/pootzko/InfluxData.Net/pull/61)), InfluxDB can also be queried in the following manner:
 
