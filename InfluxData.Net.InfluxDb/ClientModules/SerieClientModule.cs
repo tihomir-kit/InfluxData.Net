@@ -5,7 +5,6 @@ using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.QueryBuilders;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
-using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.ClientSubModules;
 using InfluxData.Net.Common.Constants;
 

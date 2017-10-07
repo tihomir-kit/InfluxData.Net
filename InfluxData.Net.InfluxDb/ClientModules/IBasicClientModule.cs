@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
@@ -33,6 +31,18 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="chunkSize">Maximum number of rows per chunk. (OPTIONAL)</param>
         /// <returns></returns>
         Task<IEnumerable<Serie>> QueryAsync(IEnumerable<string> queries, string dbName = null, string epochFormat = null, long? chunkSize = null);
+
+        /// <summary>
+        /// Executes a parameterized query against the database. If chunkSize is specified, responses 
+        /// will be broken down by number of returned rows. 
+        /// </summary>
+        /// <param name="queryTemplate">Query template to use to build a full query using params.</param>
+        /// <param name="parameters">The parameters to pass, if any.</param>
+        /// <param name="dbName">Database name. (OPTIONAL)</param>
+        /// <param name="epochFormat">Epoch timestamp format. (OPTIONAL)</param>
+        /// <param name="chunkSize">Maximum number of rows per chunk. (OPTIONAL)</param>
+        /// <returns></returns>
+        Task<IEnumerable<Serie>> QueryAsync(string queryTemplate, object parameters, string dbName = null, string epochFormat = null, long? chunkSize = null);
 
         /// <summary>
         /// Executes multiple queries against the database in a single request. If chunkSize is specified, responses 

@@ -5,11 +5,19 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using InfluxData.Net.Common.Helpers;
-using System.Diagnostics;
 using System.Net.Http;
 using InfluxData.Net.Common.Constants;
 using InfluxData.Net.Common.Infrastructure;
+using System.Diagnostics;
+using InfluxData.Net.Common.Helpers;
+
+
+#if DEBUG
+
+using InfluxData.Net.Common.Helpers;
+using System.Diagnostics;
+
+#endif
 
 namespace InfluxData.Net.Common.RequestClients
 {
@@ -139,7 +147,6 @@ namespace InfluxData.Net.Common.RequestClients
             var request = new HttpRequestMessage(method, urlBuilder.ToString());
             request.Headers.Add("User-Agent", _userAgent);
             request.Headers.Add("Accept", "application/json");
-
             request.Content = content;
 
             return request;

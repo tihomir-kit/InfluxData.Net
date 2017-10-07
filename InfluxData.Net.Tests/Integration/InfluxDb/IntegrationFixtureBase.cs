@@ -21,8 +21,8 @@ namespace InfluxData.Net.Integration.InfluxDb
 
         public IInfluxDbClient Sut { get; set; }
 
-        protected IntegrationFixtureBase(string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion) 
-            : base("FakeInfluxDb", influxDbEndpointUriKey, influxDbVersion)
+        protected IntegrationFixtureBase(string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion, bool throwOnWarning = true) 
+            : base("FakeInfluxDb", influxDbEndpointUriKey, influxDbVersion, throwOnWarning)
         {
             this.Sut = base.InfluxDbClient;
             this.Sut.Should().NotBeNull();

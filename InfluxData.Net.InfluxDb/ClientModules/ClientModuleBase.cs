@@ -46,9 +46,9 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var response = await this.RequestClient.GetQueryAsync(query, dbName, epochFormat, chunkSize).ConfigureAwait(false);
 
             if (chunkSize == null)
-                return ResolveSingleGetSeriesResult(response);
+                return this.ResolveSingleGetSeriesResult(response);
             else
-                return ResolveSingleGetSeriesResultChunked(response);
+                return this.ResolveSingleGetSeriesResultChunked(response);
         }
 
         protected virtual async Task<IEnumerable<SeriesResult>> ResolveGetSeriesResultAsync(string query, string dbName = null, string epochFormat = null, long? chunkSize = null)

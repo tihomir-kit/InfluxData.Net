@@ -3,7 +3,6 @@ using System.Net;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxData.Helpers;
 using InfluxData.Net.InfluxDb.Models.Responses;
-using System;
 
 namespace InfluxData.Net.InfluxDb.Helpers
 {

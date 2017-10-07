@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using InfluxData.Net.InfluxDb.Enums;
-using InfluxData.Net.Kapacitor.Constants;
+﻿using InfluxData.Net.InfluxDb.Enums;
 
 namespace InfluxData.Net.Kapacitor.Models
 {

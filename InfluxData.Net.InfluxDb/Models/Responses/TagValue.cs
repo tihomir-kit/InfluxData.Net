@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-
-
-namespace InfluxData.Net.InfluxDb.Models.Responses
+﻿namespace InfluxData.Net.InfluxDb.Models.Responses
 {
     public class TagValue
     {

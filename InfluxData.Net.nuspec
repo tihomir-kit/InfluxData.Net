@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>InfluxData.Net</id>
-        <version>7.0.3</version>
+        <version>8.0.0</version>
         <title>InfluxData.Net</title>
         <authors>Tihomir Kit (pootzko)</authors>
         <owners>pootzko</owners>
@@ -13,9 +13,7 @@
         <description>InfluxData.Net is a fast, portable .NET library to access the REST API of an InfluxDB database and Kapacitor processing tool.
 
 The library supports .Net Framework v4.6.1 and .Net Standard v2.0.</description>
-        <releaseNotes>Added support for .Net Standard v2.0.
-
-For a full list of changes, please see CHANGELOG:
+        <releaseNotes>For a full list of changes, please see CHANGELOG:
 https://github.com/pootzko/InfluxData.Net/blob/master/CHANGELOG.md</releaseNotes>
         <tags>influx, influxdb, influxdata, kapacitor, TICK-stack</tags>
         <dependencies>

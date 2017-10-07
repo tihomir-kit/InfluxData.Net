@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using InfluxData.Net.Common.Enums;
+﻿using InfluxData.Net.Common.Constants;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.Common.Infrastructure;
-using InfluxData.Net.InfluxData.Helpers;
 using InfluxData.Net.InfluxDb.Helpers;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
 using InfluxData.Net.InfluxDb.RequestClients;
 using InfluxData.Net.InfluxDb.ResponseParsers;
-using InfluxData.Net.Common.Constants;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace InfluxData.Net.InfluxDb.ClientModules
 {
@@ -30,6 +28,13 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             var series = _basicResponseParser.FlattenResultsSeries(results);
 
             return series;
+        }
+
+        public virtual async Task<IEnumerable<Serie>> QueryAsync(string queryTemplate, object parameters, string dbName = null, string epochFormat = null, long? chunkSize = null)
+        {
+            var query = queryTemplate.BuildQuery(parameters);
+
+            return await this.QueryAsync(query, dbName, epochFormat, chunkSize);
         }
 
         public virtual async Task<IEnumerable<IEnumerable<Serie>>> MultiQueryAsync(IEnumerable<string> queries, string dbName = null, string epochFormat = null, long? chunkSize = null)

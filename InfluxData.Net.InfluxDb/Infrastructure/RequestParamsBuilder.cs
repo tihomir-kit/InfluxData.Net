@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using InfluxData.Net.InfluxDb.Constants;
-using InfluxData.Net.Common.Helpers;
 using System;
 
 namespace InfluxData.Net.InfluxDb.Infrastructure
@@ -27,6 +26,11 @@ namespace InfluxData.Net.InfluxDb.Infrastructure
             }
 
             return requestParams;
+        }
+
+        public static IDictionary<string, string> BuildRequestParams(string dbName = null, string epochFormat = null, long? chunkSize = null)
+        {
+            return BuildQueryRequestParams(null, dbName, epochFormat, chunkSize);
         }
 
         public static IDictionary<string, string> BuildRequestParams(string dbName, string paramKey1, string paramValue1, string paramKey2, string paramValue2)

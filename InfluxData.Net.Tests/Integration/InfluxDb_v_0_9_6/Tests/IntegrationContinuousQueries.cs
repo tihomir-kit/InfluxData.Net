@@ -38,16 +38,8 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
             act.ShouldThrow<InfluxDataApiException>();
         }
 
-        [Fact]
-        public void DeleteContinuousQuery_OnNonExistingCq_ShouldThrow()
-        {
-            Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "nonexistingcqname"); };
-
-            act.ShouldThrow<InfluxDataApiException>();
-        }
-
         [Fact(Skip = "Test not applicable for this InfluxDB version")]
-        public override async Task DeleteContinuousQuery_OnNonExistingCq_ShouldNotThrow()
+        public void DeleteContinuousQuery_OnNonExistingCq_ShouldThrow()
         {
             return;
         }

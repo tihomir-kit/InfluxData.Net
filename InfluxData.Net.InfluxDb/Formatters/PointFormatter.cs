@@ -5,31 +5,16 @@ using System.Linq;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.InfluxDb.Models.Responses;
-using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.Formatters
 {
     public class PointFormatter : IPointFormatter
     {
-        private static readonly string _queryTemplate = "{0} {1} {2}"; // [key] [fields] [time]
-
-        public virtual string GetLineTemplate()
-        {
-            return _queryTemplate;
-        }
-
         /// <summary>
         /// Returns a point represented in line protocol format for writing to the InfluxDb API endpoint
         /// </summary>
         /// <returns>A string that represents this instance.</returns>
-        /// <remarks>
-        /// Example outputs:
-        /// cpu,host=serverA,region=us_west value = 0.64
-        /// payment,device=mobile,product=Notepad,method=credit billed = 33, licenses = 3i 1434067467100293230
-        /// stock,symbol=AAPL bid = 127.46, ask = 127.48
-        /// temperature,machine=unit42,type=assembly external = 25,internal=37 1434067467000000000
-        /// </remarks>
         public virtual string PointToString(Point point, string precision = TimeUnit.Milliseconds)
         {
             Validate.IsNotNullOrEmpty(point.Name, "measurement");
@@ -38,10 +23,10 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
             var tags = FormatPointTags(point.Tags);
             var fields = FormatPointFields(point.Fields);
-            var key = FormatPointKey(point, tags);
+            var key = FormatPointKey(point, tags); // key consists of measurement and tags
             var timestamp = FormatPointTimestamp(point, precision);
 
-            var result = String.Format(GetLineTemplate(), key, fields, timestamp);
+            var result = $"{key} {fields} {timestamp}";
 
             return result;
         }
@@ -70,6 +55,29 @@ namespace InfluxData.Net.InfluxDb.Formatters
             return serie;
         }
 
+        protected virtual string FormatPointKey(Point point, string tags)
+        {
+            var escapedPointKey = EscapeMeasurement(point.Name);
+            return String.IsNullOrEmpty(tags) ? escapedPointKey : $"{escapedPointKey},{tags}";
+        }
+
+        /// <summary>
+        /// For string field values use a backslash character \ to escape:
+        ///   - double quotes "
+        /// </summary>
+        /// <param name="value">Value to escape.</param>
+        /// <returns>Escaped value.</returns>
+        protected virtual string EscapeMeasurement(string value)
+        {
+            Validate.IsNotNull(value, "value");
+
+            var result = value
+                .Replace(@",", @"\,")
+                .Replace(@" ", @"\ ");
+
+            return result;
+        }
+
         protected virtual string FormatPointTags(IDictionary<string, object> tags)
         {
             // NOTE: from InfluxDB documentation - "Tags should be sorted by key before being sent for best performance."
@@ -78,7 +86,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string FormatPointTag(string key, object value)
         {
-            return String.Join("=", key, EscapeTagValue(value.ToString()));
+            return $"{EscapeTagOrKeyValue(key)}={EscapeTagOrKeyValue(value.ToString())}";
         }
 
         protected virtual string FormatPointFields(IDictionary<string, object> fields)
@@ -96,7 +104,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
             if (value.GetType() == typeof(string))
             {
                 // Surround strings with quotes
-                result = QuoteValue(EscapeNonTagValue(value.ToString()));
+                result = QuoteFieldStringValue(value.ToString());
             }
             else if (value.GetType() == typeof(bool))
             {
@@ -128,12 +136,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
                 result = ToInt(result);
             }
 
-            return String.Join("=", EscapeNonTagValue(key), result);
-        }
-
-        protected virtual string FormatPointKey(Point point, string tags)
-        {
-            return String.IsNullOrEmpty(tags) ? EscapeNonTagValue(point.Name) : String.Join(",", EscapeNonTagValue(point.Name), tags);
+            return $"{EscapeTagOrKeyValue(key)}={result}";
         }
 
         protected virtual string FormatPointTimestamp(Point point, string precision = TimeUnit.Milliseconds)
@@ -143,42 +146,40 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string ToInt(string result)
         {
-            return result + "i";
+            return $"{result}i";
         }
 
-        protected virtual string EscapeNonTagValue(string value)
+        /// <summary>
+        /// For tag keys, tag values, and field keys always use a backslash character \ to escape:
+        ///   - commas ,
+        ///   - equal signs =
+        ///   - spaces
+        /// </summary>
+        /// <param name="value">Value to escape.</param>
+        /// <returns>Escaped value.</returns>
+        protected virtual string EscapeTagOrKeyValue(string value)
         {
             Validate.IsNotNull(value, "value");
 
             var result = value
-                // literal backslash escaping is broken
-                // https://github.com/influxdb/influxdb/issues/3070
-                .Replace(@"\", @"\\")
-                .Replace(@"""", @"\""") // TODO: check if this is right or if "" should become \"\"
-                .Replace(@" ", @"\ ")
+                .Replace(@",", @"\,")
                 .Replace(@"=", @"\=")
-                .Replace(@",", @"\,");
+                .Replace(@" ", @"\ ");
 
             return result;
         }
 
-        protected virtual string EscapeTagValue(string value)
+        /// <summary>
+        /// For string field values use a backslash character \ to escape:
+        ///   - ouble quotes "
+        /// </summary>
+        /// <param name="value">Value to escape.</param>
+        /// <returns>Escaped value.</returns>
+        protected virtual string QuoteFieldStringValue(string value)
         {
             Validate.IsNotNull(value, "value");
 
-            var result = value
-                .Replace(@" ", @"\ ")
-                .Replace(@"=", @"\=")
-                .Replace(@",", @"\,");
-
-            return result;
-        }
-
-        protected virtual string QuoteValue(string value)
-        {
-            Validate.IsNotNull(value, "value");
-
-            return "\"" + value + "\"";
+            return $"\"{value}\"";
         }
     }
 }

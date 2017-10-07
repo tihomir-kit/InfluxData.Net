@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using System.Net;
-using InfluxData.Net.Common.Infrastructure;
+﻿using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxData.Helpers;
-using System;
 using InfluxData.Net.Kapacitor.Models.Responses;
 
 namespace InfluxData.Net.Kapacitor.Helpers

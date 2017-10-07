@@ -1,5 +1,3 @@
-using InfluxData.Net.Common.Helpers;
-
 namespace InfluxData.Net.Common.Constants
 {
     /// <summary>

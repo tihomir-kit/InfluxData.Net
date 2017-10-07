@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using InfluxData.Net.Common.Infrastructure;
 using InfluxData.Net.InfluxDb.Formatters;
 using InfluxData.Net.InfluxDb.Models;
-using System;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace InfluxData.Net.InfluxDb.Enums
+﻿namespace InfluxData.Net.InfluxDb.Enums
 {
     /// <summary>
     /// Different user database permissions.
