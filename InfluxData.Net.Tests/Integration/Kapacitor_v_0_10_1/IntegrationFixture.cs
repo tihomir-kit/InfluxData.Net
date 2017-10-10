@@ -7,7 +7,7 @@ namespace InfluxData.Net.Integration.Kapacitor
     public class IntegrationFixture_v_0_10_1 : IntegrationFixtureBase
     {
         public IntegrationFixture_v_0_10_1()
-            :base ("InfluxSettings:InfluxDbEndpointUri_v_0_9_6", InfluxDbVersion.v_0_9_6, "InfluxSettings:KapacitorEndpointUri_v_0_10_1", KapacitorVersion.v_0_10_1)
+            :base ("InfluxDbEndpointUri_v_0_9_6", InfluxDbVersion.v_0_9_6, "KapacitorEndpointUri_v_0_10_1", KapacitorVersion.v_0_10_1)
         {
         }
 

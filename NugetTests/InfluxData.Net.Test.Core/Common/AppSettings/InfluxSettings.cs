@@ -9,6 +9,5 @@
         public string KapacitorEndpointUri_v_1_0_0 { get; set; }
         public string KapacitorEndpointUri_v_0_10_1 { get; set; }
         public string ClientSettingsProviderServiceUri { get; set; }
-        public string XunitMethodDisplay { get; set; }
     }
 }

@@ -43,16 +43,16 @@
       <HintPath>..\packages\FluentAssertions.4.19.3\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
     <Reference Include="InfluxData.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\InfluxData.Net.7.0.3\lib\net461\InfluxData.Net.dll</HintPath>
+      <HintPath>..\packages\InfluxData.Net.8.0.1\lib\net461\InfluxData.Net.dll</HintPath>
     </Reference>
     <Reference Include="InfluxData.Net.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\InfluxData.Net.7.0.3\lib\net461\InfluxData.Net.Common.dll</HintPath>
+      <HintPath>..\packages\InfluxData.Net.8.0.1\lib\net461\InfluxData.Net.Common.dll</HintPath>
     </Reference>
     <Reference Include="InfluxData.Net.InfluxDb, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\InfluxData.Net.7.0.3\lib\net461\InfluxData.Net.InfluxDb.dll</HintPath>
+      <HintPath>..\packages\InfluxData.Net.8.0.1\lib\net461\InfluxData.Net.InfluxDb.dll</HintPath>
     </Reference>
     <Reference Include="InfluxData.Net.Kapacitor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\InfluxData.Net.7.0.3\lib\net461\InfluxData.Net.Kapacitor.dll</HintPath>
+      <HintPath>..\packages\InfluxData.Net.8.0.1\lib\net461\InfluxData.Net.Kapacitor.dll</HintPath>
     </Reference>
     <Reference Include="Moq, Version=4.7.99.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.7.99\lib\net45\Moq.dll</HintPath>
@@ -126,16 +126,14 @@
     <Compile Include="Integration\InfluxDb_v_1_0_0\Tests\IntegrationDatabase.cs" />
     <Compile Include="Integration\InfluxDb_v_1_0_0\Tests\IntegrationDiagnostics.cs" />
     <Compile Include="Integration\InfluxDb_v_1_0_0\Tests\IntegrationSerie.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_3\IntegrationCollection.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_3\IntegrationFixture.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_3\Tests\IntegrationBasic.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_3\Tests\IntegrationContinuousQueries.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_3\Tests\IntegrationDatabase.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_3\Tests\IntegrationDiagnostics.cs" />
+    <Compile Include="Integration\InfluxDb_v_1_3\Tests\IntegrationSerie.cs" />
     <Compile Include="Integration\IntegrationFixtureFactory.cs" />
-    <Compile Include="Integration\Kapacitor\IIntegrationFixtureBase.cs" />
-    <Compile Include="Integration\Kapacitor\IntegrationFixtureBase.cs" />
-    <Compile Include="Integration\Kapacitor\Tests\IntegrationTask.cs" />
-    <Compile Include="Integration\Kapacitor_v_0_10_1\IntegrationCollection.cs" />
-    <Compile Include="Integration\Kapacitor_v_0_10_1\IntegrationFixture.cs" />
-    <Compile Include="Integration\Kapacitor_v_0_10_1\Tests\IntegrationTask.cs" />
-    <Compile Include="Integration\Kapacitor_v_1_0_0\IntegrationCollection.cs" />
-    <Compile Include="Integration\Kapacitor_v_1_0_0\IntegrationFixture.cs" />
-    <Compile Include="Integration\Kapacitor_v_1_0_0\Tests\IntegrationTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +141,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="xunit.runner.json" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

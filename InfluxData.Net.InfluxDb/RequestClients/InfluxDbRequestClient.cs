@@ -48,13 +48,13 @@ namespace InfluxData.Net.InfluxDb.RequestClients
 
         public virtual async Task<IInfluxDataApiResponse> QueryAsync(string query, HttpMethod method, string dbName = null, string epochFormat = null, long? chunkSize = null)
         {
-            if (_influxDbConfiguration.QueryLocation == QueryLocation.FormData)
+            if (_influxDbConfiguration.QueryLocation == QueryLocation.Uri)
             {
-                return await this.QueryFormDataAsync(query, method, dbName, epochFormat, chunkSize).ConfigureAwait(false);
+                return await this.QueryUriAsync(query, method, dbName, epochFormat, chunkSize).ConfigureAwait(false);
             }
             else
             {
-                return await this.QueryUriAsync(query, method, dbName, epochFormat, chunkSize).ConfigureAwait(false);
+                return await this.QueryFormDataAsync(query, HttpMethod.Post, dbName, epochFormat, chunkSize).ConfigureAwait(false);
             }
         }
 

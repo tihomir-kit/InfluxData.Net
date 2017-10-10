@@ -8,7 +8,6 @@ using InfluxData.Net.InfluxDb;
 using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Integration.Kapacitor;
-using Ploeh.AutoFixture;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Constants;
 using InfluxData.Net.InfluxDb.Models.Responses;
@@ -22,8 +21,8 @@ namespace InfluxData.Net.Integration.InfluxDb
 
         public IInfluxDbClient Sut { get; set; }
 
-        protected IntegrationFixtureBase(string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion) 
-            : base("FakeInfluxDb", influxDbEndpointUriKey, influxDbVersion)
+        protected IntegrationFixtureBase(string influxDbEndpointUriKey, InfluxDbVersion influxDbVersion, bool throwOnWarning = true) 
+            : base("FakeInfluxDb", influxDbEndpointUriKey, influxDbVersion, throwOnWarning)
         {
             this.Sut = base.InfluxDbClient;
             this.Sut.Should().NotBeNull();
@@ -126,24 +125,48 @@ namespace InfluxData.Net.Integration.InfluxDb
 
         public IEnumerable<Point> MockPoints(int amount)
         {
+            // TODO: code below commented because it relies on AutoFixture, 
+            // which is not dotnet - core compatible(yet), and has therefore
+            // been replaced with a "poor man's" variant on this.
+
+            var response = new List<Point>();
             var rnd = new Random();
-            var fixture = new Fixture();
-
-            fixture.Customize<Point>(c => c
-                .With(p => p.Name, CreateRandomMeasurementName())
-                .Do(p => p.Tags = MockPointTags(rnd))
-                .Do(p => p.Fields = MockPointFields(rnd))
-                .OmitAutoProperties());
-
-            var points = fixture.CreateMany<Point>(amount).ToArray();
             var timestamp = DateTime.UtcNow.AddDays(-5);
-            foreach (var point in points)
+
+            var measurementName = CreateRandomMeasurementName();
+            for (var i = 0; i < amount; i++)
             {
                 timestamp = timestamp.AddMinutes(1);
-                point.Timestamp = timestamp;
+
+                var p = new Point()
+                {
+                    Name = measurementName,
+                    Fields = MockPointFields(rnd),
+                    Tags = MockPointTags(rnd),
+                    Timestamp = timestamp
+                };
+                response.Add(p);
             }
 
-            return points;
+            return response;
+
+            //var fixture = new Fixture();
+
+            //fixture.Customize<Point>(c => c
+            //    .With(p => p.Name, CreateRandomMeasurementName())
+            //    .Do(p => p.Tags = MockPointTags(rnd))
+            //    .Do(p => p.Fields = MockPointFields(rnd))
+            //    .OmitAutoProperties());
+
+            //var points = fixture.CreateMany<Point>(amount).ToArray();
+            //var timestamp = DateTime.UtcNow.AddDays(-5);
+            //foreach (var point in points)
+            //{
+            //    timestamp = timestamp.AddMinutes(1);
+            //    point.Timestamp = timestamp;
+            //}
+
+            //return points;
         }
 
         public Dictionary<string, object> MockPointTags(Random rnd)

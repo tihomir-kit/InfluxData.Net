@@ -44,7 +44,7 @@ You can download the [InfluxData.Net Nuget](https://www.nuget.org/packages/Influ
 To use InfluxData.Net InfluxDbClient you must first create an instance of `InfluxDbClient`:
 
 ```cs
-var influxDbClient = new InfluxDbClient("http://yourinfluxdb.com:8086/", "username", "password", InfluxDbVersion.v_1_0_0);
+var influxDbClient = new InfluxDbClient("http://yourinfluxdb.com:8086/", "username", "password", InfluxDbVersion.v_1_3);
 ```
 
 Additional, optional params for InfluxDbClient are a custom `HttpClient` if you think you need control over it, and `throwOnWarning` which will throw an `InfluxDataWarningException` if the InfluxDb API returns a warning as a part of the response. That should preferably be used only for debugging purposes.

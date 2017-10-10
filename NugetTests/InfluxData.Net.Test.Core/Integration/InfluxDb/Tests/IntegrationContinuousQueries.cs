@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
+using InfluxData.Net.Common.Infrastructure;
 
 namespace InfluxData.Net.Integration.InfluxDb.Tests
 {
@@ -122,12 +123,11 @@ namespace InfluxData.Net.Integration.InfluxDb.Tests
         }
 
         [Fact]
-        public virtual async Task DeleteContinuousQuery_OnNonExistingCq_ShouldNotThrow()
+        public virtual async Task DeleteContinuousQuery_OnNonExistingCq_ShouldThrow()
         {
-            var result = await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "nonexistingcqname");
+            Func<Task> act = async () => { await _fixture.Sut.ContinuousQuery.DeleteContinuousQueryAsync(_fixture.DbName, "nonexistingcqname"); };
 
-            result.Should().NotBeNull();
-            result.Success.Should().BeTrue();
+            act.ShouldThrow<InfluxDataApiException>();
         }
 
         [Fact]
