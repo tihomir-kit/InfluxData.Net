@@ -43,16 +43,16 @@
       <HintPath>..\packages\FluentAssertions.4.19.3\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
     <Reference Include="InfluxData.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\InfluxData.Net.8.0.0\lib\net461\InfluxData.Net.dll</HintPath>
+      <HintPath>..\packages\InfluxData.Net.8.0.1\lib\net461\InfluxData.Net.dll</HintPath>
     </Reference>
     <Reference Include="InfluxData.Net.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\InfluxData.Net.8.0.0\lib\net461\InfluxData.Net.Common.dll</HintPath>
+      <HintPath>..\packages\InfluxData.Net.8.0.1\lib\net461\InfluxData.Net.Common.dll</HintPath>
     </Reference>
     <Reference Include="InfluxData.Net.InfluxDb, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\InfluxData.Net.8.0.0\lib\net461\InfluxData.Net.InfluxDb.dll</HintPath>
+      <HintPath>..\packages\InfluxData.Net.8.0.1\lib\net461\InfluxData.Net.InfluxDb.dll</HintPath>
     </Reference>
     <Reference Include="InfluxData.Net.Kapacitor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\InfluxData.Net.8.0.0\lib\net461\InfluxData.Net.Kapacitor.dll</HintPath>
+      <HintPath>..\packages\InfluxData.Net.8.0.1\lib\net461\InfluxData.Net.Kapacitor.dll</HintPath>
     </Reference>
     <Reference Include="Moq, Version=4.7.99.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.7.99\lib\net45\Moq.dll</HintPath>
