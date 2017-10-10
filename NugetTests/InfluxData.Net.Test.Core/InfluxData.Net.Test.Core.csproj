@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.3" />
-    <PackageReference Include="InfluxData.Net.Test" Version="0.0.12" />
+    <PackageReference Include="InfluxData.Net" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />

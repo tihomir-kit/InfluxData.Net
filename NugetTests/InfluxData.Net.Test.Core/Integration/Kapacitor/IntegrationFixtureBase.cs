@@ -20,7 +20,7 @@ namespace InfluxData.Net.Integration.Kapacitor
             InfluxDbVersion influxDbVersion,
             string kapacitorEndpointUriKey,
             KapacitorVersion kapacitorVersion)
-            : base("FakeKapacitorDb", influxDbEndpointUriKey, influxDbVersion)
+            : base("FakeKapacitorDb", influxDbEndpointUriKey, influxDbVersion, false)
         {
             this.Sut = new KapacitorClient(
                 ConfigurationManager.Get(kapacitorEndpointUriKey),
