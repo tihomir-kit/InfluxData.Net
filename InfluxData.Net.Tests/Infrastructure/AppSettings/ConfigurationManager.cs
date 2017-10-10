@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.Extensions.Configuration;
 
-namespace InfluxData.Net.Tests.Common.AppSettings
+namespace InfluxData.Net.Tests.Infrastructure.AppSettings
 {
     public static class ConfigurationManager
     {
@@ -11,7 +11,7 @@ namespace InfluxData.Net.Tests.Common.AppSettings
         {
             if (Configuration == null)
             {
-                BuildConfiguration();   
+                BuildConfiguration();
             }
 
             return Configuration[key];

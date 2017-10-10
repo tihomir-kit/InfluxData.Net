@@ -1,4 +1,4 @@
-﻿namespace InfluxData.Net.Tests.Common.AppSettings
+﻿namespace InfluxData.Net.Tests.Infrastructure.AppSettings
 {
     public class InfluxSettings
     {

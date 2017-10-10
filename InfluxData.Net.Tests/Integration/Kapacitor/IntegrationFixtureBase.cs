@@ -5,7 +5,7 @@ using InfluxData.Net.Common.Enums;
 using InfluxData.Net.InfluxDb.Enums;
 using InfluxData.Net.Kapacitor;
 using InfluxData.Net.Kapacitor.Models;
-using InfluxData.Net.Tests.Common.AppSettings;
+using InfluxData.Net.Tests.Infrastructure.AppSettings;
 
 namespace InfluxData.Net.Integration.Kapacitor
 {

@@ -4,7 +4,7 @@ using FluentAssertions;
 using InfluxData.Net.Common.Enums;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.InfluxDb;
-using InfluxData.Net.Tests.Common.AppSettings;
+using InfluxData.Net.Tests.Infrastructure.AppSettings;
 using Moq;
 using System.Diagnostics;
 
@@ -33,8 +33,8 @@ namespace InfluxData.Net.Integration.Kapacitor
 
             this.InfluxDbClient = new InfluxDbClient(
                 ConfigurationManager.Get(influxDbEndpointUriKey),
-                ConfigurationManager.Get("InfluxSettings:InfluxDbUsername"),
-                ConfigurationManager.Get("InfluxSettings:InfluxDbPassword"),
+                ConfigurationManager.Get("InfluxDbUsername"),
+                ConfigurationManager.Get("InfluxDbPassword"),
                 influxDbVersion, 
                 throwOnWarning: throwOnWarning);
 
