@@ -1,5 +1,8 @@
 # Change Log
 
+## [v8.0.1](https://www.nuget.org/packages/InfluxData.Net/8.0.1) (2017-10-11)
+- bugfixes
+
 ## [v8.0.0](https://www.nuget.org/packages/InfluxData.Net/8.0.0) (2017-10-07)
 
 - added a `IEnumerable<Serie>` extension method for converting ubiquitous series to a strongly typed collection [\#60](https://github.com/pootzko/InfluxData.Net/issues/60) ([joakimhew](https://github.com/joakimhew))
