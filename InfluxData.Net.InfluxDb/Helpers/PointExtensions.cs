@@ -47,11 +47,7 @@ namespace InfluxData.Net.InfluxDb.Helpers
         {
             var type = model.GetType();
 
-            Point point = new Point
-            {
-                Fields = new Dictionary<string, object>(),
-                Tags = new Dictionary<string, object>()
-            };
+            Point point = new Point();
 
             var properties = type.GetProperties();
 
