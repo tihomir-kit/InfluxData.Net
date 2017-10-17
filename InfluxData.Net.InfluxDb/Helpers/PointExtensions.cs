@@ -51,15 +51,15 @@ namespace InfluxData.Net.InfluxDb.Helpers
 
             var properties = type.GetProperties();
 
-            point.SetTimestamp(model, properties);
-            point.SetMeasurement(model, properties);
-            point.SetFields(model, properties);
-            point.SetTags(model, properties);
+            point.TrySetTimestamp(model, properties);
+            point.TrySetMeasurement(model, properties);
+            point.TrySetTags(model, properties);
+            point.TrySetFields(model, properties);
 
             return point;
         }
 
-        private static Point SetTimestamp<TModel>(this Point point, TModel model, PropertyInfo[] properties)
+        private static Point TrySetTimestamp<TModel>(this Point point, TModel model, PropertyInfo[] properties)
         {
             var timestampProperties = properties.Where(x => x.IsDefined(typeof(TimestampAttribute), false));
 
@@ -84,7 +84,7 @@ namespace InfluxData.Net.InfluxDb.Helpers
             return point;
         }
 
-        private static Point SetMeasurement<TModel>(this Point point, TModel model, PropertyInfo[] properties)
+        private static Point TrySetMeasurement<TModel>(this Point point, TModel model, PropertyInfo[] properties)
         {
             var measurementProperties = properties.Where(x => x.IsDefined(typeof(MeasurementAttribute), false));
 
@@ -97,12 +97,6 @@ namespace InfluxData.Net.InfluxDb.Helpers
             if (measurementProperties.Count() != 1)
             {
                 throw new InvalidOperationException($"Must have exactly one {typeof(MeasurementAttribute).Name} attribute defined");
-            }
-
-            // Make sure at least one FieldAttribute is defined
-            if (!properties.Any(x => x.IsDefined(typeof(FieldAttribute), false)))
-            {
-                throw new MissingExpectedAttributeException(typeof(FieldAttribute));
             }
 
             var measurementProperty = measurementProperties.FirstOrDefault();
@@ -123,7 +117,7 @@ namespace InfluxData.Net.InfluxDb.Helpers
             return point;
         }
 
-        private static Point SetTags<TModel>(this Point point, TModel model, PropertyInfo[] properties)
+        private static Point TrySetTags<TModel>(this Point point, TModel model, PropertyInfo[] properties)
         {
             var tagProperties = properties.Where(x => x.IsDefined(typeof(TagAttribute), false));
 
@@ -150,9 +144,15 @@ namespace InfluxData.Net.InfluxDb.Helpers
             return point;
         }
 
-        private static Point SetFields<TModel>(this Point point, TModel model, PropertyInfo[] properties)
+        private static Point TrySetFields<TModel>(this Point point, TModel model, PropertyInfo[] properties)
         {
             var fieldProperties = properties.Where(x => x.IsDefined(typeof(FieldAttribute), false));
+
+            // Make sure at least one FieldAttribute is defined
+            if (!fieldProperties.Any())
+            {
+                throw new MissingExpectedAttributeException(typeof(FieldAttribute));
+            }
 
             if (fieldProperties.Any(x => !x.PropertyType.IsSimple()))
             {
