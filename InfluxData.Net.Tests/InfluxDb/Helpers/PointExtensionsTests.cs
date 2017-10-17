@@ -27,6 +27,19 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
         }
 
         [Fact]
+        public void ToPoint_OnMissingFieldAttribute_ThrowsException()
+        {
+            TestModelWithoutFields model = new TestModelWithoutFields
+            {
+                Time = DateTime.Now,
+                MyMeasurement = "FakeMeasurement",
+                TestTag = "TestTag"
+            };
+
+            Assert.Throws<MissingExpectedAttributeException>(() => model.ToPoint());
+        }
+
+        [Fact]
         public void ToPoint_OnMultipleMeasurementAttributes_ThrowsException()
         {
             TestModelWithMultipleMeasurements model = new TestModelWithMultipleMeasurements
@@ -155,6 +168,18 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
 
             [Field("testfield")]
             public string TestField { get; set; }
+        }
+
+        private class TestModelWithoutFields
+        {
+            [Timestamp]
+            public DateTime Time { get; set; }
+
+            [Measurement]
+            public string MyMeasurement { get; set; }
+
+            [Tag]
+            public string TestTag { get; set; }
         }
 
         private class TestModelWithMultipleMeasurements
