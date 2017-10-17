@@ -2,7 +2,7 @@
 
 namespace InfluxData.Net.Common.Attributes
 {
-    public class MeasurementAttribute : Attribute
+    public class MeasurementAttribute : InfluxBaseAttribute
     {
     }
 }

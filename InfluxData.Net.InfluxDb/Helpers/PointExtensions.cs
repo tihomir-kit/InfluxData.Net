@@ -146,7 +146,9 @@ namespace InfluxData.Net.InfluxDb.Helpers
 
                 var converted = Convert.ChangeType(tagValue, tagType);
 
-                point.Tags.Add(tagProperty.Name, converted);
+                var propertyName = tagProperty.GetCustomAttribute<TagAttribute>().Name;
+
+                point.Tags.Add(propertyName, converted);
             }
 
             return point;
@@ -171,7 +173,9 @@ namespace InfluxData.Net.InfluxDb.Helpers
 
                 var converted = Convert.ChangeType(fieldValue, fieldType);
 
-                point.Fields.Add(fieldProperty.Name, converted);
+                var propertyName = fieldProperty.GetCustomAttribute<FieldAttribute>().Name;
+
+                point.Fields.Add(propertyName, converted);
             }
 
             return point;

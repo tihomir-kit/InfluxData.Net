@@ -4,7 +4,9 @@ using System.Text;
 
 namespace InfluxData.Net.Common.Attributes
 {
-    public class TimestampAttribute : Attribute
+    public class TimestampAttribute : InfluxBaseAttribute
     {
+        public TimestampAttribute()
+            : base("time") { }
     }
 }

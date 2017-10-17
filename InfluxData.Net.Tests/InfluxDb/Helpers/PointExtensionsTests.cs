@@ -114,13 +114,13 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
                 Timestamp = time,
                 Tags = new Dictionary<string, object>
                 {
-                    { "Tag1", firstTagValue },
-                    { "Tag2", secondTagValue }
+                    { "Tag1", firstTagValue }, // Tag name is set explicitly in attribute name argument
+                    { "tag2", secondTagValue }
                 },
                 Fields = new Dictionary<string, object>
                 {
-                    { "PrimitiveField1", firstFieldValue },
-                    { "PrimitiveField2", secondFieldValue }
+                    { "PrimitiveField1", firstFieldValue }, // Field name is set explicitly in attribute name argument
+                    { "field2", secondFieldValue }
                 }
             };
 
@@ -150,10 +150,10 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             [Timestamp]
             public DateTime Time { get; set; }
 
-            [Tag]
+            [Tag("testtag")]
             public string TestTag { get; set; }
 
-            [Field]
+            [Field("testfield")]
             public string TestField { get; set; }
         }
 
@@ -168,10 +168,10 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             [Timestamp]
             public DateTime Time { get; set; }
 
-            [Tag]
+            [Tag("testtag")]
             public string TestTag { get; set; }
 
-            [Field]
+            [Field("testfield")]
             public string TestField { get; set; }
         }
 
@@ -186,10 +186,10 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             [Timestamp]
             public DateTime Time2 { get; set; }
 
-            [Tag]
+            [Tag("testtag")]
             public string TestTag { get; set; }
 
-            [Field]
+            [Field("testfield")]
             public string TestField { get; set; }
         }
 
@@ -201,13 +201,13 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             [Timestamp]
             public DateTime Time { get; set; }
 
-            [Tag]
+            [Tag("primitivetag")]
             public string PrimitiveTag { get; set; }
 
-            [Tag]
+            [Tag("nonprimitivetag")]
             public NonPrimitiveType NonPrimitiveTag { get; set; }
 
-            [Field]
+            [Field("primitivetag")]
             public string PrimitiveField { get; set; }
         }
 
@@ -219,13 +219,13 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             [Timestamp]
             public DateTime Time { get; set; }
 
-            [Tag]
+            [Tag("primitivetag")]
             public string PrimitiveTag { get; set; }
 
-            [Field]
+            [Field("primitivefield")]
             public string PrimitiveField { get; set; }
 
-            [Field]
+            [Field("nonprimitivefield")]
             public NonPrimitiveType NonPrimitiveField { get; set; }
         }
 
@@ -240,13 +240,13 @@ namespace InfluxData.Net.Tests.InfluxDb.Helpers
             [Tag]
             public string Tag1 { get; set; }
 
-            [Tag]
+            [Tag("tag2")]
             public string Tag2 { get; set; }
 
             [Field]
             public double PrimitiveField1 { get; set; }
             
-            [Field]
+            [Field("field2")]
             public float PrimitiveField2 { get; set; }
         }
 
