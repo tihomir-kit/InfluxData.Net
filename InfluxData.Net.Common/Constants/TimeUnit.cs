@@ -5,11 +5,15 @@ namespace InfluxData.Net.Common.Constants
     /// </summary>
     public static class TimeUnit
     {
-        // NOTE: currently not supported
-        //public const string Nanoseconds = "n";
+        /// <summary>
+        /// Use this value only with <see cref="Point2"/>
+        /// </summary>
+        public const string Nanoseconds = "ns";
 
-        // NOTE: currently not supported
-        //public const string Microseconds = "u";
+        /// <summary>
+        /// Use this value only with <see cref="Point2"/>
+        /// </summary>
+        public const string Microseconds = "u";
 
         public const string Milliseconds = "ms";
 
