@@ -141,9 +141,16 @@ namespace InfluxData.Net.InfluxDb.Formatters
 
         protected virtual string FormatPointTimestamp(Point point, string precision = TimeUnit.Milliseconds)
         {
-            return point.Timestamp.HasValue ? point.Timestamp.Value.ToUnixTime(precision).ToString() : string.Empty;
+            if(point is Point2)
+            {
+                return ((Point2)point).UnixTimeStamp.HasValue ? ((Point2)point).UnixTimeStamp.ToString() : string.Empty;
+            }
+            else
+            {
+                return point.Timestamp.HasValue ? point.Timestamp.Value.ToUnixTime(precision).ToString() : string.Empty;
+            }
         }
-
+        
         protected virtual string ToInt(string result)
         {
             return $"{result}i";
