@@ -90,7 +90,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
             return fieldKeys;
         }
 
-        public IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, string precision = TimeUnit.Milliseconds)
+        public IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Ticks)
         {
             return ((IBatchWriterFactory)_batchWriter).CreateBatchWriter(dbName, retenionPolicy, precision);
         }

@@ -28,13 +28,22 @@ namespace InfluxData.Net.Common.Helpers
         /// <param name="date">DateTime to convert.</param>
         /// <param name="precision">Precision (optional, defaults to milliseconds)</param>
         /// <returns>Unix-style timestamp in milliseconds.</returns>
-        public static long ToUnixTime(this DateTime date, string precision = TimeUnit.Milliseconds)
+        public static long ToUnixTime(this DateTime date, TimeUnit precision = TimeUnit.Ticks)
         {
             var span = date - _epoch;
             double fractionalSpan;
 
             switch (precision)
             {
+                case TimeUnit.Nanoseconds:
+                    fractionalSpan = span.Ticks * 100;
+                    break;
+                case TimeUnit.Ticks:
+                    fractionalSpan = span.Ticks * 100;
+                    break;
+                case TimeUnit.Microseconds:
+                    fractionalSpan = span.Ticks / 10;
+                    break;
                 case TimeUnit.Milliseconds:
                     fractionalSpan = span.TotalMilliseconds;
                     break;
@@ -61,10 +70,12 @@ namespace InfluxData.Net.Common.Helpers
         /// <param name="unixTime">The unix time (expects milliseconds by default).</param>
         /// <param name="precision">Precision (optional, defaults to milliseconds)</param>
         /// <returns>DateTime object.</returns>
-        public static DateTime FromUnixTime(this long unixTime, string precision = TimeUnit.Milliseconds)
+        public static DateTime FromUnixTime(this long unixTime, TimeUnit precision = TimeUnit.Ticks)
         {
             switch (precision)
             {
+                case TimeUnit.Ticks:
+                    return _epoch.AddTicks(unixTime);
                 case TimeUnit.Milliseconds:
                     return _epoch.AddMilliseconds(unixTime);
                 case TimeUnit.Seconds:

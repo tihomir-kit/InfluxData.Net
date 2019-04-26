@@ -71,6 +71,6 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// <param name="retenionPolicy">Retention policy.</param>
         /// <param name="precision">Precision.</param>
         /// <returns>BatchWriter instance.</returns>
-        IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, string precision = TimeUnit.Milliseconds);
+        IBatchWriter CreateBatchWriter(string dbName, string retenionPolicy = null, TimeUnit precision = TimeUnit.Ticks);
     }
 }
