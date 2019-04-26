@@ -63,7 +63,7 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="retentionPolicy">The retention policy.</param>
         /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> WriteAsync(Point point, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
+        Task<IInfluxDataApiResponse> WriteAsync(Point point, string dbName = null, string retentionPolicy = null, TimeUnit precision = TimeUnit.Ticks);
 
         /// <summary>
         /// Writes multiple serie points to the database.
@@ -73,6 +73,6 @@ namespace InfluxData.Net.InfluxDb.ClientModules
         /// <param name="retentionPolicy">The retention policy.</param>
         /// <param name="precision">InfluxDb time precision to use (defaults to 'ms')</param>
         /// <returns></returns>
-        Task<IInfluxDataApiResponse> WriteAsync(IEnumerable<Point> points, string dbName = null, string retentionPolicy = null, string precision = TimeUnit.Milliseconds);
+        Task<IInfluxDataApiResponse> WriteAsync(IEnumerable<Point> points, string dbName = null, string retentionPolicy = null, TimeUnit precision = TimeUnit.Ticks);
     }
 }

@@ -15,7 +15,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
         /// Returns a point represented in line protocol format for writing to the InfluxDb API endpoint
         /// </summary>
         /// <returns>A string that represents this instance.</returns>
-        public virtual string PointToString(Point point, string precision = TimeUnit.Milliseconds)
+        public virtual string PointToString(Point point, TimeUnit precision = TimeUnit.Ticks)
         {
             Validate.IsNotNullOrEmpty(point.Name, "measurement");
             Validate.IsNotNull(point.Tags, "tags");
@@ -139,7 +139,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
             return $"{EscapeTagOrKeyValue(key)}={result}";
         }
 
-        protected virtual string FormatPointTimestamp(Point point, string precision = TimeUnit.Milliseconds)
+        protected virtual string FormatPointTimestamp(Point point, TimeUnit precision = TimeUnit.Ticks)
         {
             return point.Timestamp.HasValue ? point.Timestamp.Value.ToUnixTime(precision).ToString() : string.Empty;
         }

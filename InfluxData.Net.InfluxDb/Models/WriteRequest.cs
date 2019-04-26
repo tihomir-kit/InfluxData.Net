@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using InfluxData.Net.Common.Constants;
 using InfluxData.Net.InfluxDb.Formatters;
 
 namespace InfluxData.Net.InfluxDb.Models
@@ -30,7 +31,7 @@ namespace InfluxData.Net.InfluxDb.Models
         /// <summary>
         /// Point data time precision.
         /// </summary>
-        public string Precision { get; set; }
+        public TimeUnit Precision { get; set; }
 
         /// <summary>
         /// Data retention policy.

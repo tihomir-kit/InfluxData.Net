@@ -9,6 +9,7 @@ using InfluxData.Net.InfluxDb.Infrastructure;
 using InfluxData.Net.InfluxDb.Models;
 using InfluxData.Net.Common.Helpers;
 using InfluxData.Net.Common.Enums;
+using InfluxData.Net.Common.Constants;
 
 namespace InfluxData.Net.InfluxDb.RequestClients
 {
@@ -36,7 +37,7 @@ namespace InfluxData.Net.InfluxDb.RequestClients
         {
             var requestParams = RequestParamsBuilder.BuildRequestParams(
                 writeRequest.DbName,
-                QueryParams.Precision, writeRequest.Precision,
+                QueryParams.Precision, writeRequest.Precision.ToEpochFormat(),
                 QueryParams.RetentionPolicy, writeRequest.RetentionPolicy
             );
             var httpContent = new StringContent(writeRequest.GetLines(), Encoding.UTF8, "text/plain");

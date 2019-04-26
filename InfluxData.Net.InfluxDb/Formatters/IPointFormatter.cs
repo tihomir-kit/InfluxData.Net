@@ -6,7 +6,7 @@ namespace InfluxData.Net.InfluxDb.Formatters
 {
     public interface IPointFormatter
     {
-        string PointToString(Point point, string precision = TimeUnit.Milliseconds);
+        string PointToString(Point point, TimeUnit precision = TimeUnit.Ticks);
 
         Serie PointToSerie(Point point);
     }
