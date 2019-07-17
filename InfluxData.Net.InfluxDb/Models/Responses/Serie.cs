@@ -32,5 +32,10 @@ namespace InfluxData.Net.InfluxDb.Models.Responses
         /// Serie values.
         /// </summary>
         public IList<IList<object>> Values { get; set; }
+
+        /// <summary>
+        /// Indicates a partial result as described in https://docs.influxdata.com/influxdb/v1.7/administration/config#max-row-limit-0
+        /// </summary>
+        public bool Partial { get; set; }
     }
 }
